@@ -1,0 +1,9 @@
+{
+    "characters": 
+    [
+        {"_id":0,"name": "Flandre Scarlet","nick": "Flandre", "hp":900,"atk": 56, "def": 20},
+        {"_id":1,"name": "Remilia Scarlet","nick":"Remlia", "hp":1000,"atk":20, "def": 56},
+        {"_id":2,"name": "Sakuya Izayoi", "nick": "Sakuya", "hp":1200, "atk":35, "def":41}
+
+    ]
+}
