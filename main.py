@@ -1,5 +1,3 @@
-
-
 import json
 from character import Character
 
@@ -24,15 +22,34 @@ class Battle:
         self.turn = 0
         self.queue = queue
         self.isInCombat = False
+        self.phase = ""
+        self.pturn = False
     
 
-    def turn_attack_player(self, chara : Character):
+    def turn_player(self, chara : Character):
         print(f"Turn da {chara._name}")
         print(f"[P][{chara.nick}] HP: {chara._hp}/{chara._maxhp} SPD: {chara._spd}")
-        input()
-        self.turn += 1
 
-    def turn_attack_enemy(self, chara : Character):
+        while self.pturn:
+
+            if self.phase == "Menu":
+                pass
+            elif self.phase == "Attack":
+                pass
+            elif self.phase == "Skills":
+                pass
+            elif self.phase == "Items":
+                pass
+            elif self.phase == "Status":
+                pass
+            elif self.phase == "Pass":
+                self.phase = ""
+                self.pturn = False
+                self.turn += 1
+
+
+
+    def turn_enemy(self, chara : Character):
         print(f"Turn da {chara._name}")
         print(f"[E][{chara.nick}] HP: {chara._hp}/{chara._maxhp} SPD: {chara._spd}")
         input()
@@ -63,9 +80,11 @@ class Battle:
             
 
             if chara.type == "Player":
-                self.turn_attack_player(chara)
+                self.phase = "Menu"
+                self.pturn = True
+                self.turn_player(chara)
             elif chara.type == "Enemy":
-                self.turn_attack_enemy(chara)
+                self.turn_enemy(chara)
 
             
             
