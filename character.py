@@ -11,6 +11,7 @@ class Character:
         self._maxhp = self._hp
         self._atk = data['atk']
         self._def = data['def']
+        self._spd = data['spd']
 
         self.type = type
 

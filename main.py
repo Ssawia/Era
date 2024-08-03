@@ -28,17 +28,23 @@ class Battle:
 
     def turn_attack_player(self, chara : Character):
         print(f"Turn da {chara._name}")
-        print(f"[P][{chara.}]")
+        print(f"[P][{chara.nick}] HP: {chara._hp}/{chara._maxhp} SPD: {chara._spd}")
         input()
         self.turn += 1
 
     def turn_attack_enemy(self, chara : Character):
-        print(f"Turn da {chara._name}*")
+        print(f"Turn da {chara._name}")
+        print(f"[E][{chara.nick}] HP: {chara._hp}/{chara._maxhp} SPD: {chara._spd}")
         input()
         self.turn += 1
 
     def turn_pass(self):
         pass
+
+
+    def sort_queue(self):
+        self.queue.sort(key=lambda x: x._spd, reverse=True)
+
     
 
     def start_battle(self):
@@ -50,8 +56,11 @@ class Battle:
 
             if self.turn > lenght:
                 self.turn = 0
-            
+
+            self.sort_queue()
+
             chara = self.queue[self.turn]
+            
 
             if chara.type == "Player":
                 self.turn_attack_player(chara)
