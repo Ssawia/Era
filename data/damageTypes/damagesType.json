@@ -1,6 +1,7 @@
 {   "DamagesType":
     [
-        {"class": "PhysicalDamage", "name": "Pysical", "desc": "A physical attack", "defType":"PhysicalDamage"}
+        {"class": "Physical", "name": "Pysical", "desc": "A physical attack", "defType":"PhysicalDamage"},
+        {"class": "Magical", "name": "Magical", "desc": "A magic attack", "defType":"MagicalDamage"}
         
     ]
 }

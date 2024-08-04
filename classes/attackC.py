@@ -11,13 +11,13 @@ import sys
 
 
 class Attack:
-    def __init__(self, name : str, desc : str,  damage : float, hits : int, dmgType : dmgType.DamageType, chara : classes.entitiesC.Character = None):
+    def __init__(self, name : str, desc : str,  damage : float, hits : int, dmgType : list, chara : classes.entitiesC.Character = None):
         self.name = name
         self.desc = desc
         self.owner = chara
         self.damage = damage
         self.hits = hits
-        self.type = dmgType
+        self.types = dmgType
     
 
 
@@ -28,7 +28,10 @@ class Attack:
 
         for c in range(self.hits):
             damage = self.damage + atk_base
-            obj.defend(damage, self.type)
+            obj.defend(damage, self.types)
+    
+    def imwho(self):
+       return self.name
     
 
 
