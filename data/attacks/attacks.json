@@ -3,7 +3,7 @@
     [
 
         {"class": "Attack","name": "Punch", "desc": "A punch", "damage": 100, "hits": 1, "type": "PhysicalDamage"},
-        {"class": "Attack","name": "Strong Punch", "desc": "A strong punch", "damage": 200, "hits": 2, "type": "PhysicalDamage"},
+        {"class": "Attack","name": "Strong Punch", "desc": "A strong punch", "damage": 200, "hits": 2, "type": "PhysicalDamage"}
     ],
 
     "magicalAttack": [

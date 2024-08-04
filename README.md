@@ -1,19 +1,40 @@
 # EraSS
 
-EraSS is a rpg game.
+Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 
-## Installation
+## Coisas para implementar
+- [ ] Terminar de testar o sistema de dano e tipos de dano.
+- [ ] Adicionar as fases de combate.
+- [ ] Teste básico do combate.
+- [ ] Adicionar mais tipo de dano.
+- [ ] Adicionar Equipamentos.
+- [ ] Adicionar Habilidades.
+- [ ] Adicionar Efeitos
+- [ ] Adicionar Traços.
+- [ ] Adicionar Items.
+- [ ] Adicionar raças.
+- [ ] Adicionar partes do corpo
+- [ ] Adicionar órgãos.
+- [ ] Implementar Alma.
+- [ ] Criar frontend Flask com Next.js ou React.
+- [ ] Adicionar criador de entidades.
+- [ ] Implementar o mapa global
+- [ ] Começar os testes onlines
+- [ ] Adicionar narração com AI nos combate de turno.
+- [ ] Implementar tradução dos textos gerados por AI
 
+## Roadmap
 
-## Usage
+- Terminar de testar o sistema de dano e tipos de dano.
 
+- Adicionar as fases de combate.
 
-## Contributing
+## Stack utilizada
 
-Pull requests are welcome. For major changes, please open an issue first
-to discuss what you would like to change.
+**Front-end:** React/Next
 
-Please make sure to update tests as appropriate.
+**Back-end:** Python, Flask
+
 
 ## License
 
