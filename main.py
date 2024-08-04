@@ -1,5 +1,5 @@
 import json
-from character import Character
+from classes.entitiesC import Character
 
 
 chara_data = open('data/chara/characters.json')
