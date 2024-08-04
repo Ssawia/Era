@@ -1,5 +1,6 @@
 {   "DamagesType":
     [
         {"class": "PhysicalDamage", "name": "Pysical", "desc": "A physical attack", "defType":"PhysicalDamage"}
+        
     ]
 }

@@ -4,7 +4,6 @@
 
         {"class": "Attack","name": "Punch", "desc": "A punch", "damage": 100, "hits": 1, "type": "PhysicalDamage"},
         {"class": "Attack","name": "Strong Punch", "desc": "A strong punch", "damage": 200, "hits": 2, "type": "PhysicalDamage"},
-        {"class": "AttackFds","name": "Strong balls crack", "desc": "A strong balls punch", "damage": 400, "hits": 2, "type": "PhysicalDamage"}
     ],
 
     "magicalAttack": [

@@ -1,57 +1,7 @@
 from __future__ import annotations
 #Provavelmente isso não é a melhor maneira de implementar varias classes, mas por enquanto vai dar certo, confia
 
-#Classe usada para definir o tipo de dano dos ataques, como ataque fisico ou ataque magico
-class DamageType:
-    def __init__(self, name : str, desc : str, defType : str):
-        self.name = name
-        self.desc = desc
-        self.defType = defType
-    
-    # No futuro implentar efeitos para certos tipos de dano
-    def effect(self):
-        pass
-
-
-class Attack:
-    def __init__(self, name : str, desc : str,  damage : float, hits : int, dmgType : DamageType, chara : Character = None):
-        self.name = name
-        self.desc = desc
-        self.owner = chara
-        self.damage = damage
-        self.hits = hits
-        self.type = dmgType
-    
-
-
-
-    def doDamage(self, obj: Character):
-
-        atk_base = self.owner._atk
-
-        for c in range(self.hits):
-            damage = self.damage + atk_base
-            obj.defend(damage, self.type)
-    
-
-    def getrekt(self):
-        print("Danm boy")
-
-
-class AttackFds(Attack):
-  def __init__(self, name, desc, damage,hits, dmgType):
-    super().__init__(name=name, desc=desc,damage=damage,hits=hits, dmgType=dmgType)
-
-  def getrekt(self):
-      return "Gyatt Girl, skibidi"
-
-
-
-    
-
-
-
-
+import classes.attackC
 
 
 class Character:
@@ -78,7 +28,7 @@ class Character:
             self.alive = False
 
 
-    def defend(self, damage : float, damageType : DamageType):
+    def defend(self, damage : float, damageType : classes.attackC.DamageType):
 
         self.isAlive()
 
@@ -90,7 +40,7 @@ class Character:
             
             self.hp -= damage_final
 
-    def attack(self, obj : Character, attack : Attack):
+    def attack(self, obj : Character, attack : classes.attackC.Attack):
         attack.doDamage(obj)
 
 
