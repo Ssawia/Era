@@ -32,6 +32,16 @@ class Magical(DamageType):
 
 
 
-
 def str_to_class(classname):
     return getattr(sys.modules[__name__], classname)
+
+
+def getDamageTypeClass(data : list, damage_data : dict):
+    dtypeList = []
+    dtype : DamageType = None
+
+    for c in data:
+        dtype = str_to_class(damage_data[c]['class'])(name=damage_data[c]['name'],desc=damage_data[c]['desc'],defType=damage_data[c]['defType'])
+        dtypeList.append(dtype)
+    
+    return dtypeList

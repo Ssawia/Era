@@ -28,9 +28,14 @@ class Battle:
 
     def turn_player(self, chara : Character):
         print(f"Turn da {chara._name}")
-        print(f"[P][{chara.nick}] HP: {chara._hp}/{chara._maxhp} SPD: {chara._spd}")
+        print(f"[P][{chara.nick}] HP: {chara.attributes.hp}/{chara.attributes.maxHp} SPD: {chara.attributes.spd}")
 
         while self.pturn:
+
+            msg = str(input(f"Digite o menu: "))
+
+            if msg == "pass":
+                self.phase = "Pass"
 
             if self.phase == "Menu":
                 pass
@@ -51,7 +56,7 @@ class Battle:
 
     def turn_enemy(self, chara : Character):
         print(f"Turn da {chara._name}")
-        print(f"[E][{chara.nick}] HP: {chara._hp}/{chara._maxhp} SPD: {chara._spd}")
+        print(f"[E][{chara.nick}] HP: {chara.attributes.hp}/{chara.attributes.maxHp} SPD: {chara.attributes.spd}")
         input()
         self.turn += 1
 

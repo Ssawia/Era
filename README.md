@@ -3,7 +3,6 @@
 Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 
 ## Roadmap
-- Implementar dano multiplo nos ataques.
 
 - Terminar de testar o sistema de dano e tipos de dano.
 
@@ -11,9 +10,11 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 
 ## Coisas para implementar
 - [x] Implementar dano multiplo nos ataques.
+- [x] Refactorar os Atributos
 - [ ] Terminar de testar o sistema de dano e tipos de dano.
 - [ ] Adicionar as fases de combate.
 - [ ] Teste básico do combate.
+- [ ] Fazer o front-end básico
 - [ ] Sistema de Level
 - [ ] Adicionar mais tipo de dano.
 - [ ] Adicionar Habilidades.
@@ -23,7 +24,7 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 - [ ] Adicionar Items.
 - [ ] Adicionar Equipamentos.
 - [ ] Adicionar Raças.
-- [ ] Adicionar partes do corpo.
+- [ ] Adicionar Corpo.
 - [ ] Adicionar Órgãos.
 - [ ] Adicionar Sanidade.
 - [ ] Implementar Alma.
