@@ -1,5 +1,10 @@
+from __future__ import annotations
 import json
 from classes.entitiesC import Character
+
+#Provavelmente isso não é a melhor maneira de implementar varias classes, mas por enquanto vai dar certo, confia
+
+import classes.attackC as Attacks
 
 
 chara_data = open('data/chara/characters.json')
@@ -42,8 +47,14 @@ class Battle:
             if self.phase == "Menu":
                 pass
             elif self.phase == "Attack":
-                print(chara.attacks[1].types[1].atk)
-                input()
+                attack : Attacks.Attack = None
+                atk_i = 0
+                for attack in chara.attacks:
+                    final_dmg = 0
+                    for dmg in attack.damage:
+                        final_dmg += dmg
+                    print(f"[{atk_i}][{attack.name}][{attack.desc}] Damages: {attack.damage}|[{final_dmg}*{attack.hits}]|[{final_dmg*attack.hits}] Cost: {attack.cost['mp']} Hits: {attack.hits}")
+                    atk_i += 1
             elif self.phase == "Skills":
                 pass
             elif self.phase == "Items":

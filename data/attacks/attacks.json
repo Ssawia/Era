@@ -2,12 +2,19 @@
     "physicalAttack":
     [
 
-        {"class": "PhysicalAttack","name": "Punch", "desc": "A punch", "damage": [100], "cost": [{"mp":10}], "hits": 1, "type": [0]},
-        {"class": "MagicalAttack","name": "Fire Punch", "desc": "A fire punch", "damage": [150,50], "cost": [{"mp":10}], "hits": 2, "type": [0, 1]}
-    ],
+        {"class": "PhysicalAttack","name": "Punch", "desc": "A punch", "damage": [100], "cost": {"mp":10}, "hits": 1, "type": [0]},
 
-    "magicalAttack": [
-        {"class": "magicAttack","name": "basicMagicAttack"}
+        {
+            "class": "MagicalAttack",
+            "name": "FireBall",
+            "desc": "A magia Fireball cria uma esfera de fogo que explode ao impacto, incendiando tudo ao redor. Causando danos significativos e queimaduras severas a todos os atingidos.",
+            "damage": [150,50],
+            "cost": {"mp":30},
+            "hits": 2,
+            "type": [0, 1]
+        }
     ]
+
+
     
 }

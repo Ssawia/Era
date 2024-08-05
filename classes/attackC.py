@@ -8,13 +8,29 @@ import json
 
 #Classe usada para definir o tipo de dano dos ataques, como ataque fisico ou ataque magico
 class Attack:
-    def __init__(self, name : str, desc : str,  damage : list, cost : list, hits : int, dmgType : list):
+    def __init__(self, name : str, desc : str,  damage : list, cost : dict, hits : int, dmgType : list):
         self.name = name
         self.desc = desc
         self.damage = damage
         self.cost = cost
         self.hits = hits
         self.types = dmgType
+    
+
+    def checkCost(self, owner : Chara.Character):
+        canAttack = False
+        # Simplesmente a maneira mais merda de fazer isso, mas por enquanto da pro gasto
+        for key in self.cost.keys():
+            if key == "mp":
+                if owner.attributes.mp >= self.cost[key]:
+                    owner.attributes.mp -= self.cost[key]
+                    canAttack = True
+        
+
+        return canAttack
+                    
+                
+
     
     def doDamage(self):
         pass
@@ -27,6 +43,7 @@ class PhysicalAttack(Attack):
         super().__init__(name=name, desc=desc,damage=damage,cost=cost,hits=hits,dmgType=dmgType)
     
     def doDamage(self, owner : Chara.Character, obj: Chara.Character):
+        
         i : dmgType.DamageType = None
         dmgList  = []
 
@@ -38,23 +55,27 @@ class PhysicalAttack(Attack):
             obj.defend(dmgList)
 
         return True
+        
+
 
 class MagicalAttack(Attack):
     def __init__(self,name,desc,damage,cost,hits,dmgType):
         super().__init__(name=name, desc=desc,damage=damage,cost=cost,hits=hits,dmgType=dmgType)
     
     def doDamage(self, owner : Chara.Character, obj: Chara.Character):
+        
         i : dmgType.DamageType = None
         dmgList  = []
 
         for i in self.types:
             i.setAttack(owner)
             dmgList.append(i)
-        
+            
         for c in range(self.hits):
             obj.defend(dmgList)
-        
+            
         return True
+
 
 
         

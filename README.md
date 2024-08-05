@@ -4,14 +4,21 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 
 ## Roadmap
 
-- Terminar de testar o sistema de dano e tipos de dano.
+- Adicionar tipos de ataques
+
+- Adicionar Ataque em inimigos multiplos
 
 - Adicionar as fases de combate.
+
+- Teste básico do combate.
 
 ## Coisas para implementar
 - [x] Implementar dano multiplo nos ataques.
 - [x] Refactorar os Atributos
 - [x] Terminar de testar o sistema de dano e tipos de dano.
+- [x] Adicionar custo ao ataques
+- [ ] Adicionar tipos de ataques
+- [ ] Adicionar Ataque em inimigos multiplos
 - [ ] Adicionar as fases de combate.
 - [ ] Teste básico do combate.
 - [ ] Fazer o front-end básico
