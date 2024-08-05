@@ -2,8 +2,8 @@
     "physicalAttack":
     [
 
-        {"class": "Attack","name": "Punch", "desc": "A punch", "damage": 100, "hits": 1, "type": [0]},
-        {"class": "Attack","name": "Fire Punch", "desc": "A fire punch", "damage": 200, "hits": 2, "type": [0, 1]}
+        {"class": "PhysicalAttack","name": "Punch", "desc": "A punch", "damage": [100], "cost": [{"mp":10}], "hits": 1, "type": [0]},
+        {"class": "MagicalAttack","name": "Fire Punch", "desc": "A fire punch", "damage": [150,50], "cost": [{"mp":10}], "hits": 2, "type": [0, 1]}
     ],
 
     "magicalAttack": [

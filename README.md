@@ -11,7 +11,7 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 ## Coisas para implementar
 - [x] Implementar dano multiplo nos ataques.
 - [x] Refactorar os Atributos
-- [ ] Terminar de testar o sistema de dano e tipos de dano.
+- [x] Terminar de testar o sistema de dano e tipos de dano.
 - [ ] Adicionar as fases de combate.
 - [ ] Teste básico do combate.
 - [ ] Fazer o front-end básico

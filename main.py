@@ -36,11 +36,14 @@ class Battle:
 
             if msg == "pass":
                 self.phase = "Pass"
+            if msg == "atk":
+                self.phase = "Attack"
 
             if self.phase == "Menu":
                 pass
             elif self.phase == "Attack":
-                pass
+                print(chara.attacks[1].types[1].atk)
+                input()
             elif self.phase == "Skills":
                 pass
             elif self.phase == "Items":
