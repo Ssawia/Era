@@ -2,7 +2,7 @@
     "characters": 
     [
         {"_id":0,"name": "Flandre Scarlet","nick": "Flandre", "hp":900,"mp": 300, "atk": 56, "atkM": 70,"def": 20, "defM": 65, "spd": 45, "attacks": [0]},
-        {"_id":1,"name": "Remilia Scarlet","nick":"Remlia", "hp":1000, "mp": 400, "atk":20, "atkM": 65,"def": 56, "defM": 60, "spd": 65, "attacks": [0,1]},
+        {"_id":1,"name": "Remilia Scarlet","nick":"Remlia", "hp":1000, "mp": 400, "atk":20, "atkM": 65,"def": 56, "defM": 60, "spd": 65, "attacks": [0,1,2,3]},
         {"_id":2,"name": "Sakuya Izayoi", "nick": "Sakuya", "hp":1200, "mp": 500, "atk":35, "atkM": 60, "def":41, "defM": 55, "spd" : 75, "attacks": [0,1]}
 
     ]

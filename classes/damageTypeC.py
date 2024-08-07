@@ -55,6 +55,21 @@ class Magical(DamageType):
         return "Um ataque magico"
 
 
+class Healing(DamageType):
+    def __init__(self, name, desc, atk, heal,defType):
+        super().__init__(name=name, desc=desc, atk=atk, heal=heal,defType=defType)
+    
+
+    def setAttack(self, owner: Chara.Character):
+        addToHeal = owner.attributes.atkm
+        print(f"[{self.name}]{self.heal}+{addToHeal}={self.heal+addToHeal}")
+        self.heal += addToHeal
+    
+
+    def effect(self):
+        return "Um ataque magico"
+
+
 
 def str_to_class(classname):
     return getattr(sys.modules[__name__], classname)

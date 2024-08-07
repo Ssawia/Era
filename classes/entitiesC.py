@@ -66,13 +66,22 @@ class Character:
                     dmg = dmgType.atk - self.attributes.dfm
                     self.attributes.hp -= dmg
                     print(f"{self._name} tomou {dmgType.atk}-{self.attributes.dfm}={dmg} de dano")
-            pass
         else:
             print("Já está morto")
     
 
-    def healing(self,amount : list):
-        pass
+    def healing(self,damageTypes : list):
+        
+        self.isAlive()
+        dmgType : damageTypes.DamageType = None
+
+        if self.isAlive:
+            for dmgType in damageTypes:
+                if self.attributes.hp + dmgType.heal < self.attributes.maxHp:
+                    self.attributes.hp += dmgType.heal
+        else:
+            print("Já está morto, não tem como curar")
+
 
     def attack(self, obj : Character, attack : Attacks.Attack):
         attack.doDamage(obj)

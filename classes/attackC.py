@@ -98,7 +98,23 @@ class HealingAttack(Attack):
 
         obj : Chara.Character = None
 
-        pass
+
+        i : dmgType.DamageType = None
+        dmgList  = []
+
+        for i in self.types:
+            i.setAttack(owner)
+            dmgList.append(i)
+
+
+        for obj in objs:
+            for c in range(self.hits):
+                print(dmgList)
+                obj.healing(dmgList)
+
+        return True         
+
+
 
         
 
