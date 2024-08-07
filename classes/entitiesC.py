@@ -40,6 +40,11 @@ class Character:
         self.attacks = data['attacks']
         self.getAttacks()
 
+    
+
+    def get_status(self):
+        print(f"[{self._name}] HP: {self.attributes.hp}/{self.attributes.maxHp} MP: {self.attributes.mp}/{self.attributes.maxMp}")
+
 
     def getAttacks(self):
         self.attacks = Attacks.getAttackClass(self.attacks)

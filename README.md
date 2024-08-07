@@ -17,8 +17,9 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 - [x] Refactorar os Atributos
 - [x] Terminar de testar o sistema de dano e tipos de dano.
 - [x] Adicionar custo ao ataques.
-- [ ] Adicionar tipos de ataques.
-- [ ] Adicionar Ataque em inimigos multiplos.
+- [x] Adicionar tipos de ataques.
+- [x] Adicionar Ataque em inimigos multiplos.
+- [ ] Adiconar intenções de ataque
 - [ ] Talvez adicionar cooldown nos ataques.
 - [ ] Refactorar relações entre classes.
 - [ ] Adicionar as fases de combate.

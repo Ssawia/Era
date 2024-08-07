@@ -109,7 +109,6 @@ class HealingAttack(Attack):
 
         for obj in objs:
             for c in range(self.hits):
-                print(dmgList)
                 obj.healing(dmgList)
 
         return True         
