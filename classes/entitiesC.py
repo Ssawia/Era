@@ -69,6 +69,10 @@ class Character:
             pass
         else:
             print("Já está morto")
+    
+
+    def healing(self,amount : list):
+        pass
 
     def attack(self, obj : Character, attack : Attacks.Attack):
         attack.doDamage(obj)

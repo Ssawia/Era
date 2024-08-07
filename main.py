@@ -29,6 +29,36 @@ class Battle:
         self.isInCombat = False
         self.phase = ""
         self.pturn = False
+
+    
+
+    def menu_main(self, chara : Character):
+        pass
+
+    def menu_attack(self, chara : Character):
+        attack : Attacks.Attack = None
+        atk_i = 0
+        for attack in chara.attacks:
+            final_dmg = 0
+            for dmg in attack.damage:
+                final_dmg += dmg
+            print(f"[{atk_i}][{attack.name}][{attack.desc}] Damages: {attack.damage}|[{final_dmg}*{attack.hits}]|[{final_dmg*attack.hits}] Cost: {attack.cost['mp']} Hits: {attack.hits}")
+            atk_i += 1
+
+    def menu_skills(self,chara : Character):
+        pass
+
+    def menu_items(self, chara : Character):
+        pass
+
+    def menu_status(self,chara : Character):
+        pass
+
+    def menu_pass(self,chara : Character):
+        self.phase = ""
+        self.pturn = False
+        self.turn += 1
+
     
 
     def turn_player(self, chara : Character):
@@ -44,27 +74,7 @@ class Battle:
             if msg == "atk":
                 self.phase = "Attack"
 
-            if self.phase == "Menu":
-                pass
-            elif self.phase == "Attack":
-                attack : Attacks.Attack = None
-                atk_i = 0
-                for attack in chara.attacks:
-                    final_dmg = 0
-                    for dmg in attack.damage:
-                        final_dmg += dmg
-                    print(f"[{atk_i}][{attack.name}][{attack.desc}] Damages: {attack.damage}|[{final_dmg}*{attack.hits}]|[{final_dmg*attack.hits}] Cost: {attack.cost['mp']} Hits: {attack.hits}")
-                    atk_i += 1
-            elif self.phase == "Skills":
-                pass
-            elif self.phase == "Items":
-                pass
-            elif self.phase == "Status":
-                pass
-            elif self.phase == "Pass":
-                self.phase = ""
-                self.pturn = False
-                self.turn += 1
+
 
 
 
