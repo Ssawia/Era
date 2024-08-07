@@ -21,7 +21,7 @@ class Attributes:
 class Character:
     def __init__(self, data : dict, _type : str):
         self._id = data['_id']
-        self._name = data['name']
+        self.name = data['name']
         self.nick = data['nick']
         self.type = _type
         self.alive = True
@@ -43,7 +43,7 @@ class Character:
     
 
     def get_status(self):
-        print(f"[{self._name}] HP: {self.attributes.hp}/{self.attributes.maxHp} MP: {self.attributes.mp}/{self.attributes.maxMp}")
+        print(f"[{self.name}] HP: {self.attributes.hp}/{self.attributes.maxHp} MP: {self.attributes.mp}/{self.attributes.maxMp}")
 
 
     def getAttacks(self):
@@ -62,15 +62,16 @@ class Character:
         dmgType : damageTypes.DamageType = None
 
         if self.alive:
+            # Uma bela maneira de spammar o cli, favor consertar depois
             for dmgType in damagesType:
                 if dmgType.defType == "PhysicalDamage":
                     dmg = dmgType.atk - self.attributes.df
                     self.attributes.hp -= dmg
-                    print(f"{self._name} tomou {dmgType.atk}-{self.attributes.df}={dmg} de dano")
+                    print(f"{self.name} tomou {dmgType.atk}-{self.attributes.df}={dmg} de dano")
                 elif dmgType.defType == "MagicalDamage":
                     dmg = dmgType.atk - self.attributes.dfm
                     self.attributes.hp -= dmg
-                    print(f"{self._name} tomou {dmgType.atk}-{self.attributes.dfm}={dmg} de dano")
+                    print(f"{self.name} tomou {dmgType.atk}-{self.attributes.dfm}={dmg} de dano")
         else:
             print("Já está morto")
     
@@ -79,11 +80,16 @@ class Character:
         
         self.isAlive()
         dmgType : damageTypes.DamageType = None
-
+        
         if self.isAlive:
+            
             for dmgType in damageTypes:
+                
                 if self.attributes.hp + dmgType.heal < self.attributes.maxHp:
+                    print(f"[{self.name}][HP:{self.attributes.hp}/{self.attributes.maxHp}] curou {dmgType.heal} e ficou com {self.attributes.hp + dmgType.heal} de vida")
                     self.attributes.hp += dmgType.heal
+                else:
+                    print(f"[{self.name}][HP:{self.attributes.hp}/{self.attributes.maxHp}] curou {dmgType.heal} e ficou com {self.attributes.hp} de vida")
         else:
             print("Já está morto, não tem como curar")
 

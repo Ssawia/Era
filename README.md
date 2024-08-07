@@ -4,9 +4,7 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 
 ## Roadmap
 
-- Adicionar tipos de ataques
-
-- Adicionar Ataque em inimigos multiplos
+- Adiconar intenções de ataque.
 
 - Adicionar as fases de combate.
 
@@ -19,8 +17,7 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 - [x] Adicionar custo ao ataques.
 - [x] Adicionar tipos de ataques.
 - [x] Adicionar Ataque em inimigos multiplos.
-- [ ] Adiconar intenções de ataque
-- [ ] Talvez adicionar cooldown nos ataques.
+- [x] Adiconar intenções de ataque.
 - [ ] Refactorar relações entre classes.
 - [ ] Adicionar as fases de combate.
 - [ ] Teste básico do combate.
