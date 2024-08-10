@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import classes.attackC as Attacks
 import classes.damageTypeC as damageTypes
+from typing import List
 
 class Attributes:
     def __init__(self, hp,mp,atk,atkm,df,dfm,spd):
@@ -19,7 +20,9 @@ class Attributes:
 
 
 class Character:
-    def __init__(self, data : dict, _type : str):
+    def __init__(self, _id : int, data : dict, _type : str):
+        data = next((sub for sub in data if sub['_id'] == _id))
+
         self._id = data['_id']
         self.name = data['name']
         self.nick = data['nick']
@@ -37,13 +40,17 @@ class Character:
 
         self.attributes : Attributes = Attributes(self._hp,self._mp,self._atk,self._atkM,self._def,self._defM,self._spd)
 
-        self.attacks = data['attacks']
+        self.attacks: List[Attacks.Attack] = data['attacks']
         self.getAttacks()
 
     
 
     def get_status(self):
-        print(f"[{self.name}] HP: {self.attributes.hp}/{self.attributes.maxHp} MP: {self.attributes.mp}/{self.attributes.maxMp}")
+        try:
+            print(f"[{self.name}] HP: {self.attributes.hp}/{self.attributes.maxHp} MP: {self.attributes.mp}/{self.attributes.maxMp}")
+            return True
+        except Exception as E:
+            return False
 
 
     def getAttacks(self):
@@ -59,7 +66,7 @@ class Character:
     def defend(self, damagesType : list):
 
         self.isAlive()
-        dmgType : damageTypes.DamageType = None
+        dmgType : damageTypes.DamageType
 
         if self.alive:
             # Uma bela maneira de spammar o cli, favor consertar depois
@@ -79,7 +86,7 @@ class Character:
     def healing(self,damageTypes : list):
         
         self.isAlive()
-        dmgType : damageTypes.DamageType = None
+        dmgType : damageTypes.DamageType
         
         if self.isAlive:
             
@@ -95,7 +102,7 @@ class Character:
 
 
     def attack(self, obj : Character, attack : Attacks.Attack):
-        attack.doDamage(obj)
+        attack.doDamage()
 
 
 

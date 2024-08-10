@@ -1,9 +1,12 @@
 from __future__ import annotations
 import sys
 import classes.entitiesC as Chara
+from typing import List
+
+
 
 class DamageType:
-    def __init__(self, name : str, desc : str, defType : str, atk : float = None, heal : float = None):
+    def __init__(self, name : str, desc : str, defType : str, atk : float = 0, heal : float = 0):
         self.name = name
         self.desc = desc
         self.defType = defType
@@ -76,19 +79,23 @@ def str_to_class(classname):
 
 
 def getDamageTypeClass(data : list, damage_data : dict, damages : list):
-    dtypeList = []
-    dtype : DamageType = None
+    dtypeList: List[DamageType] = []
+
+    dtype : DamageType
     i = 0
 
     atk = 0
     heal = 0
+    #Melhorar essa merda, pra no futuro quando tiver mais tipo de dano não virar um yandere simulator
     for c in data:
         if 'atk' in damages[i].keys():
             atk = damages[i]['atk']
         if 'heal' in damages[i].keys():
             heal = damages[i]['heal']
 
-        dtype = str_to_class(damage_data[c]['class'])(name=damage_data[c]['name'],desc=damage_data[c]['desc'],atk=atk,heal=heal,defType=damage_data[c]['defType'])
+        typeDmg = next((sub for sub in damage_data if sub['_id'] == c))
+
+        dtype = str_to_class(typeDmg['class'])(name=typeDmg['name'],desc=typeDmg['desc'],atk=atk,heal=heal,defType=typeDmg['defType'])
         dtypeList.append(dtype)
         i += 1
     

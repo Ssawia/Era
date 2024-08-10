@@ -13,9 +13,9 @@ chara_data = json.load(chara_data)["characters"]
 
 
 
-flande = Character(chara_data[0],"Enemy")
-remilia = Character(chara_data[1],"Player")
-sakuya = Character(chara_data[2],"Player")
+flande = Character(0,chara_data,"Enemy")
+remilia = Character(1,chara_data,"Player")
+sakuya = Character(2,chara_data,"Player")
 
 
 
@@ -36,7 +36,7 @@ class Battle:
         pass
 
     def menu_attack(self, chara : Character):
-        attack : Attacks.Attack = None
+        attack : Attacks.Attack
         atk_i = 0
         for attack in chara.attacks:
             final_dmg = 0
@@ -62,7 +62,7 @@ class Battle:
     
 
     def turn_player(self, chara : Character):
-        print(f"Turn da {chara._name}")
+        print(f"Turn da {chara.name}")
         print(f"[P][{chara.nick}] HP: {chara.attributes.hp}/{chara.attributes.maxHp} SPD: {chara.attributes.spd}")
 
         while self.pturn:
@@ -79,7 +79,7 @@ class Battle:
 
 
     def turn_enemy(self, chara : Character):
-        print(f"Turn da {chara._name}")
+        print(f"Turn da {chara.name}")
         print(f"[E][{chara.nick}] HP: {chara.attributes.hp}/{chara.attributes.maxHp} SPD: {chara.attributes.spd}")
         input()
         self.turn += 1
@@ -97,7 +97,7 @@ class Battle:
         self.isInCombat = True
 
         while self.isInCombat:
-            chara : Character = None
+            chara : Character 
             lenght = len(self.queue) - 1
 
             if self.turn > lenght:
