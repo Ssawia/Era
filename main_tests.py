@@ -2,8 +2,8 @@
 
 import json
 import classes.entitiesC as entities
-import classes.attackC as atk
-import classes.damageTypeC as dmgType
+import classes.attacks.attackC as atk
+import classes.damages.damageTypeC as dmgType
 
 
 def get_all_status(charas):

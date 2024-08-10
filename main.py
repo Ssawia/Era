@@ -4,7 +4,7 @@ from classes.entitiesC import Character
 
 #Provavelmente isso não é a melhor maneira de implementar varias classes, mas por enquanto vai dar certo, confia
 
-import classes.attackC as Attacks
+import classes.attacks.attackC as Attacks
 
 
 chara_data = open('data/chara/characters.json')

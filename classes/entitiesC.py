@@ -1,9 +1,11 @@
 from __future__ import annotations
 #Provavelmente isso não é a melhor maneira de implementar varias classes, mas por enquanto vai dar certo, confia
 
-import classes.attackC as Attacks
-import classes.damageTypeC as damageTypes
+import classes.attacks.attackC as Attacks
+import classes.damages.damageTypeC as damageTypes
 from typing import List
+
+import abstraction
 
 class Attributes:
     def __init__(self, hp,mp,atk,atkm,df,dfm,spd):
@@ -54,7 +56,7 @@ class Character:
 
 
     def getAttacks(self):
-        self.attacks = Attacks.getAttackClass(self.attacks)
+        self.attacks = abstraction.getAttackClass(self.attacks)
 
 
 
@@ -100,9 +102,6 @@ class Character:
         else:
             print("Já está morto, não tem como curar")
 
-
-    def attack(self, obj : Character, attack : Attacks.Attack):
-        attack.doDamage()
 
 
 

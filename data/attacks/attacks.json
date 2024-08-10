@@ -4,7 +4,9 @@
 
         {
             "_id": 0,
-            "class": "PhysicalAttack",
+            "classType": "attacks",
+            "file": "PhysicalAttack",
+            "className": "PhysicalAttack",
             "name": "Punch", 
             "desc": "A punch", 
             "target": "single",
@@ -19,7 +21,9 @@
 
         {
             "_id": 1,
-            "class": "MagicalAttack",
+            "classType": "attacks",
+            "file": "MagicalAttack",
+            "className": "MagicalAttack",
             "name": "Fire Ball",
             "desc": "A magia Fireball cria uma esfera de fogo que explode ao impacto, incendiando tudo ao redor. Causando danos significativos e queimaduras severas a todos os atingidos.",
             "target": "multi",
@@ -34,7 +38,9 @@
 
         {
             "_id": 2,
-            "class": "MagicalAttack",
+            "classType": "attacks",
+            "file": "MagicalAttack",
+            "className": "MagicalAttack",
             "name": "Aeolian Blade",
             "desc": "Harness the untamed power of the wind with Aeolian Blade. When cast, this spell conjures a shimmering sword of pure, swirling air that slices through foes with unparalleled speed and precision.",
             "target": "select",
@@ -49,7 +55,9 @@
 
         {
             "_id": 3,
-            "class": "HealingAttack",
+            "classType": "attacks",
+            "file": "HealingAttack",
+            "className": "HealingAttack",
             "name": "Deep Healing",
             "desc": "Unleash the profound power of restoration with Deep Healing. This spell channels potent, rejuvenating energy directly into the body of the target, mending wounds and revitalizing their very essence. Deep Healing reaches beyond superficial injuries, addressing deep-seated damage and revitalizing the spirit, leaving the recipient in a state of profound well-being and vigor.",
             "target": "self",

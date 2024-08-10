@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import classes.entitiesC as Chara
-import classes.damageTypeC as dmgType
-from typing import List
+import classes.damages.damageTypeC as dmgType
 import sys
 import json
+from abstraction import str_to_class
 
 # Depois de alguns minutos de filosofia, eu cheguei a conclusão que single e select é literalmente a mesma coisa, só muda o limite do ataque 🤡
 # Vou deixar por enquanto, motivo ? preguiça
@@ -62,8 +62,6 @@ class Selector:
         selected = []
         idS = 0
 
-        print(f"[{self.attack_name}][{self.intent}][{self.target}] Selecione {self.target_limit} alvo(s)")
-
 
         
         for c in range(self.target_limit):
@@ -90,24 +88,27 @@ class Selector:
 
         
         return selected
-        
-
+    
 
     def self_attack(self,owner):
+        print(f"[{self.attack_name}][{self.intent}][{self.target}] Selecione {self.target_limit} alvo(s)")
         self.listt = []
         self.listt.append(owner)
 
         return self.listt
 
     def single_attack(self):
+        print(f"[{self.attack_name}][{self.intent}][{self.target}] Selecione {self.target_limit} alvo(s)")
         return self.select_in_queue()
 
     def multi_attack(self):
+        print(f"[{self.attack_name}][{self.intent}][{self.target}] Selecione {self.target_limit} alvo(s)")
         self.listt = self.get_intent_on_queue()
         return self.listt
         
 
     def select_attack(self):
+        print(f"[{self.attack_name}][{self.intent}][{self.target}] Selecione {self.target_limit} alvo(s)")
         return self.select_in_queue()
 
 #Classe usada para definir o tipo de dano dos ataques, como ataque fisico ou ataque magico
@@ -166,118 +167,11 @@ class Attack:
     def imwho(self):
        return self.name
     
-class PhysicalAttack(Attack):
-    def __init__(self,_id,_class,name,desc,target,targetLimit,intent,damage,cost,hits,dmgType):
-        super().__init__(_id=_id, _class=_class, name=name, desc=desc,target=target,targetLimit=targetLimit,intent=intent,damage=damage,cost=cost,hits=hits,dmgType=dmgType)
-    
-    def doDamage(self, owner : Chara.Character, queue: list):
 
-        self.init_select(queue)
-        queue = self.check_target(owner)
         
-        obj : Chara.Character 
-
-        i : dmgType.DamageType 
-        dmgList  = []
-
-        for i in self.types:
-            i.setAttack(owner)
-            dmgList.append(i)    
-
-        for obj in queue:
-            for c in range(self.hits):
-                obj.defend(dmgList)
-
-        return True
-        
-class MagicalAttack(Attack):
-    def __init__(self,_id,_class,name,desc,target,targetLimit,intent,damage,cost,hits,dmgType):
-        super().__init__(_id=_id, _class=_class, name=name, desc=desc,target=target,targetLimit=targetLimit,intent=intent,damage=damage,cost=cost,hits=hits,dmgType=dmgType)
-    
-    def doDamage(self, owner : Chara.Character, queue: list):
-
-        self.init_select(queue)
-        queue = self.check_target(owner)
-
-
-        obj : Chara.Character
-
-        i : dmgType.DamageType 
-        dmgList  = []
-
-        for i in self.types:
-            i.setAttack(owner)
-            dmgList.append(i)
-        
-        for obj in queue:
-            for c in range(self.hits):
-                obj.defend(dmgList)
-            
-        return True
-
-class HealingAttack(Attack):
-    def __init__(self,_id,_class,name,desc,target,targetLimit,intent,damage,cost,hits,dmgType):
-        super().__init__(_id=_id, _class=_class, name=name, desc=desc,target=target,targetLimit=targetLimit,intent=intent,damage=damage,cost=cost,hits=hits,dmgType=dmgType)
-    
-
-    def doDamage(self, owner : Chara.Character, queue: list):
-        self.init_select(queue)
-        queue = self.check_target(owner)
-
-        obj : Chara.Character 
-
-
-        i : dmgType.DamageType 
-        dmgList  = []
-
-        for i in self.types:
-            i.setAttack(owner)
-            dmgList.append(i)
-
-
-        for obj in queue:
-            for c in range(self.hits):
-                obj.healing(dmgList)
-
-        return True         
+       
 
 
 
 
-def getAttackClass(data : list):
-    attacks_data = open('data/attacks/attacks.json')
-    attacks_data = json.load(attacks_data)["physicalAttack"]
 
-    damage_data = open('data/damageTypes/damagesType.json')
-    damage_data = json.load(damage_data)["DamagesType"]
-
-    attacks_list = []
-
-    for c in data:
-        atk_data: dict = attacks_data[c]
-        damagetypes: List[dmgType.DamageType] = []
-
-        damagetypes = dmgType.getDamageTypeClass(atk_data['type'], damage_data, atk_data['damage'])
-
-        attack = next((sub for sub in attacks_data if sub['_id'] == c))
-
-
-        #melhorar essa merda kkkkkkkk
-        basicAttack : Attack = str_to_class(attack['class'])(
-            _id = attack['_id'],
-            _class =attack['class'],
-            name=attack['name'],
-            desc=attack['desc'],
-            target=attack['target'],
-            targetLimit=attack['target-limit'],
-            intent=attack['intent'],
-            damage=attack['damage'],
-            cost= attack['cost'],
-            hits = attack['hits'],
-            dmgType = damagetypes)
-        attacks_list.append(basicAttack)
-    
-    return attacks_list
-
-def str_to_class(classname):
-    return getattr(sys.modules[__name__], classname)

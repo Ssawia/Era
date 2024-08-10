@@ -1,8 +1,34 @@
 {   "DamagesType":
     [
-        {"_id": 0,"class": "Physical", "name": "Pysical", "desc": "A physical attack", "defType":"PhysicalDamage"},
-        {"_id": 1,"class": "Magical", "name": "Magical", "desc": "A magic attack", "defType":"MagicalDamage"},
-        {"_id": 2,"class": "Healing", "name": "Healing", "desc": "Healing Magic", "defType": "MagicalHealing"}
+        {
+            "_id": 0,
+            "classType": "damages",
+            "file": "Physical",
+            "className": "Physical", 
+            "name": "Pysical", 
+            "desc": "A physical attack", 
+            "defType":"PhysicalDamage"
+        },
+
+        {
+            "_id": 1,
+            "classType": "damages",
+            "file": "Magical",
+            "className": "Magical", 
+            "name": "Magical", 
+            "desc": "A magic attack", 
+            "defType":"MagicalDamage"
+        },
+
+        {
+            "_id": 2,
+            "classType": "damages",
+            "file": "Healing",
+            "className": "Healing", 
+            "name": "Healing", 
+            "desc": "Healing Magic", 
+            "defType": "MagicalHealing"
+        }
         
     ]
 }
