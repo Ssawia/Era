@@ -8,8 +8,7 @@ class Healing(dmgType.DamageType):
     
 
     def setAttack(self, owner: Chara.Character):
-        addToHeal = owner.attributes.atkm
-        print(f"[{self.name}]{self.heal}+{addToHeal}={self.heal+addToHeal}")
+        addToHeal = owner.attributes.status.atkM
         self.heal += addToHeal
     
 

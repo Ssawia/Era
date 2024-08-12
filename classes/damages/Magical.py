@@ -8,8 +8,7 @@ class Magical(dmgType.DamageType):
     
 
     def setAttack(self, owner: Chara.Character):
-        dmgA = owner.attributes.atkm
-        print(f"[{self.name}]{self.atk}+{dmgA}={self.atk+dmgA}")
+        dmgA = owner.attributes.status.atkM
         self.atk += dmgA
     
 

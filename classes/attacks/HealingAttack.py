@@ -15,17 +15,8 @@ class HealingAttack(Attack):
 
         obj : Chara.Character 
 
-
-        i : dmgType.DamageType 
-        dmgList  = []
-
-        for i in self.types:
-            i.setAttack(owner)
-            dmgList.append(i)
-
-
         for obj in queue:
             for c in range(self.hits):
-                obj.healing(dmgList)
+                obj.healing(self.dmgList)
 
         return True  

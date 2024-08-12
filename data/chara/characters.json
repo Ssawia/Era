@@ -1,9 +1,112 @@
 {
     "characters": 
     [
-        {"_id":0,"name": "Flandre Scarlet","nick": "Flandre", "hp":900,"mp": 300, "atk": 56, "atkM": 70,"def": 20, "defM": 65, "spd": 45, "attacks": [0]},
-        {"_id":1,"name": "Remilia Scarlet","nick":"Remlia", "hp":1000, "mp": 400, "atk":20, "atkM": 65,"def": 56, "defM": 60, "spd": 65, "attacks": [0,1,2,3]},
-        {"_id":2,"name": "Sakuya Izayoi", "nick": "Sakuya", "hp":1200, "mp": 500, "atk":35, "atkM": 60, "def":41, "defM": 55, "spd" : 75, "attacks": [0,1]}
+        {
+            "_id":0,
+            "name": "Flandre Scarlet",
+            "nick": "Flandre", 
+            "attributes":{
+                    "vitality": 15,
+                    "constitution": 20,
+                    "strength": 15,
+                    "fortitude": 17,
+                    "attunement": 14,
+                    "intelligence": 20,
+                    "will": 19,
+                    "faith": 10,
+                    "arcane": 20,
+                    "dexterity": 19,
+                    "fortune": 20
+
+                },
+            
+            "potencial":{
+                    "vitality": 1.5,
+                    "constitution": 1.1,
+                    "strength": 1.2,
+                    "fortitude": 1.3,
+                    "attunement": 1.3,
+                    "intelligence": 1.5,
+                    "will": 1.5,
+                    "faith": 1,
+                    "arcane": 1.9,
+                    "dexterity": 1.4,
+                    "fortune": 1.0
+
+                },                
+            
+            "attacks": [0]
+        },
+
+        {
+            "_id":1,
+            "name": "Remilia Scarlet",
+            "nick":"Remlia",
+            "attributes":{
+                "vitality": 19,
+                "constitution": 22,
+                "strength": 16,
+                "fortitude": 18,
+                "attunement": 15,
+                "intelligence": 21,
+                "will": 20,
+                "faith": 9,
+                "arcane": 25,
+                "dexterity": 19,
+                "fortune": 30
+
+            },
+            "potencial":{
+                "vitality": 1.6,
+                "constitution": 1.3,
+                "strength": 1.1,
+                "fortitude": 1.1,
+                "attunement": 1.1,
+                "intelligence": 1.8,
+                "will": 1.9,
+                "faith": 1,
+                "arcane": 1.9,
+                "dexterity": 1.2,
+                "fortune": 2.0
+
+            },
+            "attacks": [0,1,2,3]
+        },
+
+        {
+            "_id":2,
+            "name": "Sakuya Izayoi", 
+            "nick": "Sakuya", 
+            "attributes":{
+                "vitality": 22,
+                "constitution": 20,
+                "strength": 19,
+                "fortitude": 15,
+                "attunement": 11,
+                "intelligence": 15,
+                "will": 14,
+                "faith": 10,
+                "arcane": 15,
+                "dexterity": 13,
+                "fortune": 10
+
+            },
+            "potencial":{
+                "vitality": 1.7,
+                "constitution": 1.5,
+                "strength": 1.6,
+                "fortitude": 1.5,
+                "attunement": 1.3,
+                "intelligence": 1.5,
+                "will": 1.2,
+                "faith": 1,
+                "arcane": 1.3,
+                "dexterity": 1.3,
+                "fortune": 1.1
+
+            },
+            "attacks": [0,1]
+        }
 
     ]
 }

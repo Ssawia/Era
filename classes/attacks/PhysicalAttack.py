@@ -16,15 +16,8 @@ class PhysicalAttack(Attack):
         
         obj : Chara.Character 
 
-        i : dmgType.DamageType 
-        dmgList  = []
-
-        for i in self.types:
-            i.setAttack(owner)
-            dmgList.append(i)    
-
         for obj in queue:
             for c in range(self.hits):
-                obj.defend(dmgList)
+                obj.defend(self.dmgList)
 
         return True

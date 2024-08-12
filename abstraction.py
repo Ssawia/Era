@@ -5,7 +5,7 @@ import classes.entitiesC as Chara
 import classes.damages.damageTypeC as dmgType
 import classes.attacks.attackC as Attack
 
-
+#carregar a classe beseado no local onde ela está
 def str_to_class(type_class : str, file : str, classname : str, ):
     module = importlib.import_module(f'classes.{type_class}.{file}')
     abclass = getattr(module, classname)
@@ -20,7 +20,7 @@ def getDamageTypeClass(data : list, damage_data : dict, damages : list):
 
     atk = 0
     heal = 0
-    #Melhorar essa merda, pra no futuro quando tiver mais tipo de dano não virar um yandere simulator
+    #Melhorar essa merda, pro futuro quando tiver mais tipo de dano não virar um yandere simulator
     for c in data:
         if 'atk' in damages[i].keys():
             atk = damages[i]['atk']

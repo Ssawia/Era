@@ -7,10 +7,7 @@ class Physical(dmgType.DamageType):
         super().__init__(name=name, desc=desc, atk=atk, heal=heal,defType=defType)
     
     def setAttack(self, owner: Chara.Character):
-        dmgA = owner.attributes.atk
-
-        print(f"[{self.name}]{self.atk}+{dmgA}={self.atk+dmgA}")
-
+        dmgA = owner.attributes.status.atk
         self.atk += dmgA
 
     def effect(self):

@@ -2,7 +2,9 @@ import classes.entitiesC as Chara
 import classes.damages.damageTypeC as dmgType
 import classes.attacks.attackC as Attack
 
+
 Attack = Attack.Attack
+DamageType = dmgType.DamageType
 
 
 class MagicalAttack(Attack):
@@ -17,15 +19,9 @@ class MagicalAttack(Attack):
 
         obj : Chara.Character
 
-        i : dmgType.DamageType 
-        dmgList  = []
-
-        for i in self.types:
-            i.setAttack(owner)
-            dmgList.append(i)
         
         for obj in queue:
             for c in range(self.hits):
-                obj.defend(dmgList)
+                obj.defend(self.dmgList)
             
         return True

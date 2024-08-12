@@ -17,9 +17,11 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 - [x] Adicionar Ataque em inimigos multiplos.
 - [x] Adiconar intenções de ataque.
 - [x] Refactorar relações entre classes.
-- [x] Melhorar a abstração das classes
-- [ ] Adicionar as fases de combate.
+- [x] Melhorar a abstração das classes.
+- [x] Refazer os atributos.
+- [ ] Fazer o sistema de elementos.
 - [ ] AI basica de combate.
+- [ ] Adicionar as fases de combate.
 - [ ] Teste básico do combate.
 - [ ] Fazer o front-end básico
 - [ ] Implementar o Events Handler usando threads

@@ -5,6 +5,7 @@ import classes.damages.damageTypeC as dmgType
 import sys
 import json
 from abstraction import str_to_class
+from typing import List
 
 # Depois de alguns minutos de filosofia, eu cheguei a conclusão que single e select é literalmente a mesma coisa, só muda o limite do ataque 🤡
 # Vou deixar por enquanto, motivo ? preguiça
@@ -17,6 +18,7 @@ class Selector:
         self.target_limit = target_limit
         self.intent = intent
         self.listt = []
+        
 
     
     def get_intent_on_queue(self, onEnemy : bool = False):
@@ -68,7 +70,7 @@ class Selector:
             idL = 0
             print("==========================[Lista]==============================")
             for chara in self.listt:
-                print(f"[{idL}][{chara.name}] HP : {chara.attributes.hp}/{chara.attributes.maxHp}")
+                print(f"[{idL}][{chara.name}] HP : {chara.attributes.status.hp}/{chara.attributes.status.maxHp}")
                 idL += 1
 
             msg = str(input("Selecione o ID: "))
@@ -81,7 +83,7 @@ class Selector:
             print("==========================[Selecionados]==============================")
             for chara in selected:
                 
-                print(f"[{idS}][{chara.name}] HP : {chara.attributes.hp}/{chara.attributes.maxHp}")
+                print(f"[{idS}][{chara.name}] HP : {chara.attributes.status.hp}/{chara.attributes.status.maxHp}")
 
                 idS += 1
             print("="*70)
@@ -125,8 +127,15 @@ class Attack:
         self.cost = cost
         self.hits = hits
         self.types = dmgType
+        self.dmgList: List[dmgType.DamageType] = []
         self.select : Selector 
     
+    def setDamages(self, owner : Chara.Character):
+        i : dmgType.DamageType 
+
+        for i in self.types:
+            i.setAttack(owner)
+            self.dmgList.append(i)
 
     def check_target(self, owner : Chara.Character):
         queue = []
@@ -151,8 +160,8 @@ class Attack:
         # Simplesmente a maneira mais merda de fazer isso, mas por enquanto da pro gasto
         for key in self.cost.keys():
             if key == "mp":
-                if owner.attributes.mp >= self.cost[key]:
-                    owner.attributes.mp -= self.cost[key]
+                if owner.attributes.status.mp >= self.cost[key]:
+                    owner.attributes.status.mp -= self.cost[key]
                     canAttack = True
         
 
