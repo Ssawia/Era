@@ -8,6 +8,8 @@ class Slash(dmgType.DamageType):
     
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Slash']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
+
         self.atk += dmgA
 
     def effect(self):
@@ -19,6 +21,7 @@ class Strike(dmgType.DamageType):
     
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Strike']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
 
     def effect(self):
@@ -30,6 +33,7 @@ class Thrust(dmgType.DamageType):
     
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Thrust']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
 
     def effect(self):

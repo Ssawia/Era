@@ -265,7 +265,7 @@ class Character:
                     dmg = dmgType.atk - res
                     self.attributes.status.hp -= dmg
                     self.isAlive()
-                    print(f"{self.name} tomou {dmgType.atk}-{res}={dmg} de dano do tipo {dmgType.defType}")
+                    print(f"{self.name} tomou {dmgType.formula}-{res}={dmg} de dano do tipo {dmgType.defType}")
 
         else:
             self.attributes.status.hp = 0

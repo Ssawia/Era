@@ -12,6 +12,7 @@ class DamageType:
         self.defType = defType
         self.atk = atk
         self.heal = heal
+        self.formula = ""
     
     # No futuro implentar efeitos para certos tipos de dano
     def effect(self):

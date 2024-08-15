@@ -9,6 +9,7 @@ class Telesma(dmgType.DamageType):
 
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Telesma']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
     
 
@@ -22,6 +23,7 @@ class Fire(dmgType.DamageType):
 
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Fire']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
     
 
@@ -35,6 +37,7 @@ class Water(dmgType.DamageType):
 
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Water']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
     
 
@@ -48,6 +51,7 @@ class Earth(dmgType.DamageType):
 
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Earth']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
     
 
@@ -61,6 +65,7 @@ class Wind(dmgType.DamageType):
 
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Wind']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
     
 
@@ -74,6 +79,7 @@ class Arcane(dmgType.DamageType):
 
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Arcane']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
     
 
@@ -87,6 +93,7 @@ class Blood(dmgType.DamageType):
 
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Blood']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
     
 
@@ -100,6 +107,7 @@ class Poison(dmgType.DamageType):
 
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Poison']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
     
 
@@ -113,6 +121,7 @@ class Insanity(dmgType.DamageType):
 
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Insanity']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
     
 
@@ -126,6 +135,7 @@ class Control(dmgType.DamageType):
 
     def setAttack(self, owner: Chara.Character):
         dmgA = owner.attributes.elements['Control']
+        self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
     
 
