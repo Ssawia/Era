@@ -19,6 +19,6 @@ class PhysicalAttack(Attack):
 
         for obj in queue:
             for c in range(self.hits):
-                obj.defend(self.dmgList, owner)
+                obj.defend(self.dmgList, owner, obj)
 
         return True

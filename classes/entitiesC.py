@@ -124,7 +124,7 @@ class Attributes:
             if key not in keys:
                 resBase = 1
 
-            resBase = self.resistancesBase[key]
+            #resBase = self.resistancesBase[key]
             if element[key] == "Strength":
                 attr_multply = self.potencial.strength
                 attr_stats = self.strength
@@ -139,7 +139,7 @@ class Attributes:
                 atk_base = self.status.atkM
 
 
-            res = ((attr_stats * 10 * attr_multply) * resBase) + atk_base
+            res = ((attr_stats * 10 * attr_multply)) + atk_base
             resD[key] = trunc(res)
         
         self.elements = resD
@@ -169,18 +169,8 @@ class Attributes:
         mpRegen = trunc(((mp * .01) * self.will * self.potencial.will) * .1)
         sanity = trunc((self.will * 10 * self.potencial.will) * .5)
         #faith - voltar depois para adiconar os elementos
-        telesma = (self.faith * 10 * self.potencial.faith) * 1
-        water = (self.faith * 10 * self.potencial.faith) * 1
-        wind = (self.faith * 10 * self.potencial.faith) * 1
-        earth = (self.faith * 10 * self.potencial.faith) * 1
-        fire = (self.faith * 10 * self.potencial.faith) * 1
         item = (self.faith * 5 * self.potencial.faith) * .5
         #arcane
-        profane = (self.arcane * 10 * self.potencial.arcane) * 1
-        poison = (self.arcane * 10 * self.potencial.arcane) * 1
-        blood = (self.arcane * 10 * self.potencial.arcane) * 1
-        control = (self.arcane * 10 * self.potencial.arcane) * 1
-        insanity = (self.arcane * 10 * self.potencial.arcane) * 1
         #dexterity
         spd = trunc((self.dexterity * 10 * self.potencial.dexterity) * 1)
         dodge = trunc(((self.dexterity + (self.fortune * .5 * self.potencial.fortune)) * 10 * self.potencial.dexterity) * .5)
@@ -188,20 +178,6 @@ class Attributes:
         #fortune
         crit = ((self.fortune + (self.arcane * .5 * self.potencial.arcane)) * .5 * self.potencial.fortune) * .5
         item = trunc(((self.fortune + (self.faith * 10 * self.potencial.faith)) * .1 * self.potencial.fortitude) * .5)
-
-        elements = {
-            "Telesma": telesma, 
-            "Water": water, 
-            "Wind": wind, 
-            "Earth": earth, 
-            "Fire": fire,
-
-            "Profane": profane,
-            "Poison": poison,
-            "Blood": blood,
-            "Control": control,
-            "Insanity": insanity,
-        }
 
         self.status: Status = Status(hp,hpRegen,mp,mpRegen,sp,spRegen,atk,atkM,df,dfM,res,resM,spd,crit,maxCrit,dodge,item,sanity, load)
 
@@ -222,6 +198,8 @@ class Character:
         self.attributes : Attributes = Attributes(data["attributes"], data["potencial"], data['resistances'])
         self.attacks: List[Attacks.Attack] = data['attacks']
         self.getAttacks()
+
+        self.effects = []
 
     
 
@@ -255,12 +233,13 @@ class Character:
             return True
 
 
-    def defend(self, damagesType : list, owner : Character):
+    def defend(self, damagesType : list, owner : Character, target : Character):
         self.isAlive()
         dmgType : damageTypes.DamageType
         if self.alive:
             # Uma bela maneira de spammar o cli, favor consertar depois
             for dmgType in damagesType:
+                    dmgType.effect(owner, target)
                     res = self.attributes.resistances[dmgType.defType]
                     dmg = dmgType.atk - res
                     self.attributes.status.hp -= dmg

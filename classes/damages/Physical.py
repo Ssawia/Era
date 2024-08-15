@@ -12,7 +12,7 @@ class Slash(dmgType.DamageType):
 
         self.atk += dmgA
 
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character):
         return "Um ataque fisico"
 
 class Strike(dmgType.DamageType):
@@ -24,7 +24,7 @@ class Strike(dmgType.DamageType):
         self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
 
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character ):
         return "Um ataque fisico"
 
 class Thrust(dmgType.DamageType):
@@ -36,5 +36,5 @@ class Thrust(dmgType.DamageType):
         self.formula = f"[BASE]{self.atk}+{dmgA}[{self.name}]={self.atk + dmgA}"
         self.atk += dmgA
 
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character):
         return "Um ataque fisico"

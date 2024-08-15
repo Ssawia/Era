@@ -13,7 +13,7 @@ class Telesma(dmgType.DamageType):
         self.atk += dmgA
     
 
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character):
         return "Um ataque magico"
 
 class Fire(dmgType.DamageType):
@@ -27,8 +27,9 @@ class Fire(dmgType.DamageType):
         self.atk += dmgA
     
 
-    def effect(self):
-        return "Um ataque magico"
+    def effect(self, owner : Chara.Character, target : Chara.Character):
+        
+        target.effects.append("[Burning]")
 
 class Water(dmgType.DamageType):
     def __init__(self, name, desc, atk, heal,defType):
@@ -41,7 +42,7 @@ class Water(dmgType.DamageType):
         self.atk += dmgA
     
 
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character):
         return "Um ataque magico"
 
 class Earth(dmgType.DamageType):
@@ -55,7 +56,7 @@ class Earth(dmgType.DamageType):
         self.atk += dmgA
     
 
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character):
         return "Um ataque magico"
 
 class Wind(dmgType.DamageType):
@@ -69,7 +70,7 @@ class Wind(dmgType.DamageType):
         self.atk += dmgA
     
 
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character):
         return "Um ataque magico"
 
 class Arcane(dmgType.DamageType):
@@ -83,7 +84,7 @@ class Arcane(dmgType.DamageType):
         self.atk += dmgA
     
 
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character):
         return "Um ataque magico"
 
 class Blood(dmgType.DamageType):
@@ -97,7 +98,7 @@ class Blood(dmgType.DamageType):
         self.atk += dmgA
     
 
-    def effect(self):
+    def effect(self,owner : Chara.Character, target : Chara.Character):
         return "Um ataque magico"
 
 class Poison(dmgType.DamageType):
@@ -111,7 +112,7 @@ class Poison(dmgType.DamageType):
         self.atk += dmgA
     
 
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character):
         return "Um ataque magico"
 
 class Insanity(dmgType.DamageType):
@@ -125,7 +126,7 @@ class Insanity(dmgType.DamageType):
         self.atk += dmgA
     
 
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character):
         return "Um ataque magico"
 
 class Control(dmgType.DamageType):
@@ -139,5 +140,5 @@ class Control(dmgType.DamageType):
         self.atk += dmgA
     
 
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character):
         return "Um ataque magico"

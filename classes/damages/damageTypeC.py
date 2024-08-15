@@ -15,7 +15,7 @@ class DamageType:
         self.formula = ""
     
     # No futuro implentar efeitos para certos tipos de dano
-    def effect(self):
+    def effect(self, owner : Chara.Character, target : Chara.Character ):
         pass
 
 
