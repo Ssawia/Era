@@ -5,6 +5,25 @@ import classes.entitiesC as Chara
 import classes.damages.damageTypeC as dmgType
 import classes.attacks.attackC as Attack
 
+
+def get_elements(elementType : str):
+    elements_final = []
+    elements = json.load(open('data/damageTypes/damagesType.json'))
+
+    if elementType == "Res":
+        for element in elements['DamagesType']:
+            if element['name'] not in elements_final and element['type'] != "healing":
+                elements_final.append({element['name']:element['Rscale']})
+    elif elementType == "Atk":
+        for element in elements['DamagesType']:
+            if element['name'] not in elements_final and element['type'] != "healing":
+                elements_final.append({element['name']:element['Ascale']})        
+    
+    return elements_final
+
+    
+
+
 #carregar a classe beseado no local onde ela está
 def str_to_class(type_class : str, file : str, classname : str, ):
     module = importlib.import_module(f'classes.{type_class}.{file}')

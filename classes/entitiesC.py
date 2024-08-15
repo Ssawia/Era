@@ -4,11 +4,13 @@ from __future__ import annotations
 import classes.attacks.attackC as Attacks
 import classes.damages.damageTypeC as damageTypes
 from typing import List
+from math import trunc
 
 import abstraction
 
+
 class Status:
-    def __init__(self,hp,hpRgn,mp,mpRgn,sp,spRgn,atk,atkM,df,dfM,res,resM,spd,crit,critMax,dodge,item,sanity, load, elements):
+    def __init__(self,hp,hpRgn,mp,mpRgn,sp,spRgn,atk,atkM,df,dfM,res,resM,spd,crit,critMax,dodge,item,sanity, load):
         self.hp = hp
         self.maxHp = self.hp
         self.regenHp = hpRgn
@@ -33,7 +35,7 @@ class Status:
         self.maxSanity = self.sanity
 
         self.load = load
-        self.elements : list = elements
+        self.bonus = []
   
 
 class Potencial:
@@ -49,11 +51,13 @@ class Potencial:
         self.arcane: float = potencial["arcane"]
         self.dexterity: float = potencial["dexterity"]
         self.fortune: float = potencial["fortune"]
+
+        self.bonus = []
         
 
 
 class Attributes:
-    def __init__(self, attributes : dict, potencial: dict):
+    def __init__(self, attributes : dict, potencial: dict, resistances: dict):
         self.vitality: int = attributes["vitality"]
         self.constitution: int = attributes["constitution"]
         self.strength: int  = attributes["strength"]
@@ -66,32 +70,104 @@ class Attributes:
         self.dexterity: int = attributes["dexterity"]
         self.fortune: int = attributes["fortune"]
 
+        self.bonus = []
+
         
         self.potencial: Potencial = Potencial(potencial)
         self.init_status()
+
+        self.resistancesBase : dict = resistances
+        self.resistances: dict = {}
+        self.update_resistances()
+
+        self.elements = {}
+        self.update_elements()
+    
+
+    def update_resistances(self):
+        resD = {}
+        elements = abstraction.get_elements("Res")
+        element : dict = {}
+        keys = self.resistancesBase.keys()
+
+        for element in elements:
+            key = list(element.keys())[0]
+            if key not in keys:
+                resBase = 1
+
+            resBase = self.resistancesBase[key]
+            if element[key] == "Fortitude":
+                attr_multply = self.potencial.fortitude
+                attr_stats = self.fortitude
+                res_base = self.status.res
+            if element[key] == "Faith":
+                attr_multply = self.potencial.faith
+                attr_stats = self.faith
+                res_base = self.status.resM
+            if element[key] == "Arcane":
+                attr_multply = self.potencial.arcane
+                attr_stats = self.arcane
+                res_base = self.status.resM
+            res = ((attr_stats * 10 * attr_multply) * resBase) + res_base
+            resD[key] = trunc(res)
+        
+        self.resistances = resD
+    
+    def update_elements(self):
+        resD = {}
+        elements = abstraction.get_elements("Atk")
+        element : dict = {}
+        keys = self.resistancesBase.keys()
+
+        for element in elements:
+            key = list(element.keys())[0]
+            if key not in keys:
+                resBase = 1
+
+            resBase = self.resistancesBase[key]
+            if element[key] == "Strength":
+                attr_multply = self.potencial.strength
+                attr_stats = self.strength
+                atk_base = self.status.atk
+            if element[key] == "Intelligence":
+                attr_multply = self.potencial.intelligence
+                attr_stats = self.faith
+                atk_base = self.status.atkM
+            if element[key] == "Will":
+                attr_multply = self.potencial.will
+                attr_stats = self.arcane
+                atk_base = self.status.atkM
+
+
+            res = ((attr_stats * 10 * attr_multply) * resBase) + atk_base
+            resD[key] = trunc(res)
+        
+        self.elements = resD
+        
+
     
     def init_status(self):
         #Vitality
-        hp = (self.vitality * 100 * self.potencial.vitality) * 1
-        load = (self.vitality * 10 * self.potencial.vitality) * .5
+        hp = trunc((self.vitality * 100 * self.potencial.vitality) * 1)
+        load = trunc((self.vitality * 10 * self.potencial.vitality) * .5)
         #Constitution
-        res = (self.constitution * 10 * self.potencial.constitution) * 1
-        hpRegen = ((hp * .01) * self.constitution * self.potencial.constitution) * .5
+        res = trunc((self.constitution * 5 * self.potencial.constitution) * 1)
+        hpRegen = trunc(((hp * .01) * self.constitution * self.potencial.constitution) * .1)
         #Strength
-        atk = (self.strength * 10 * self.potencial.strength) * 1
+        atk = trunc((self.strength * 10 * self.potencial.strength) * 1)
         #Fortitude
-        df = ((self.fortitude + (self.strength * .5 * self.potencial.strength)) * 10 * self.potencial.fortitude) * 1
-        sp = (self.fortitude * 100 * self.potencial.fortitude) * .5
-        spRegen = ((sp * .01) * self.fortitude * self.potencial.constitution) * .5
+        df = trunc(((self.fortitude + (self.strength * .5 * self.potencial.strength)) * 10 * self.potencial.fortitude) * 1)
+        sp = trunc((self.fortitude * 100 * self.potencial.fortitude) * .5)
+        spRegen = trunc(((sp * .01) * self.fortitude * self.potencial.constitution) * .1)
         #Attunement
-        mp = (self.attunement * 100 * self.potencial.attunement) * 1
+        mp = trunc((self.attunement * 100 * self.potencial.attunement) * 1)
         #Intelligence
-        atkM = ((self.intelligence + (self.arcane * .5 * self.potencial.arcane)) * 10 * self.potencial.intelligence) * 1
-        dfM = ((self.intelligence  + (self.faith * .5 * self.potencial.faith))* 10 * self.potencial.intelligence) * .5
+        atkM = trunc(((self.intelligence + (self.arcane * .5 * self.potencial.arcane)) * 10 * self.potencial.intelligence) * 1)
+        dfM = trunc(((self.intelligence  + (self.faith * .5 * self.potencial.faith))* 10 * self.potencial.intelligence) * .5)
         #Will
-        resM = (self.will * 10 * self.potencial.will) * 1
-        mpRegen = ((mp * .01) * self.will * self.potencial.will) * .5
-        sanity = (self.will * 10 * self.potencial.will) * .5
+        resM = trunc((self.will * 5 * self.potencial.will) * 1)
+        mpRegen = trunc(((mp * .01) * self.will * self.potencial.will) * .1)
+        sanity = trunc((self.will * 10 * self.potencial.will) * .5)
         #faith - voltar depois para adiconar os elementos
         telesma = (self.faith * 10 * self.potencial.faith) * 1
         water = (self.faith * 10 * self.potencial.faith) * 1
@@ -106,12 +182,12 @@ class Attributes:
         control = (self.arcane * 10 * self.potencial.arcane) * 1
         insanity = (self.arcane * 10 * self.potencial.arcane) * 1
         #dexterity
-        spd = (self.dexterity * 10 * self.potencial.dexterity) * 1
-        dodge = ((self.dexterity + (self.fortune * .5 * self.potencial.fortune)) * 10 * self.potencial.dexterity) * .5
+        spd = trunc((self.dexterity * 10 * self.potencial.dexterity) * 1)
+        dodge = trunc(((self.dexterity + (self.fortune * .5 * self.potencial.fortune)) * 10 * self.potencial.dexterity) * .5)
         maxCrit = 100 + (self.dexterity * .1 * self.potencial.dexterity)
         #fortune
-        crit = ((self.fortune + (self.arcane * .5 * self.potencial.arcane)) * .01 * self.potencial.fortune) * .5
-        item = ((self.fortune + (self.faith * .5 * self.potencial.faith)) * .01 * self.potencial.fortitude) * .5
+        crit = ((self.fortune + (self.arcane * .5 * self.potencial.arcane)) * .5 * self.potencial.fortune) * .5
+        item = trunc(((self.fortune + (self.faith * 10 * self.potencial.faith)) * .1 * self.potencial.fortitude) * .5)
 
         elements = {
             "Telesma": telesma, 
@@ -127,7 +203,7 @@ class Attributes:
             "Insanity": insanity,
         }
 
-        self.status: Status = Status(hp,hpRegen,mp,mpRegen,sp,spRegen,atk,atkM,df,dfM,res,resM,spd,crit,maxCrit,dodge,item,sanity, load, elements)
+        self.status: Status = Status(hp,hpRegen,mp,mpRegen,sp,spRegen,atk,atkM,df,dfM,res,resM,spd,crit,maxCrit,dodge,item,sanity, load)
 
     def update_status(self):
         pass  
@@ -143,7 +219,7 @@ class Character:
         self.type = _type
         self.alive = True
 
-        self.attributes : Attributes = Attributes(data["attributes"], data["potencial"])
+        self.attributes : Attributes = Attributes(data["attributes"], data["potencial"], data['resistances'])
         self.attacks: List[Attacks.Attack] = data['attacks']
         self.getAttacks()
 
@@ -179,22 +255,18 @@ class Character:
             return True
 
 
-    def defend(self, damagesType : list):
+    def defend(self, damagesType : list, owner : Character):
         self.isAlive()
         dmgType : damageTypes.DamageType
         if self.alive:
             # Uma bela maneira de spammar o cli, favor consertar depois
             for dmgType in damagesType:
-                if dmgType.defType == "PhysicalDamage":
-                    dmg = dmgType.atk - self.attributes.status.df
+                    res = self.attributes.resistances[dmgType.defType]
+                    dmg = dmgType.atk - res
                     self.attributes.status.hp -= dmg
                     self.isAlive()
-                    print(f"{self.name} tomou {dmgType.atk}-{self.attributes.status.df}={dmg} de dano")
-                elif dmgType.defType == "MagicalDamage":
-                    dmg = dmgType.atk - self.attributes.status.dfM
-                    self.attributes.status.hp -= dmg
-                    self.isAlive()
-                    print(f"{self.name} tomou {dmgType.atk}-{self.attributes.status.dfM}={dmg} de dano")
+                    print(f"{self.name} tomou {dmgType.atk}-{res}={dmg} de dano do tipo {dmgType.defType}")
+
         else:
             self.attributes.status.hp = 0
     

@@ -148,6 +148,7 @@ class Attack:
         elif self.target == "self":
             queue = self.select.self_attack(owner)
         
+        
         return queue
     
 

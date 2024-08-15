@@ -13,11 +13,12 @@ class PhysicalAttack(Attack):
 
         self.init_select(queue)
         queue = self.check_target(owner)
+
         
         obj : Chara.Character 
 
         for obj in queue:
             for c in range(self.hits):
-                obj.defend(self.dmgList)
+                obj.defend(self.dmgList, owner)
 
         return True
