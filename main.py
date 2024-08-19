@@ -63,7 +63,7 @@ class Battle:
 
     def turn_player(self, chara : Character):
         print(f"Turn da {chara.name}")
-        print(f"[P][{chara.nick}] HP: {chara.attributes.hp}/{chara.attributes.maxHp} SPD: {chara.attributes.spd}")
+        print(f"[P][{chara.nick}] HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} SPD: {chara.attributes.status.spd}")
 
         while self.pturn:
 
@@ -80,7 +80,7 @@ class Battle:
 
     def turn_enemy(self, chara : Character):
         print(f"Turn da {chara.name}")
-        print(f"[E][{chara.nick}] HP: {chara.attributes.hp}/{chara.attributes.maxHp} SPD: {chara.attributes.spd}")
+        print(f"[E][{chara.nick}] HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} SPD: {chara.attributes.status.spd}")
         input()
         self.turn += 1
 
@@ -108,11 +108,11 @@ class Battle:
             chara = self.queue[self.turn]
             
 
-            if chara.type == "Player":
+            if chara.ai.typeAi == "Player":
                 self.phase = "Menu"
                 self.pturn = True
                 self.turn_player(chara)
-            elif chara.type == "Enemy":
+            elif chara.ai.typeAi == "Enemy":
                 self.turn_enemy(chara)
 
             

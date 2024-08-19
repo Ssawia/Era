@@ -49,7 +49,7 @@ def getDamageTypeClass(data : list, damage_data : dict, damages : list):
         typeDmg = next((sub for sub in damage_data if sub['_id'] == c))
 
 
-        dtype = str_to_class(typeDmg['classType'],typeDmg['file'],typeDmg['className'])(name=typeDmg['name'],desc=typeDmg['desc'],atk=atk,heal=heal,defType=typeDmg['defType'])
+        dtype = str_to_class(typeDmg['classType'],typeDmg['file'],typeDmg['className'])(file=typeDmg['file'],name=typeDmg['name'],desc=typeDmg['desc'],atk=atk,heal=heal,defType=typeDmg['defType'])
         dtypeList.append(dtype)
         i += 1
     

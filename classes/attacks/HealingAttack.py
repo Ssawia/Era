@@ -9,9 +9,10 @@ class HealingAttack(Attack):
         super().__init__(_id=_id, _class=_class, name=name, desc=desc,target=target,targetLimit=targetLimit,intent=intent,damage=damage,cost=cost,hits=hits,dmgType=dmgType)
     
 
-    def doDamage(self, owner : Chara.Character, queue: list):
-        self.init_select(queue)
-        queue = self.check_target(owner)
+    def doDamage(self, owner : Chara.Character, queue: list, ai = False):
+        if not ai:
+            self.init_select(queue)
+            queue = self.check_target(owner)
 
         obj : Chara.Character 
 

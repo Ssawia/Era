@@ -1,8 +1,10 @@
 from __future__ import annotations
+import uuid
 #Provavelmente isso não é a melhor maneira de implementar varias classes, mas por enquanto vai dar certo, confia
 
 import classes.attacks.attackC as Attacks
 import classes.damages.damageTypeC as damageTypes
+from classes.AIs import Ai
 from typing import List
 from math import trunc
 
@@ -53,7 +55,8 @@ class Potencial:
         self.fortune: float = potencial["fortune"]
 
         self.bonus = []
-        
+
+
 
 
 class Attributes:
@@ -92,10 +95,13 @@ class Attributes:
 
         for element in elements:
             key = list(element.keys())[0]
-            if key not in keys:
-                resBase = 1
 
-            resBase = self.resistancesBase[key]
+            if key not in keys:
+
+                resBase = 1
+            else:
+                resBase = self.resistancesBase[key]
+
             if element[key] == "Fortitude":
                 attr_multply = self.potencial.fortitude
                 attr_stats = self.fortitude
@@ -185,15 +191,19 @@ class Attributes:
         pass  
 
 
+
+
 class Character:
     def __init__(self, _id : int, data : dict, _type : str):
         data = next((sub for sub in data if sub['_id'] == _id))
 
         self._id = data['_id']
+        self.uuid = uuid.uuid4()
         self.name = data['name']
         self.nick = data['nick']
-        self.type = _type
         self.alive = True
+
+        self.ai : Ai = Ai("attack",self.uuid,_type)
 
         self.attributes : Attributes = Attributes(data["attributes"], data["potencial"], data['resistances'])
         self.attacks: List[Attacks.Attack] = data['attacks']
@@ -215,6 +225,11 @@ class Character:
             return True
         except Exception as E:
             return False
+    
+    def get_attacks(self):
+        attack : Attacks.Attack
+        for attack in self.attacks:
+            print(F"[A] {attack.name} | Target: {attack.target}/{attack.targetLimit} Intent: {attack.intent} Damages:")
 
 
     def getAttacks(self):
@@ -236,15 +251,25 @@ class Character:
     def defend(self, damagesType : list, owner : Character, target : Character):
         self.isAlive()
         dmgType : damageTypes.DamageType
+        df = 0
+        ty = ''
         if self.alive:
             # Uma bela maneira de spammar o cli, favor consertar depois
             for dmgType in damagesType:
+                    #Uma merda, vou arrumar depois
+                    if dmgType.file == "Physical":
+                        df = trunc(self.attributes.status.df * .1)
+                        ty = 'PHY'
+                    elif dmgType.file == "Magical":
+                        df = trunc(self.attributes.status.dfM * .1)
+                        ty = 'MAG'
+                
                     dmgType.effect(owner, target)
                     res = self.attributes.resistances[dmgType.defType]
-                    dmg = dmgType.atk - res
+                    dmg = dmgType.atk - res - (df)
                     self.attributes.status.hp -= dmg
                     self.isAlive()
-                    print(f"{self.name} tomou {dmgType.formula}-{res}={dmg} de dano do tipo {dmgType.defType}")
+                    print(f"{self.name} tomou {dmgType.formula}-[{ty}:{df}]-[RES:{res}]=[{dmg}] de dano do tipo {dmgType.defType}")
 
         else:
             self.attributes.status.hp = 0

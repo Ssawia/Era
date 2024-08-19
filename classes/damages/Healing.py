@@ -3,8 +3,8 @@ import classes.damages.damageTypeC as dmgType
 import classes.attacks.attackC as Attack
 
 class Healing(dmgType.DamageType):
-    def __init__(self, name, desc, atk, heal,defType):
-        super().__init__(name=name, desc=desc, atk=atk, heal=heal,defType=defType)
+    def __init__(self, file,name, desc, atk, heal,defType):
+        super().__init__(file=file,name=name, desc=desc, atk=atk, heal=heal,defType=defType)
     
 
     def setAttack(self, owner: Chara.Character):

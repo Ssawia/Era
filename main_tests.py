@@ -42,7 +42,7 @@ def show_info_chara(obj : entities.Character):
     for chave, valor in obj.attributes.elements.items():
         elements += f"{chave}: {valor}|"
     strg = f'''
-[{obj.name}] 
+[{obj.name}]-->[Uuid: {obj.uuid}]
 |HP: {obj.attributes.status.hp}/{obj.attributes.status.maxHp}({obj.attributes.status.regenHp}) |SP: {obj.attributes.status.sp}/{obj.attributes.status.maxSp}({obj.attributes.status.regenSp}) |MP: {obj.attributes.status.mp}/{obj.attributes.status.maxMp}({obj.attributes.status.regenMp}) |SY: {obj.attributes.status.sanity}/{obj.attributes.status.maxSanity}
 |ATK: {obj.attributes.status.atk} |ATKM: {obj.attributes.status.atkM} |DEF: {obj.attributes.status.df} |DEFM: {obj.attributes.status.dfM} |RES: {obj.attributes.status.res} |RESM: {obj.attributes.status.resM} 
 |DGE: {obj.attributes.status.dodge} |SPD: {obj.attributes.status.spd} |CRIT: {obj.attributes.status.crit:.1f}% |CRITD: {obj.attributes.status.maxCrit:.1f}% |ITEM: {obj.attributes.status.item}% |LOAD: {obj.attributes.status.load}/kg
@@ -52,12 +52,14 @@ def show_info_chara(obj : entities.Character):
 
     print(strg)
 
+queue = [remilia,flande,sakuya,remiliaMal]
+
 while True:
     show_info_chara(remilia)
     atk_id = input("Ataque: ")
-    remilia.attacks[int(atk_id)].doDamage(remilia,[remilia,flande,sakuya,remiliaMal])
-    print(flande.effects)
-    get_all_status([flande,sakuya,remiliaMal])
+    remilia.attacks[int(atk_id)].doDamage(remilia,queue)
+    #remilia.ai.decide_attack(remilia,queue)
+    get_all_status(queue)
     
 
 

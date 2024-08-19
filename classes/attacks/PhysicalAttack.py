@@ -9,10 +9,11 @@ class PhysicalAttack(Attack):
     def __init__(self,_id,_class,name,desc,target,targetLimit,intent,damage,cost,hits,dmgType):
         super().__init__(_id=_id, _class=_class, name=name, desc=desc,target=target,targetLimit=targetLimit,intent=intent,damage=damage,cost=cost,hits=hits,dmgType=dmgType)
     
-    def doDamage(self, owner : Chara.Character, queue: list):
+    def doDamage(self, owner : Chara.Character, queue: list, ai = False):
 
-        self.init_select(queue)
-        queue = self.check_target(owner)
+        if not ai:
+            self.init_select(queue)
+            queue = self.check_target(owner)
 
         
         obj : Chara.Character 

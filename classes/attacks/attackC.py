@@ -6,6 +6,7 @@ import sys
 import json
 from abstraction import str_to_class
 from typing import List
+import uuid
 
 # Depois de alguns minutos de filosofia, eu cheguei a conclusão que single e select é literalmente a mesma coisa, só muda o limite do ataque 🤡
 # Vou deixar por enquanto, motivo ? preguiça
@@ -17,13 +18,13 @@ class Selector:
         self.target = target
         self.target_limit = target_limit
         self.intent = intent
-        self.listt = []
+        self.listt: List[Chara.Character] = []
         
 
     
     def get_intent_on_queue(self, onEnemy : bool = False):
         chara : Chara.Character
-        selected = []
+        selected: List[Chara.Character] = []
 
 
         match self.intent:
@@ -31,19 +32,19 @@ class Selector:
             case "help":
                 for chara in self.queue:
                     if not onEnemy:
-                        if chara.type == "Player":
+                        if chara.ai.typeAi == "Player":
                             selected.append(chara)
                     elif onEnemy:
-                        if chara.type == "Enemy":
+                        if chara.ai.typeAi == "Enemy":
                             selected.append(chara)                       
                 
             case "harm":
                 for chara in self.queue:
                     if not onEnemy:
-                        if chara.type == "Enemy":
+                        if chara.ai.typeAi == "Enemy":
                             selected.append(chara)
                     elif onEnemy:
-                        if chara.type == "Player":
+                        if chara.ai.typeAi == "Player":
                             selected.append(chara)
                 
             case "harmall":
@@ -52,7 +53,7 @@ class Selector:
             case _:
                 selected = self.queue
         
-        return selected
+        self.listt = selected
     
     def remove_select(self):
         pass
@@ -60,7 +61,7 @@ class Selector:
 
     def select_in_queue(self):
         chara : Chara.Character
-        self.listt = self.get_intent_on_queue()
+        self.get_intent_on_queue()
         selected = []
         idS = 0
 
@@ -105,7 +106,7 @@ class Selector:
 
     def multi_attack(self):
         print(f"[{self.attack_name}][{self.intent}][{self.target}] Selecione {self.target_limit} alvo(s)")
-        self.listt = self.get_intent_on_queue()
+        self.get_intent_on_queue()
         return self.listt
         
 
@@ -117,6 +118,7 @@ class Selector:
 class Attack:
     def __init__(self, _id : int, _class : str, name : str, desc : str, target : str, targetLimit : int, intent : str, damage : list, cost : dict ,hits : int, dmgType : list):
         self._id = _id
+        self.uuid = uuid.uuid4()
         self._class = _class
         self.name = name
         self.desc = desc
@@ -171,7 +173,7 @@ class Attack:
                 
 
     
-    def doDamage(self, owner : Chara.Character, queue: list):
+    def doDamage(self, owner : Chara.Character, queue: list, ai = False):
         pass
 
     def imwho(self):
