@@ -4,9 +4,9 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 
 ## Roadmap
 
-- AI basica de combate.
+- Refactorar tudo que é possivel.
 
-- Adicionar as fases de combate..
+- Fazer o front-end básico
 
 ## Coisas para implementar
 - [x] Implementar dano multiplo nos ataques.
@@ -22,12 +22,14 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 - [x] Arrumar as resistencias e defesas.
 - [x] Fazer o sistema de elementos.
 - [x] AI basica de combate.
-- [ ] Adicionar as fases de combate.
-- [ ] Teste básico do combate.
+- [x] Adicionar as fases de combate ?.
+- [x] Teste básico do combate.
+- [ ] **Refactorar tudo que é possivel.**
 - [ ] Fazer o front-end básico
 - [ ] Implementar o Events Handler usando threads
 - [ ] Adicionar Efeitos
 - [ ] Sistema de Level
+- [ ] Adicionar Facções
 - [ ] Adicionar mais tipo de dano.
 - [ ] Adicionar Habilidades.
 - [ ] Adicionar Passivas
@@ -47,7 +49,6 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 - [ ] Começar os testes onlines.
 - [ ] Adicionar narração com AI nos combate de turno.
 - [ ] Implementar tradução dos textos gerados por AI.
-- [ ] Adicionar Facções
 
 ## Stack utilizada
 

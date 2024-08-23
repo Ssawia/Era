@@ -52,7 +52,7 @@ class Selector:
                 
             case _:
                 selected = self.queue
-        
+
         self.listt = selected
     
     def remove_select(self):
@@ -66,28 +66,29 @@ class Selector:
         idS = 0
 
 
-        
+       
         for c in range(self.target_limit):
-            idL = 0
-            print("==========================[Lista]==============================")
-            for chara in self.listt:
-                print(f"[{idL}][{chara.name}] HP : {chara.attributes.status.hp}/{chara.attributes.status.maxHp}")
-                idL += 1
+            if len(self.listt) > 0:
+                idL = 0
+                print("==========================[Lista]==============================")
+                for chara in self.listt:
+                    print(f"[{idL}][{chara.name}] HP : {chara.attributes.status.hp}/{chara.attributes.status.maxHp}")
+                    idL += 1
 
-            msg = str(input("Selecione o ID: "))
-            msg = int(msg)
+                msg = str(input("Selecione o ID: "))
+                msg = int(msg)
 
-            if msg <= len(self.listt) - 1:
-                selected.append(self.listt[msg])
-                self.listt.remove(self.listt[msg])
+                if msg <= len(self.listt) - 1:
+                    selected.append(self.listt[msg])
+                    self.listt.remove(self.listt[msg])
 
-            print("==========================[Selecionados]==============================")
-            for chara in selected:
-                
-                print(f"[{idS}][{chara.name}] HP : {chara.attributes.status.hp}/{chara.attributes.status.maxHp}")
+                print("==========================[Selecionados]==============================")
+                for chara in selected:
+                    
+                    print(f"[{idS}][{chara.name}] HP : {chara.attributes.status.hp}/{chara.attributes.status.maxHp}")
 
-                idS += 1
-            print("="*70)
+                    idS += 1
+                print("="*70)
 
         
         return selected

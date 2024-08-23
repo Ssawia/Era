@@ -39,11 +39,29 @@ class Battle:
         attack : Attacks.Attack
         atk_i = 0
         for attack in chara.attacks:
-            final_dmg = 0
-            for dmg in attack.damage:
-                final_dmg += dmg
-            print(f"[{atk_i}][{attack.name}][{attack.desc}] Damages: {attack.damage}|[{final_dmg}*{attack.hits}]|[{final_dmg*attack.hits}] Cost: {attack.cost['mp']} Hits: {attack.hits}")
+            print(f"[{atk_i}][{attack.name}] Cost: {attack.cost['mp']} Hits: {attack.hits}")
             atk_i += 1
+
+        print("[Escolha o ataque]")
+
+        onMenu = True
+        
+        while onMenu:
+
+            msg = int(input("ID: "))
+
+            if msg < len(chara.attacks) and msg >= 0:
+                
+                chara.attacks[msg].doDamage(chara,self.queue)
+                onMenu = False
+            else:
+                print("Ataque inválido")
+
+
+
+
+
+
 
     def menu_skills(self,chara : Character):
         pass
@@ -66,13 +84,16 @@ class Battle:
         print(f"[P][{chara.nick}] HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} SPD: {chara.attributes.status.spd}")
 
         while self.pturn:
+            print("[1] Atacar")
+            print("[2] Passar")
+            msg = int(input(f"Digite o menu: "))
 
-            msg = str(input(f"Digite o menu: "))
-
-            if msg == "pass":
-                self.phase = "Pass"
-            if msg == "atk":
+            if msg == 1:
                 self.phase = "Attack"
+                self.menu_attack(chara)
+                self.menu_pass(chara)
+            elif msg == 2:
+                self.phase = "Pass"
 
 
 
@@ -81,15 +102,16 @@ class Battle:
     def turn_enemy(self, chara : Character):
         print(f"Turn da {chara.name}")
         print(f"[E][{chara.nick}] HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} SPD: {chara.attributes.status.spd}")
-        input()
-        self.turn += 1
+        chara.ai.decide_attack(chara,self.queue, onEnemy=True)
+        self.menu_pass(chara)
 
     def turn_pass(self):
         pass
 
 
     def sort_queue(self):
-        self.queue.sort(key=lambda x: x._spd, reverse=True)
+        self.queue.sort(key=lambda x: x.attributes.status.spd, reverse=True)
+
 
     
 

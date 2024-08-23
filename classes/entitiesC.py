@@ -93,6 +93,10 @@ class Attributes:
         element : dict = {}
         keys = self.resistancesBase.keys()
 
+        attr_stats = 0
+        attr_multply = 0
+        res_base = 0
+
         for element in elements:
             key = list(element.keys())[0]
 
@@ -124,6 +128,10 @@ class Attributes:
         elements = abstraction.get_elements("Atk")
         element : dict = {}
         keys = self.resistancesBase.keys()
+
+        attr_stats = 0
+        attr_multply = 0
+        atk_base = 0
 
         for element in elements:
             key = list(element.keys())[0]
@@ -199,17 +207,20 @@ class Character:
 
         self._id = data['_id']
         self.uuid = uuid.uuid4()
+
         self.name = data['name']
         self.nick = data['nick']
         self.alive = True
 
-        self.ai : Ai = Ai("attack",self.uuid,_type)
+        self.ai : Ai = Ai("attack_all",self.uuid,_type)
 
         self.attributes : Attributes = Attributes(data["attributes"], data["potencial"], data['resistances'])
         self.attacks: List[Attacks.Attack] = data['attacks']
         self.getAttacks()
 
         self.effects = []
+
+        print(f"[{self.name}]-->[{self.uuid}]")
 
     
 
