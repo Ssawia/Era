@@ -1,0 +1,25 @@
+{
+    "attacks":
+    [
+
+        {
+            "_id": 0,
+            "classType": "attacks",
+            "file": "PhysicalAttack",
+            "className": "PhysicalAttack",
+            "name": "Punch", 
+            "desc": "A punch", 
+            "target": "single",
+            "target-limit": 1,
+            "intent": "harm",
+            "damage": [{"atk":100}], 
+            "cost": {"mp":10}, 
+            "cooldown": 1,
+            "hits": 1, 
+            "type": [2]
+        }
+
+
+    ]
+    
+}

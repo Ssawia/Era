@@ -1,14 +1,25 @@
 import importlib
 import json
 from typing import List
-import classes.entitiesC as Chara
-import classes.damages.damageTypeC as dmgType
-import classes.attacks.attackC as Attack
+import src.classes.entitiesC as Chara
+import src.classes.damages.damageTypeC as dmgType
+import src.classes.attacks.attackC as Attack
+import os
+
+config = json.load(open('config/config.json'))
+
+
+config_data = config["damage_data"]
+class_path = config['class_path']
+path_attacks = config['path_attacks']
+
+
+
 
 
 def get_elements(elementType : str):
     elements_final = []
-    elements = json.load(open('data/damageTypes/damagesType.json'))
+    elements = json.load(open(config_data))
 
     if elementType == "Res":
         for element in elements['DamagesType']:
@@ -24,9 +35,9 @@ def get_elements(elementType : str):
     
 
 
-#carregar a classe beseado no local onde ela está
+#carregar a classe baseado no local onde ela está
 def str_to_class(type_class : str, file : str, classname : str, ):
-    module = importlib.import_module(f'classes.{type_class}.{file}')
+    module = importlib.import_module(f'{class_path}.{type_class}.{file}')
     abclass = getattr(module, classname)
     return abclass
 
@@ -57,22 +68,28 @@ def getDamageTypeClass(data : list, damage_data : dict, damages : list):
 
 
 def getAttackClass(data : list):
-    attacks_data = open('data/attacks/attacks.json')
-    attacks_data = json.load(attacks_data)["physicalAttack"]
 
-    damage_data = open('data/damageTypes/damagesType.json')
+    damage_data = open(config_data)
     damage_data = json.load(damage_data)["DamagesType"]
-
     attacks_list = []
 
+
+    attacks_data = []
+
+    for file_name in [file for file in os.listdir(path_attacks) if file.endswith('.json')]:
+        with open(path_attacks + file_name) as json_file:
+            json_data = json.load(json_file)['attacks']
+            attacks_data.extend(json_data)
+
     for c in data:
-        atk_data: dict = attacks_data[c]
+
         damagetypes: List[dmgType.DamageType] = []
         basicAttack: Attack.Attack 
 
-        damagetypes = getDamageTypeClass(atk_data['type'], damage_data, atk_data['damage'])
 
         attack = next((sub for sub in attacks_data if sub['_id'] == c))
+        damagetypes = getDamageTypeClass(attack['type'], damage_data, attack['damage'])
+
 
 
         #melhorar essa merda kkkkkkkk

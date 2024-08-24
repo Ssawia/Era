@@ -49,6 +49,7 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 - [ ] Começar os testes onlines.
 - [ ] Adicionar narração com AI nos combate de turno.
 - [ ] Implementar tradução dos textos gerados por AI.
+- [ ] Usar redes neurais para escolher as ações de combate da AI
 
 ## Stack utilizada
 

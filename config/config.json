@@ -1,0 +1,10 @@
+{
+    "character_data": "src/data/chara/characters.json",
+    "damage_data": "src/data/damageTypes/damagesType.json",
+    "class_path": "src.classes",
+    "path_attacks": "src/data/attacks/"
+    
+
+
+    
+}

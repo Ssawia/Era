@@ -1,13 +1,18 @@
 from __future__ import annotations
 import json
-from classes.entitiesC import Character
+from src.classes.entitiesC import Character
+from typing import List
 
 #Provavelmente isso não é a melhor maneira de implementar varias classes, mas por enquanto vai dar certo, confia
 
-import classes.attacks.attackC as Attacks
+import src.classes.attacks.attackC as Attacks
 
 
-chara_data = open('data/chara/characters.json')
+config = json.load(open('config/config.json'))
+
+
+
+chara_data = open(config["character_data"])
 chara_data = json.load(chara_data)["characters"]
 
 
@@ -16,6 +21,7 @@ chara_data = json.load(chara_data)["characters"]
 flande = Character(0,chara_data,"Enemy")
 remilia = Character(1,chara_data,"Player")
 sakuya = Character(2,chara_data,"Player")
+fsakuya = Character(2,chara_data,"Enemy")
 
 
 
@@ -23,7 +29,7 @@ sakuya = Character(2,chara_data,"Player")
 
 class Battle:
 
-    def __init__(self, queue : list,):
+    def __init__(self, queue : List[Character]):
         self.turn = 0
         self.queue = queue
         self.isInCombat = False
@@ -60,9 +66,6 @@ class Battle:
 
 
 
-
-
-
     def menu_skills(self,chara : Character):
         pass
 
@@ -82,7 +85,7 @@ class Battle:
     def turn_player(self, chara : Character):
         print(f"Turn da {chara.name}")
         print(f"[P][{chara.nick}] HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} SPD: {chara.attributes.status.spd}")
-
+        print("======================================================================")
         while self.pturn:
             print("[1] Atacar")
             print("[2] Passar")
@@ -94,8 +97,7 @@ class Battle:
                 self.menu_pass(chara)
             elif msg == 2:
                 self.phase = "Pass"
-
-
+        print("======================================================================")
 
 
 
@@ -104,9 +106,6 @@ class Battle:
         print(f"[E][{chara.nick}] HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} SPD: {chara.attributes.status.spd}")
         chara.ai.decide_attack(chara,self.queue, onEnemy=True)
         self.menu_pass(chara)
-
-    def turn_pass(self):
-        pass
 
 
     def sort_queue(self):
@@ -147,8 +146,8 @@ class Battle:
 
 
 
-queue = [flande,remilia,sakuya]
+queue : List[Character] = [flande,remilia,sakuya,fsakuya]
 
 
-battle =  Battle(queue=queue)
+battle =  Battle(queue)
 battle.start_battle()

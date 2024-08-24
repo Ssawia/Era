@@ -1,4 +1,5 @@
-import classes.entitiesC as entities
+import src.classes.entitiesC as entities
+import random
 
 def show_info_chara(obj : entities.Character):
     resistances = ""
@@ -19,3 +20,14 @@ def show_info_chara(obj : entities.Character):
 [Resistances]: {resistances}
 '''
     print(strg)
+
+
+def isCrit(crit_rate):
+    rand = random.randint(1,100)
+
+    if rand <= crit_rate:
+        return True
+    else:
+        return False
+
+
