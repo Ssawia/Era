@@ -4,7 +4,10 @@
         {
             "_id":0,
             "name": "Flandre Scarlet",
-            "nick": "Flandre", 
+            "nick": "Flandre",
+            "gender": "Female",
+            "age": 495,
+            "desc": "Flandre Scarlet is the younger sister of Remilia Scarlet and the 'dirty little secret' of the Scarlet Devil Mansion. Due to her emotional instability, she has been ordered to stay at the mansion for over 495 years. Until she met either Marisa Kirisame or Reimu Hakurei in Embodiment of Scarlet Devil, she had not seen any living humans besides Sakuya Izayoi.",
             "attributes":{
                     "vitality": 15,
                     "constitution": 20,
@@ -20,7 +23,7 @@
 
                 },
             
-            "potencial":{
+            "potential":{
                     "vitality": 1.5,
                     "constitution": 1.1,
                     "strength": 1.2,
@@ -50,13 +53,25 @@
                 "Control": 1.2
             },         
             
-            "attacks": [0]
+            "attacks": [0],
+
+
+            "lines":{
+                "battle_start":["None of you can continue!"],
+                "victory":["Hey, what are we going to play next? Come on, get up already!"],
+                "incapacitated": ["No way. I can't believe I lost..."],
+                "attack":["Disappear!","Break!","Hyaaa!","Arrgggh!","Take THIIIS!"],
+                "damage":["Ugh...","You've done it now!"]
+            }
         },
 
         {
             "_id":1,
             "name": "Remilia Scarlet",
             "nick":"Remlia",
+            "gender": "Female",
+            "age": 500,
+            "desc": "Remilia Scarlet is the owner and head of the Scarlet Devil Mansion, the mistress of Sakuya Izayoi and Hong Meiling, and the older sister (and guardian) of Flandre Scarlet. Though her appearance (and often behavior) is childlike, and seems nonthreatening, She has fearsome magical powers and a reputation to match, being known throughout Gensokyo as the dangerous 'Scarlet Devil.' Like all vampires she is photosensitive and weak when exposed to sunlight, so she typically remains inside her mansion, which has few windows to prevent light getting in, during the day and emerges during the night. While she is naturally known to drink human blood, her light appetite means her victims almost never die from their wounds.",
             "attributes":{
                 "vitality": 19,
                 "constitution": 22,
@@ -71,7 +86,7 @@
                 "fortune": 30
 
             },
-            "potencial":{
+            "potential":{
                 "vitality": 1.6,
                 "constitution": 1.3,
                 "strength": 1.1,
@@ -101,13 +116,25 @@
                 "Control": 1.2
             }, 
 
-            "attacks": [0,1,2,3]
+            "attacks": [0,1,2,3],
+
+
+            "lines":{
+                "battle_start":["The moon is so scarlet tonight..."],
+                "victory":["Heehee, the means and the method are irrelevant!"],
+                "incapacitated": ["I-Impossible! I can't... lose..."],
+                "attack":["Hehe!","Hyaa!","How about this?","Take this.","Playtime is over."],
+                "damage":["Uuugh! Ugh...","How dare you injure me!"]
+            }
         },
 
         {
             "_id":2,
             "name": "Sakuya Izayoi", 
-            "nick": "Sakuya", 
+            "nick": "Sakuya",
+            "gender": "Female",
+            "age": 20,
+            "desc":"Easily one of the most enigmatic characters in the series despite appearing in so many games, Sakuya Izayoi is the Chief Maid at the Scarlet Devil Mansion. She works for her mistress, Remilia Scarlet, and is apparently the only human working and living within the mansion. She has the power to manipulate time, and is known to place knives in midair and resume time to allow these knives to fly towards her targets. Stopping time is also a handy way of doing large amounts of maid work in a short time. Because nearly everyone living and working at the mansion are maids, being the chief of them all means there are almost no people with more authority within the mansion than Sakuya.",
             "attributes":{
                 "vitality": 22,
                 "constitution": 20,
@@ -122,7 +149,7 @@
                 "fortune": 10
 
             },
-            "potencial":{
+            "potential":{
                 "vitality": 1.7,
                 "constitution": 1.5,
                 "strength": 1.6,
@@ -151,7 +178,18 @@
                 "Insanity": 1.5,
                 "Control": 1.2
             }, 
-            "attacks": [0,1]
+            "attacks": [0,1],
+
+
+            "lines":{
+                "battle_start":["A maid has to know how to deal with this kind of cleaning as well."],
+                "victory":["Now I have to do the cleaning, laundry, and cooking... Do maids ever get a rest?"],
+                "incapacitated": ["This is not the end. I will definitely win next time..."],
+                "attack":["Hya!","There!","Haa!","I'll turn you into a pincushion!","Checkmate!"],
+                "damage":["Ugh!","I let my guard down.!","Oh, is that all you've got?"]
+            }
+
+
         }
 
     ]

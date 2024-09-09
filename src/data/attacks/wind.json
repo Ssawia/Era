@@ -11,11 +11,11 @@
             "target": "select",
             "target-limit": 2,
             "intent": "harm",
-            "damage": [{"atk":150}],
+            "damage": [{"atk":50},{"atm":200}],
             "cost": {"mp": 20},
             "cooldown": 1,
             "hits": 1,
-            "type": [1]
+            "type": [1,7]
         }
     ]
 }

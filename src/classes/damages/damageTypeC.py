@@ -1,7 +1,6 @@
 from __future__ import annotations
 import sys
 import src.classes.entitiesC as Chara
-from typing import List
 
 
 

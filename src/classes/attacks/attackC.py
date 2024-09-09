@@ -4,8 +4,8 @@ import src.classes.entitiesC as Chara
 import src.classes.damages.damageTypeC as dmgType
 import sys
 import json
+import helpers
 from abstraction import str_to_class
-from typing import List
 import uuid
 
 # Depois de alguns minutos de filosofia, eu cheguei a conclusão que single e select é literalmente a mesma coisa, só muda o limite do ataque 🤡
@@ -18,13 +18,13 @@ class Selector:
         self.target = target
         self.target_limit = target_limit
         self.intent = intent
-        self.listt: List[Chara.Character] = []
+        self.listt: list[Chara.Character] = []
         
 
     
     def get_intent_on_queue(self, onEnemy : bool = False):
         chara : Chara.Character
-        selected: List[Chara.Character] = []
+        selected: list[Chara.Character] = []
 
 
         match self.intent:
@@ -59,7 +59,7 @@ class Selector:
         pass
 
 
-    def select_in_queue(self):
+    def select_in_queue(self, owner : Chara.Character):
         chara : Chara.Character
         self.get_intent_on_queue()
         selected = []
@@ -88,7 +88,10 @@ class Selector:
                     print(f"[{idS}][{chara.name}] HP : {chara.attributes.status.hp}/{chara.attributes.status.maxHp}")
 
                     idS += 1
-                print("="*70)
+
+        helpers.say_line(owner,"attack")
+        
+        
 
         
         return selected
@@ -101,19 +104,19 @@ class Selector:
 
         return self.listt
 
-    def single_attack(self):
+    def single_attack(self,owner):
         print(f"[{self.attack_name}][{self.intent}][{self.target}] Selecione {self.target_limit} alvo(s)")
-        return self.select_in_queue()
+        return self.select_in_queue(owner)
 
-    def multi_attack(self):
+    def multi_attack(self,owner):
         print(f"[{self.attack_name}][{self.intent}][{self.target}] Selecione {self.target_limit} alvo(s)")
         self.get_intent_on_queue()
         return self.listt
         
 
-    def select_attack(self):
+    def select_attack(self,owner):
         print(f"[{self.attack_name}][{self.intent}][{self.target}] Selecione {self.target_limit} alvo(s)")
-        return self.select_in_queue()
+        return self.select_in_queue(owner)
 
 #Classe usada para definir o tipo de dano dos ataques, como ataque fisico ou ataque magico
 class Attack:
@@ -130,7 +133,7 @@ class Attack:
         self.cost = cost
         self.hits = hits
         self.types = dmgType
-        self.dmgList: List[dmgType.DamageType] = []
+        self.dmgList: list[dmgType.DamageType] = []
         self.select : Selector 
     
     def setDamages(self, owner : Chara.Character):
@@ -143,11 +146,11 @@ class Attack:
     def check_target(self, owner : Chara.Character):
         queue = []
         if self.target == "select":
-            queue = self.select.select_attack()
+            queue = self.select.select_attack(owner)
         elif self.target == "single":
-            queue = self.select.single_attack()
+            queue = self.select.single_attack(owner)
         elif self.target ==  "multi":
-            queue = self.select.multi_attack()
+            queue = self.select.multi_attack(owner)
         elif self.target == "self":
             queue = self.select.self_attack(owner)
         

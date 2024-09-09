@@ -1,7 +1,7 @@
 import src.classes.entitiesC as Chara
 import src.classes.damages.damageTypeC as dmgType
 import src.classes.attacks.attackC as Attack
-from helpers import isCrit
+from helpers import isCrit,say_line
 
 Attack = Attack.Attack
 DamageType = dmgType.DamageType
@@ -21,12 +21,9 @@ class MagicalAttack(Attack):
         crit = isCrit(owner.attributes.status.crit)
 
 
-
-
-
         obj : Chara.Character
         for obj in queue:
             for c in range(self.hits):
-                obj.defend(self.dmgList, owner, obj, crit)
+                obj.defend(self.name,self.dmgList, owner, obj, crit)
             
         return True

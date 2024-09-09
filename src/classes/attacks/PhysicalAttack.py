@@ -19,10 +19,12 @@ class PhysicalAttack(Attack):
         crit = isCrit(owner.attributes.status.crit)
 
         
-        obj : Chara.Character 
+        obj : Chara.Character
+
+        
 
         for obj in queue:
             for c in range(self.hits):
-                obj.defend(self.dmgList, owner, obj, crit)
+                obj.defend(self.name,self.dmgList, owner, obj, crit)
 
         return True

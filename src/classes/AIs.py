@@ -2,7 +2,7 @@ from __future__ import annotations
 import src.classes.entitiesC as ent
 import src.classes.attacks.attackC as atk
 from random import choice
-from typing import List
+import helpers
 
 
 
@@ -21,9 +21,9 @@ class Ai:
 
 
 
-     def decide_typeAttack(self, behave ,host : ent.Character, attacks : List[atk.Attack]):
+     def decide_typeAttack(self, behave ,host : ent.Character, attacks : list[atk.Attack]):
           target_attack: atk.Attack
-          targets_attacks: List[atk.Attack] = []
+          targets_attacks: list[atk.Attack] = []
 
           if behave == "attack_all":
                for target_attack in attacks:
@@ -49,16 +49,15 @@ class Ai:
           host_attack: atk.Attack
 
           #Decide os tipos de ataques que vai aparecer na lista de ataques disponiveis, baseado no comportamento do AI. 
-          targets_attacks: List[atk.Attack] = []
+          targets_attacks: list[atk.Attack] = []
           targets_attacks = self.decide_typeAttack(self.behave, host, host.attacks)
 
           attack = choice(targets_attacks)
-          print(f"{host.name} escolheu o ataque {attack.name}")
 
           uuid = attack.uuid
           idd = 0
 
-          dmg_list: List[ent.Character] = []
+          dmg_list: list[ent.Character] = []
                
           for host_attack in host.attacks:
                if host_attack.uuid == uuid:
@@ -70,16 +69,18 @@ class Ai:
                     targets_list = host.attacks[idd].select.listt
 
                     if target == "select":
-                         dmg_list = select_ai(target_limit,targets_list,host)
+                         dmg_list = select_ai(target_limit,targets_list,host,attack.name)
                     elif target == "single":
-                         dmg_list = select_ai(target_limit,targets_list,host)
+                         dmg_list = select_ai(target_limit,targets_list,host,attack.name)
                     elif target == "multi":
-                         print(f'{host.name} escolheu todos para atacar')
+                         print(f'{host.name} chose {attack.name} attack everyone!')
                          dmg_list = targets_list
                     elif target == "self":
-                         print(f'{host.name} escolheu si mesmo para atacar')
+                         print(f'{host.name} chose {attack.name} used on himself')
                          dmg_list.append(host)
+                    
 
+                    helpers.say_line(host,'attack')
                     host.attacks[idd].doDamage(host,dmg_list,True)
 
                idd += 1
@@ -89,11 +90,11 @@ class Ai:
 
 
 
-def select_ai(target_limit, targets_list: List[ent.Character],host: ent.Character):
-     dmg_list: List[ent.Character] = []
+def select_ai(target_limit, targets_list: list[ent.Character],host: ent.Character, attack_name):
+     dmg_list: list[ent.Character] = []
      for c in range(target_limit):
           target_choice = choice(targets_list)
-          print(f'{host.name} escolheu {target_choice.name} para atacar')
+          print(f'{host.name} chose {attack_name} and attack {target_choice.name}')
           dmg_list.append(target_choice)
           targets_list.remove(target_choice)
      

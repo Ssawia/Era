@@ -1,0 +1,100 @@
+{
+    "DamagesType":
+    [
+        {
+            "_id": 3,
+            "classType": "damages",
+            "file": "Magical",
+            "className": "Telesma", 
+
+            "name": "Telesma", 
+            "desc": "Quando produz o esplendor, ela denomina-se luz. É essa substância que Deus cria antes de todas as coisas.",
+            "type": "damage",
+            "defType":"Telesma",
+            "Rscale": "Faith",
+            "Ascale": "Intelligence",
+            "dmgMult": 2,
+            "resMult": 0.7
+        },
+
+        {
+            "_id": 4,
+            "classType": "damages",
+            "file": "Magical",
+            "className": "Fire", 
+
+            "name": "Fire", 
+            "desc": "O Fogo que transforma e revela o mundo em sua volta, é o mesmo que consome e destrói.",
+            "type": "damage",
+            "defType":"Fire",
+            "Rscale": "Faith",
+            "Ascale": "Intelligence",
+            "dmgMult": 1.2,
+            "resMult": 0.9
+        },
+
+        {
+            "_id": 5,
+            "classType": "damages",
+            "file": "Magical",
+            "className": "Water", 
+
+            "name": "Water", 
+            "desc": "Agua lorem ipsum",
+            "type": "damage",
+            "defType":"Water",
+            "Rscale": "Faith",
+            "Ascale": "Intelligence",
+            "dmgMult": 1,
+            "resMult": 1
+        },
+
+        {
+            "_id": 6,
+            "classType": "damages",
+            "file": "Magical",
+            "className": "Earth", 
+
+            "name": "Earth", 
+            "desc": "Earth lorem ipsum",
+            "type": "damage",
+            "defType":"Earth",
+            "Rscale": "Faith",
+            "Ascale": "Intelligence",
+            "dmgMult": 1,
+            "resMult": 1
+        },
+
+        {
+            "_id": 7,
+            "classType": "damages",
+            "file": "Magical",
+            "className": "Wind", 
+
+            "name": "Wind", 
+            "desc": "Wind lorem ipsum",
+            "type": "damage",
+            "defType":"Wind",
+            "Rscale": "Faith",
+            "Ascale": "Intelligence",
+            "dmgMult": 1,
+            "resMult": 1
+        },
+
+        {
+            "_id": 13,
+            "classType": "damages",
+            "file": "Healing",
+            "className": "Healing", 
+
+            "name": "Healing", 
+            "desc": "Healing Magic", 
+            "type": "healing",
+            "defType": "MagicalHealing",
+            "Rscale": "Arcane",
+            "Ascale": "Will",
+            "dmgMult": 1,
+            "resMult": 1
+        }
+    ]
+}

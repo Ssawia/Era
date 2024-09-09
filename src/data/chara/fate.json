@@ -1,0 +1,69 @@
+{
+    "characters": [
+        {
+            "_id":300,
+            "name": "Arturia Pendragon",
+            "nick": "Altria",
+            "gender": "Female",
+            "age": 20, 
+            "desc": "Legendary King of Britain, and the King of Knights. Her childhood name was Altria, but she has been known as King Arthur since her coronation. At a time when chivalry was dying like a flower wilting away, she brought momentary peace and the last bit of prosperity to Britain with her sacred sword in hand. In history books Arthur is male, but in this world she is a woman in disguise.",
+            "attributes":{
+                    "vitality": 30,
+                    "constitution": 21,
+                    "strength": 20,
+                    "fortitude": 25,
+                    "attunement": 30,
+                    "intelligence": 30,
+                    "will": 10,
+                    "faith": 30,
+                    "arcane": 5,
+                    "dexterity": 25,
+                    "fortune": 30
+
+                },
+            
+            "potential":{
+                    "vitality": 2,
+                    "constitution": 1.5,
+                    "strength": 2,
+                    "fortitude": 1.6,
+                    "attunement": 1.0,
+                    "intelligence": 1,
+                    "will": 2.0,
+                    "faith": 2.0,
+                    "arcane": 0.5,
+                    "dexterity": 1.7,
+                    "fortune": 1.8
+
+                },
+            "resistances": {
+                "Slash": 1.8,
+                "Thrust": 1.5,
+                "Strike": 1.3,
+                "Telesma": 0.2,
+                "Fire": 1.2,
+                "Water": 1,
+                "Wind": 1.9,
+                "Earth": 1.1,
+                "Arcane": 0.5,
+                "Blood": 1,
+                "Poison": 1,
+                "Insanity": 1,
+                "Control": 1.3
+            },         
+            
+            "attacks": [2],
+
+
+            "lines":{
+                "battle_start":["Let's begin, Master.","Give it everything you've got.","This is a battle, so I must destroy our enemies!","Stay calm. We mustn't be careless."],
+                "victory":["You still have much to learn.","I cannot break my knightly vows.","Take care of the wounded. The battle is not yet over.","Are your supply lines still in place? Good."],
+                "incapacitated": ["Not…like this…","Sorry, Master…"],
+                "attack":["Hrmph!","Hahh!","Hyahhh!","I'll cut them down!","There's still more!","Got you!","Sei!"],
+                "damage":["Attacks like this...","Ugh!"]
+            }
+        }
+    ]
+}
+
+

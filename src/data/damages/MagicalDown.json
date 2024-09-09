@@ -1,0 +1,84 @@
+{
+    "DamagesType":
+    [
+        {
+            "_id": 8,
+            "classType": "damages",
+            "file": "Magical",
+            "className": "Arcane", 
+
+            "name": "Arcane", 
+            "desc": "Arcane lorem ipsum",
+            "type": "damage",
+            "defType":"Arcane",
+            "Rscale": "Arcane",
+            "Ascale": "Will",
+            "dmgMult": 1,
+            "resMult": 1
+        },
+
+        {
+            "_id": 9,
+            "classType": "damages",
+            "file": "Magical",
+            "className": "Blood", 
+
+            "name": "Blood", 
+            "desc": "Blood lorem ipsum",
+            "type": "damage",
+            "defType":"Blood",
+            "Rscale": "Arcane",
+            "Ascale": "Will",
+            "dmgMult": 1,
+            "resMult": 1
+        },
+
+        {
+            "_id": 10,
+            "classType": "damages",
+            "file": "Magical",
+            "className": "Poison", 
+
+            "name": "Poison", 
+            "desc": "Poison lorem ipsum",
+            "type": "damage",
+            "defType":"Poison",
+            "Rscale": "Arcane",
+            "Ascale": "Will",
+            "dmgMult": 1,
+            "resMult": 1
+        },
+
+        {
+            "_id": 11,
+            "classType": "damages",
+            "file": "Magical",
+            "className": "Insanity", 
+
+            "name": "Insanity", 
+            "desc": "Insanity lorem ipsum",
+            "type": "damage",
+            "defType":"Insanity",
+            "Rscale": "Arcane",
+            "Ascale": "Will",
+            "dmgMult": 1,
+            "resMult": 1
+        },
+
+        {
+            "_id": 12,
+            "classType": "damages",
+            "file": "Magical",
+            "className": "Control", 
+
+            "name": "Control", 
+            "desc": "Control lorem ipsum",
+            "type": "damage",
+            "defType":"Control",
+            "Rscale": "Arcane",
+            "Ascale": "Will",
+            "dmgMult": 1,
+            "resMult": 1
+        }
+    ]
+}

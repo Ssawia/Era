@@ -1,8 +1,13 @@
 {
     "character_data": "src/data/chara/characters.json",
-    "damage_data": "src/data/damageTypes/damagesType.json",
+    "damage_data_all": "src/data/damages/damagesType.json",
+    "damage_data": "src/data/damages/",
     "class_path": "src.classes",
-    "path_attacks": "src/data/attacks/"
+    "path_attacks": "src/data/attacks/",
+    "characters_path": "src/data/chara/",
+    "attributes": [
+
+    ]
     
 
 

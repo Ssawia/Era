@@ -1,6 +1,11 @@
 /.pytest_cache
 /.vscode
 /__pycache__
+/.venv
+/flask_tests
+/templates
+app.py
+/.idea
 
 
 
