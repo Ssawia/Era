@@ -1,11 +1,8 @@
 from __future__ import annotations
-
 import src.classes.entitiesC as Chara
 import src.classes.damages.damageTypeC as dmgType
-import sys
-import json
-import helpers
-from abstraction import str_to_class
+from helpers import say_line
+
 import uuid
 
 # Depois de alguns minutos de filosofia, eu cheguei a conclusão que single e select é literalmente a mesma coisa, só muda o limite do ataque 🤡
@@ -22,7 +19,7 @@ class Selector:
         
 
     
-    def get_intent_on_queue(self, onEnemy : bool = False):
+    def get_intent_on_queue(self, on_enemy : bool = False):
         chara : Chara.Character
         selected: list[Chara.Character] = []
 
@@ -31,19 +28,19 @@ class Selector:
             # Top 10 codigos fodas 2024
             case "help":
                 for chara in self.queue:
-                    if not onEnemy:
+                    if not on_enemy:
                         if chara.ai.typeAi == "Player":
                             selected.append(chara)
-                    elif onEnemy:
+                    elif on_enemy:
                         if chara.ai.typeAi == "Enemy":
                             selected.append(chara)                       
                 
             case "harm":
                 for chara in self.queue:
-                    if not onEnemy:
+                    if not on_enemy:
                         if chara.ai.typeAi == "Enemy":
                             selected.append(chara)
-                    elif onEnemy:
+                    elif on_enemy:
                         if chara.ai.typeAi == "Player":
                             selected.append(chara)
                 
@@ -89,7 +86,7 @@ class Selector:
 
                     idS += 1
 
-        helpers.say_line(owner,"attack")
+        say_line(owner,"attack")
         
         
 
@@ -111,6 +108,7 @@ class Selector:
     def multi_attack(self,owner):
         print(f"[{self.attack_name}][{self.intent}][{self.target}] Selecione {self.target_limit} alvo(s)")
         self.get_intent_on_queue()
+        say_line(owner,"attack")
         return self.listt
         
 
@@ -120,27 +118,30 @@ class Selector:
 
 #Classe usada para definir o tipo de dano dos ataques, como ataque fisico ou ataque magico
 class Attack:
-    def __init__(self, _id : int, _class : str, name : str, desc : str, target : str, targetLimit : int, intent : str, damage : list, cost : dict ,hits : int, dmgType : list):
-        self._id = _id
+    select : Selector
+
+    def __init__(self, attack_data, dmg_type : list):
+        self._id = attack_data['_id']
         self.uuid = uuid.uuid4()
-        self._class = _class
-        self.name = name
-        self.desc = desc
-        self.target = target
-        self.targetLimit = targetLimit
-        self.intent = intent
-        self.damage = damage
-        self.cost = cost
-        self.hits = hits
-        self.types = dmgType
-        self.dmgList: list[dmgType.DamageType] = []
-        self.select : Selector 
-    
-    def setDamages(self, owner : Chara.Character):
-        i : dmgType.DamageType 
+        self._class = attack_data['className']
+        self.name = attack_data['name']
+        self.def_name = attack_data['defName']
+        self.desc = attack_data['desc']
+        self.target = attack_data['target']
+        self.targetLimit = attack_data['target-limit']
+        self.intent = attack_data['intent']
+        self.damage = attack_data['damage']
+        self.cost = attack_data['cost']
+        self.hits = attack_data['hits']
+        self.types = dmg_type
+        self.dmgList: list[dmg_type.DamageType] = []
+
+    def set_damages(self, owner : Chara.Character):
+        i : dmgType.DamageType
+        self.dmgList = []
 
         for i in self.types:
-            i.setAttack(owner)
+            i.set_attack(owner)
             self.dmgList.append(i)
 
     def check_target(self, owner : Chara.Character):
@@ -156,6 +157,16 @@ class Attack:
         
         
         return queue
+
+
+    def get_total_dmg(self):
+        dmg: dmgType.DamageType
+        total_dmg = 0
+
+        for dmg in self.dmgList:
+            total_dmg += dmg.atk
+
+        return total_dmg
     
 
     def init_select(self, queue : list):

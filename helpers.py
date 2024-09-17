@@ -14,6 +14,7 @@ def show_info_chara(obj : entities.Character):
         elements += f"{chave}: {valor}|"
     strg = f'''
 [{obj.name}]-->[Uuid: {obj.uuid}]
+[Level]: {obj.attributes.level}/{obj.attributes.max_level} XP: {obj.attributes.xp}/{obj.attributes.max_xp}
 [Attributes]: Vitality: {obj.attributes.vitality} | Constitution: {obj.attributes.constitution} | Strenght: {obj.attributes.strength} |  Fortitude: {obj.attributes.fortitude} | Attunement: {obj.attributes.attunement} | Inteligence: {obj.attributes.intelligence} | Will: {obj.attributes.will} | Faith: {obj.attributes.faith} Arcane: {obj.attributes.arcane} | Dexterity: {obj.attributes.dexterity} | Fortune: {obj.attributes.fortune}
 |HP: {obj.attributes.status.hp}/{obj.attributes.status.maxHp}({obj.attributes.status.regenHp}) |SP: {obj.attributes.status.sp}/{obj.attributes.status.maxSp}({obj.attributes.status.regenSp}) |MP: {obj.attributes.status.mp}/{obj.attributes.status.maxMp}({obj.attributes.status.regenMp}) |SY: {obj.attributes.status.sanity}/{obj.attributes.status.maxSanity}
 |ATK: {obj.attributes.status.atk} |ATKM: {obj.attributes.status.atkM} |DEF: {obj.attributes.status.df} |DEFM: {obj.attributes.status.dfM} |RES: {obj.attributes.status.res} |RESM: {obj.attributes.status.resM} 
@@ -23,6 +24,7 @@ def show_info_chara(obj : entities.Character):
 [Resistances]: {resistances}
 '''
     print(strg)
+
 
 
 
@@ -81,3 +83,12 @@ def say_line(chara: entities.Character,line_type: str):
     if check_line(line_type,chara.lines):
         line = random.choice(chara.lines[line_type])
         print(f"{chara.name}: {line}")
+
+
+def check_if_attributes_exist(owner: entities.Character):
+    if owner.attributes is not None:
+        return True
+    else:
+        return False
+
+

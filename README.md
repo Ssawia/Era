@@ -15,7 +15,7 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 - [x] Adicionar custo ao ataques.
 - [x] Adicionar tipos de ataques.
 - [x] Adicionar Ataque em inimigos multiplos.
-- [x] Adiconar intenções de ataque.
+- [x] Adicionar intenções de ataque.
 - [x] Refactorar relações entre classes.
 - [x] Melhorar a abstração das classes.
 - [x] Refazer os atributos.
@@ -27,8 +27,8 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 - [ ] **Refactorar tudo que é possivel.**
 - [ ] Fazer o front-end básico
 - [ ] Implementar o Events Handler usando threads
-- [ ] Adicionar Efeitos
 - [ ] Sistema de Level
+- [ ] Adicionar Efeitos
 - [ ] Adicionar Facções
 - [ ] Adicionar mais tipo de dano.
 - [ ] Adicionar Habilidades.

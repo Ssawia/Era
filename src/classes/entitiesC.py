@@ -67,6 +67,13 @@ class Attributes:
         self.potential = data['potential']
         self.resistances = data['resistances']
 
+        self.level = 1
+        self.max_level = 100
+
+        self.xp = 0
+        self.max_xp = 100
+        self.rest_xp = 0
+
 
         self.vitality: int = self.attributes["vitality"]
         self.constitution: int = self.attributes["constitution"]
@@ -94,11 +101,45 @@ class Attributes:
         self.update_elements()
 
 
+    def add_xp(self,amount: float, owner: Character):
+
+        if amount > 0:
+            self.xp += amount
+            if self.xp >= self.max_xp:
+                self.level_up(owner)
+                self.rest_xp = self.xp - self.max_xp
+                self.xp = 0
+                self.max_xp = trunc(self.max_xp * 1.069)
+                self.add_xp(self.rest_xp,owner)
+
+
+    def level_up(self,owner: Character):
+        if self.level + 1 <= 100:
+            self.level += 1
+
+            self.vitality += 1
+            self.constitution += 1
+            self.strength += 1
+            self.fortitude += 1
+            self.attunement += 1
+            self.intelligence += 1
+            self.will += 1
+            self.faith += 1
+            self.arcane += 1
+            self.dexterity += 1
+            self.fortune += 1
+
+            self.update_status(owner)
+
+
+
+
+
     def update_resistances(self):
         resD = {}
         elements = abstraction.get_elements("Res")
-        element : dict = {}
         keys = self.resistancesBase.keys()
+    
 
         attr_stats = 0
         attr_multply = 0
@@ -108,10 +149,11 @@ class Attributes:
             key = list(element.keys())[0]
 
             if key not in keys:
-
+                print(f"Resistence {key} does not exist.")
                 resBase = 1
             else:
                 resBase = self.resistancesBase[key]
+
 
             if element[key] == "Fortitude":
                 attr_multply = self.potential.fortitude
@@ -166,6 +208,81 @@ class Attributes:
 
 
 
+
+    def update_status(self,owner : Character):
+        #Vitality
+        hp = trunc((self.vitality * 500 * self.potential.vitality) * 1)
+        load = trunc((self.vitality * 10 * self.potential.vitality) * .5)
+        #Constitution
+        res = trunc((self.constitution * 5 * self.potential.constitution) * 1)
+        hp_regen = trunc(((hp * .01) * self.constitution * self.potential.constitution) * .1)
+        #Strength
+        atk = trunc((self.strength * 20 * self.potential.strength) * 1)
+        #Fortitude
+        df = trunc(((self.fortitude + (self.strength * .5 * self.potential.strength)) * 10 * self.potential.fortitude) * 1)
+        sp = trunc((self.fortitude * 100 * self.potential.fortitude) * .5)
+        sp_regen = trunc(((sp * .01) * self.fortitude * self.potential.constitution) * .1)
+        #Attunement
+        mp = trunc((self.attunement * 100 * self.potential.attunement) * 1)
+        #Intelligence
+        atk_m = trunc(((self.intelligence + (self.arcane * .5 * self.potential.arcane)) * 10 * self.potential.intelligence) * 1)
+        df_m = trunc(((self.intelligence + (self.faith * .5 * self.potential.faith)) * 10 * self.potential.intelligence) * .5)
+        #Will
+        res_m = trunc((self.will * 5 * self.potential.will) * 1)
+        mp_regen = trunc(((mp * .01) * self.will * self.potential.will) * .1)
+        sanity = trunc((self.will * 10 * self.potential.will) * .5)
+        #faith - voltar depois para adicionar os elementos
+        #arcane
+        #dexterity
+        spd = trunc((self.dexterity * 10 * self.potential.dexterity) * 1)
+        dodge = trunc(((self.dexterity + (self.fortune * .5 * self.potential.fortune)) * 10 * self.potential.dexterity) * .5)
+        max_crit = 200 + (self.dexterity * self.potential.dexterity)
+        #fortune
+        crit = ((self.fortune + (self.arcane * .01 * self.potential.arcane)) * .4 * self.potential.fortune) * .5
+        item = trunc(((self.fortune + (self.faith * 10 * self.potential.faith)) * .1 * self.potential.fortitude) * .5)
+
+
+
+        self.status.hp = hp
+        self.status.maxHp = self.status.hp
+        self.status.regenHp = hp_regen
+
+        self.status.sp = sp
+        self.status.maxSp = self.status.sp
+        self.status.regenSp = sp_regen
+
+        self.status.mp = mp
+        self.status.maxMp = self.status.mp
+        self.status.regenMp = mp_regen
+
+        self.status.sanity = sanity
+        self.status.maxSanity = self.status.sanity
+
+        self.status.atk = atk
+        self.status.atkM = atk_m
+
+        self.status.df = df
+        self.status.dfM = df_m
+
+        self.status.res = res
+        self.status.resM = res_m
+
+        self.status.spd = spd
+        self.status.dodge = dodge
+
+        self.status.crit = crit
+        self.status.maxCrit = max_crit
+
+        self.status.item = item
+        self.status.load = load
+
+
+        self.update_elements()
+        self.update_resistances()
+        owner.update_damage_attacks()
+
+
+
     def init_status(self):
         #Vitality
         hp = trunc((self.vitality * 500 * self.potential.vitality) * 1)
@@ -195,13 +312,10 @@ class Attributes:
         dodge = trunc(((self.dexterity + (self.fortune * .5 * self.potential.fortune)) * 10 * self.potential.dexterity) * .5)
         max_crit = 200 + (self.dexterity * self.potential.dexterity)
         #fortune
-        crit = ((self.fortune + (self.arcane * .5 * self.potential.arcane)) * .5 * self.potential.fortune) * .5
+        crit = ((self.fortune + (self.arcane * .25 * self.potential.arcane)) * .5 * self.potential.fortune) * .5
         item = trunc(((self.fortune + (self.faith * 10 * self.potential.faith)) * .1 * self.potential.fortitude) * .5)
 
         self.status: Status = Status(hp,hp_regen,mp,mp_regen,sp,sp_regen,atk,atk_m,df,df_m,res,res_m,spd,crit,max_crit,dodge,item,sanity, load)
-
-    def update_status(self):
-        pass
 
 
 
@@ -210,7 +324,7 @@ class Character:
     attacks: list[Attacks.Attack]
 
 
-    def __init__(self, data_chara, _type : str, attributes : Attributes):
+    def __init__(self, data_chara, _type : str, attributes : Attributes | None):
 
         self._id = data_chara['_id']
         self.uuid = uuid.uuid4()
@@ -227,7 +341,7 @@ class Character:
 
         self.ai : Ai = Ai("attack_all",self.uuid,_type)
 
-        self.attributes: Attributes  = attributes
+        self.attributes: Attributes | None  = attributes
 
         self.ids_attacks: list[int] = data_chara['attacks']
         self.get_attacks()
@@ -237,32 +351,56 @@ class Character:
         print(f"[{self.name}]-->[{self.uuid}]")
 
 
+    def add_id_attacks(self, ids: list[int] | list[str]):
+
+        for ida in ids:
+            if ida not in self.ids_attacks:
+                self.ids_attacks.append(ida)
+            else:
+                print("Attack ID already exist")
+
+        self.get_attacks()
+
+    def remove_id_attacks(self,ids: list[int]):
+        for ida in ids:
+            if ida in self.ids_attacks:
+                self.ids_attacks.remove(ida)
+
+        self.get_attacks()
+
+
 
     def get_status(self,index: int):
-        try:
-            #Literal muito burro pra usar lambda
-            if self.alive:
-                alive = "Alive"
-            else:
-                alive = "Dead"
 
-            print(f"[{index}][{self.ai.typeAi}][{self.name}][{alive}] HP: {self.attributes.status.hp}/{self.attributes.status.maxHp} MP: {self.attributes.status.mp}/{self.attributes.status.maxMp} SPD: {self.attributes.status.spd}")
-            return True
-        except Exception as E:
-            print(E)
-            return False
+            #Literal muito burro pra usar lambda
+        if self.alive:
+            alive = "Alive"
+        else:
+            alive = "Dead"
+
+        if self.attributes is not None:
+            print(f"[{index}][{self.ai.typeAi}][{self.name}][{alive}] Level: {self.attributes.level} HP: {self.attributes.status.hp}/{self.attributes.status.maxHp} MP: {self.attributes.status.mp}/{self.attributes.status.maxMp} SPD: {self.attributes.status.spd}")
+        else:
+            print(f"[{index}][{self.ai.typeAi}][{self.name}][{alive}]")
+
+
 
     def get_info_attacks(self):
         attack : Attacks.Attack
         for attack in self.attacks:
-            print(F"[A] {attack.name} | Target: {attack.target}/{attack.targetLimit} Intent: {attack.intent} Damages:")
+            print(F"[A] {attack.name} | Target: {attack.target}/{attack.targetLimit} Intent: {attack.intent} Damages: {attack.get_total_dmg()}")
 
 
     def get_attacks(self):
         attack : Attacks.Attack
-        self.attacks = abstraction.getAttackClass(self.ids_attacks)
+        self.attacks = abstraction.get_attack_class(self.ids_attacks)
+        self.update_damage_attacks()
+
+
+
+    def update_damage_attacks(self):
         for attack in self.attacks:
-            attack.setDamages(owner=self)
+            attack.set_damages(owner=self)
 
 
 
@@ -282,18 +420,18 @@ class Character:
         df = 0
         total_dmg = 0
         types = '|'
+        
+        if crit:
+            print("[+][Crit] foi ativo")
+            crit_dmg = owner.attributes.status.maxCrit
+            crit_dmg = crit_dmg / 100
+        else:
+            crit_dmg = 1        
+
+
         if self.alive:
             # Uma bela maneira de spammar o cli, favor consertar depois
             for dmgType in damages_type:
-
-                    if crit:
-                        print("[+][Crit] foi ativo")
-                        crit_dmg = owner.attributes.status.maxCrit
-                        crit_dmg = crit_dmg / 100
-                    else:
-                        crit_dmg = 1
-
-
                     #Uma merda, vou arrumar depois
                     if dmgType.file == "Physical":
                         df = trunc(self.attributes.status.df * .1)
@@ -305,6 +443,9 @@ class Character:
                     res = self.attributes.resistances[dmgType.defType]
                     dmg = dmgType.atk * crit_dmg
                     dmg = trunc(dmg -res - df)
+
+                    if dmg <= 0:
+                        dmg = 0
 
 
                     self.attributes.status.hp -= dmg

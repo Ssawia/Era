@@ -7,6 +7,7 @@
             "file": "MagicalAttack",
             "className": "MagicalAttack",
             "name": "Aeolian Blade",
+            "defName": "aeolian_blade",
             "desc": "Harness the untamed power of the wind with Aeolian Blade. When cast, this spell conjures a shimmering sword of pure, swirling air that slices through foes with unparalleled speed and precision.",
             "target": "select",
             "target-limit": 2,

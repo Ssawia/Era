@@ -8,8 +8,8 @@ DamageType = dmgType.DamageType
 
 
 class MagicalAttack(Attack):
-    def __init__(self,_id,_class,name,desc,target,targetLimit,intent,damage,cost,hits,dmgType):
-        super().__init__(_id=_id, _class=_class, name=name, desc=desc,target=target,targetLimit=targetLimit,intent=intent,damage=damage,cost=cost,hits=hits,dmgType=dmgType)
+    def __init__(self, attack_data, dmg_type):
+        super().__init__(attack_data=attack_data, dmg_type=dmg_type)
     
     def doDamage(self, owner : Chara.Character, queue: list, ai = False):
 

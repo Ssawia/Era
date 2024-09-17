@@ -3,9 +3,10 @@ import importlib
 import json
 import src.classes.entitiesC as Chara
 import src.classes.damages.damageTypeC as dmgType
-import src.classes.attacks.attackC as Attack
+import src.classes.attacks.attackC as atk
 import os
 
+Attack = atk.Attack
 
 config = json.load(open('config/config.json'))
 
@@ -67,20 +68,20 @@ def getDamageTypeClass(data : list, damages : list):
 
     damage_data = get_all_json_from_path(damages_path,"DamagesType")
 
-    atk = 0
+    base_atk = 0
     heal = 0
     #Melhorar essa merda, pro futuro quando tiver mais tipo de dano não virar um yandere simulator
 
     for c in data:
         if 'atk' in damages[i].keys():
-            atk = damages[i]['atk']
+            base_atk = damages[i]['atk']
         if 'heal' in damages[i].keys():
             heal = damages[i]['heal']
 
-        typeDmg = get_data_from_id(c,damage_data,"[damage]")
+        type_dmg = get_data_from_id(c,damage_data,"[damage]")
 
 
-        dtype = str_to_class(typeDmg['classType'],typeDmg['file'],typeDmg['className'])(file=typeDmg['file'],name=typeDmg['name'],desc=typeDmg['desc'],atk=atk,heal=heal,defType=typeDmg['defType'])
+        dtype = str_to_class(type_dmg['classType'],type_dmg['file'],type_dmg['className'])(file=type_dmg['file'],name=type_dmg['name'],desc=type_dmg['desc'],base_atk=base_atk,heal=heal,defType=type_dmg['defType'])
         dtypeList.append(dtype)
         i += 1
     
@@ -101,6 +102,9 @@ def check_ids_in_list_dict(sid: int,data_list: list[dict]):
 
 
 def get_data_from_id(sid: int, data_list: list[dict],id_type:str):
+    """ Checks if the id exists within the list with dicts \n 
+        Returns a dict
+    """
     data = {}
 
     if check_ids_in_list_dict(sid,data_list):
@@ -112,43 +116,19 @@ def get_data_from_id(sid: int, data_list: list[dict],id_type:str):
     return data
 
 
-def getAttackClass(data : list[int]) -> list[Attack.Attack]:
+def get_attack_class(data : list[int]) -> list[Attack]:
 
-
-    attacks_list = []
-
-    
-
+    attacks_list: list[Attack] = []
 
     for c in data:
-
-        damagetypes: list[dmgType.DamageType] = []
-        basicAttack: Attack.Attack 
-
-        
-
+        basic_attack: atk.Attack
         
         attack = get_data_from_id(c,attacks_data,"[attack]")
-
-    
-        damagetypes = getDamageTypeClass(attack['type'], attack['damage'])
+        damages_type = getDamageTypeClass(attack['type'], attack['damage'])
 
 
-
-        #melhorar essa merda kkkkkkkk
-        basicAttack  = str_to_class(attack['classType'],attack['file'],attack['className'])(
-            _id = attack['_id'],
-            _class =attack['className'],
-            name=attack['name'],
-            desc=attack['desc'],
-            target=attack['target'],
-            targetLimit=attack['target-limit'],
-            intent=attack['intent'],
-            damage=attack['damage'],
-            cost= attack['cost'],
-            hits = attack['hits'],
-            dmgType = damagetypes)
-        attacks_list.append(basicAttack)
+        basic_attack  = str_to_class(attack['classType'],attack['file'],attack['className'])(attack,damages_type)
+        attacks_list.append(basic_attack)
     
     return attacks_list
 

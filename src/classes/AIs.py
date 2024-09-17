@@ -62,7 +62,7 @@ class Ai:
           for host_attack in host.attacks:
                if host_attack.uuid == uuid:
                     host.attacks[idd].init_select(queue)
-                    host.attacks[idd].select.get_intent_on_queue(onEnemy=onEnemy)
+                    host.attacks[idd].select.get_intent_on_queue(on_enemy=onEnemy)
 
                     target = host.attacks[idd].target
                     target_limit = host.attacks[idd].targetLimit

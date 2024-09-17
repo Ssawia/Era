@@ -7,6 +7,7 @@
             "file": "MagicalAttack",
             "className": "MagicalAttack",
             "name": "Fire Ball",
+            "defName": "fire_ball",
             "desc": "A magia Fireball cria uma esfera de fogo que explode ao impacto, incendiando tudo ao redor. Causando danos significativos e queimaduras severas a todos os atingidos.",
             "target": "multi",
             "target-limit": 0,
