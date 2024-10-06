@@ -43,7 +43,12 @@ class Ai:
 
           
 
-     def decide_attack(self, host : ent.Character, queue, onEnemy : bool):
+     def decide_attack(self, host : ent.Character | None = None, queue: list[ent.Character] | None = None, on_enemy : bool | None = None, args: list = None):
+
+          if args is not None:
+               host = args[0]
+               queue = args[1]
+               on_enemy = args[2]
 
           attack: atk.Attack
           host_attack: atk.Attack
@@ -62,7 +67,7 @@ class Ai:
           for host_attack in host.attacks:
                if host_attack.uuid == uuid:
                     host.attacks[idd].init_select(queue)
-                    host.attacks[idd].select.get_intent_on_queue(on_enemy=onEnemy)
+                    host.attacks[idd].select.get_intent_on_queue(on_enemy=on_enemy)
 
                     target = host.attacks[idd].target
                     target_limit = host.attacks[idd].targetLimit
@@ -94,9 +99,12 @@ def select_ai(target_limit, targets_list: list[ent.Character],host: ent.Characte
      dmg_list: list[ent.Character] = []
      for c in range(target_limit):
           target_choice = choice(targets_list)
+
+
           print(f'{host.name} chose {attack_name} and attack {target_choice.name}')
           dmg_list.append(target_choice)
           targets_list.remove(target_choice)
+
      
      return dmg_list
 

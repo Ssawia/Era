@@ -50,6 +50,7 @@ class Selector:
             case _:
                 selected = self.queue
 
+
         self.listt = selected
     
     def remove_select(self):

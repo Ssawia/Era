@@ -90,7 +90,7 @@ class Battle:
             print(f"{chara.name} turn.")
             print(
                 f"[E][{chara.nick}] HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} SPD: {chara.attributes.status.spd}")
-            chara.ai.decide_attack(chara, self.queue, onEnemy=True)
+            chara.ai.decide_attack(chara, self.queue, on_enemy=True)
             self.menu_pass(chara)
 
     def update_queue(self):

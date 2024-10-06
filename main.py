@@ -25,8 +25,7 @@ artoria = Character(artoria_data,"Player",Attributes(artoria_data))
 
 
 
-
-artoria.attributes.add_xp(1000000,artoria)
+artoria.attributes.add_xp(1000000,artoria) 
 #helpers.show_info_chara(remilia)
 
 

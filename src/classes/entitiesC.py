@@ -4,6 +4,7 @@ import uuid
 
 import src.classes.attacks.attackC as Attacks
 import src.classes.damages.damageTypeC as damageTypes
+from src.classes.effects.effect_handler_class_prototype import EffectHandler
 from src.classes.AIs import Ai
 from math import trunc
 import random
@@ -210,6 +211,8 @@ class Attributes:
 
 
     def update_status(self,owner : Character):
+
+
         #Vitality
         hp = trunc((self.vitality * 500 * self.potential.vitality) * 1)
         load = trunc((self.vitality * 10 * self.potential.vitality) * .5)
@@ -346,9 +349,16 @@ class Character:
         self.ids_attacks: list[int] = data_chara['attacks']
         self.get_attacks()
 
-        self.effects = []
+        self.effects_handler: EffectHandler | None = EffectHandler()
+
+        self.ability = []
 
         print(f"[{self.name}]-->[{self.uuid}]")
+
+
+    def process_effects(self):
+        for effect in self.effects:
+            effect.process_effect()
 
 
     def add_id_attacks(self, ids: list[int] | list[str]):
