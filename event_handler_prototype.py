@@ -1,10 +1,12 @@
 import uuid
 import json
-from src.classes.entitiesC import Character,Attributes
+from src.classes.entity_prototype import Character,Attributes,Temp
 from abstraction import get_data_from_id,get_all_json_from_path
-from src.classes.effects.effect_class_prototype import Effect,Burn
+from src.classes.effects.effect_class_prototype import Burn
+import helpers
 
 
+from dataclasses import dataclass
 
 config = json.load(open('config/config.json'))
 path_character = config['characters_path']
@@ -14,6 +16,10 @@ remilia_data = get_data_from_id(1,chara_data,"[characters]")
 
 remilia = Character(remilia_data,"Player",Attributes(remilia_data))
 flande = Character(flandre_data,"Enemy",Attributes(flandre_data))
+
+
+
+
 
 class Events:
     main_func: list = []
@@ -146,6 +152,20 @@ class Handler:
                 self.events_ids.remove(event.uid)
         self.events = new_list
 
+
+temp = Temp("vitality","add",1,0,10,True)
+temp2 = Temp("vitality","add",1,0,1,True)
+temp1 = Temp("hp","mult",1,0,2,True)
+
+
+flande.attributes.temp_stats.append(temp)
+flande.attributes.temp_stats.append(temp2)
+flande.attributes.temp_stats.append(temp1)
+
+flande.attributes.update_temp()
+
+flande.attributes.update_attributes()
+helpers.show_info_chara(flande)
 
 
 queue = [flande,remilia]

@@ -1,5 +1,5 @@
 from __future__ import annotations
-import src.classes.entitiesC as Chara
+import src.classes.entity_prototype as Chara
 import src.classes.damages.damageTypeC as dmgType
 from helpers import say_line
 

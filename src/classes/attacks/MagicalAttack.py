@@ -1,8 +1,8 @@
-import src.classes.entitiesC as Chara
+import src.classes.entity_prototype as Chara
 import src.classes.damages.damageTypeC as dmgType
 import src.classes.attacks.attackC as Attack
 from helpers import isCrit,say_line
-from src.classes.AIs import select_ai
+from src.classes.ia_class_prototype import select_ai
 
 
 Attack = Attack.Attack

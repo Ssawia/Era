@@ -1,7 +1,7 @@
 from __future__ import annotations
 import json
 
-from src.classes.entitiesC import Character,Attributes
+from src.classes.entity_prototype import Character,Attributes
 from abstraction import get_data_from_id,get_all_json_from_path
 from src.classes.battle import Battle
 

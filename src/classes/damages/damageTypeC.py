@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import src.classes.entitiesC as Chara
+import src.classes.entity_prototype as Chara
 from helpers import check_if_attributes_exist
 
 

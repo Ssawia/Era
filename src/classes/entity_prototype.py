@@ -1,16 +1,29 @@
 from __future__ import annotations
-import uuid
-#Provavelmente isso não é a melhor maneira de implementar várias classes, mas por enquanto vai dar certo, confia
-
-import src.classes.attacks.attackC as Attacks
-import src.classes.damages.damageTypeC as damageTypes
 from src.classes.effects.effect_handler_class_prototype import EffectHandler
-from src.classes.AIs import Ai
+from src.classes.ia_class_prototype import Ai
 from math import trunc
+from dataclasses import dataclass
+import uuid
 import random
 import helpers
-
 import abstraction
+import src.classes.damages.damageTypeC as damageTypes
+import src.classes.attacks.attackC as Attacks
+
+
+@dataclass
+class Temp:
+        status: str
+        typo: str
+        turn: int
+        time: int
+        value: int
+        active: bool
+
+
+
+
+
 
 
 class Status:
@@ -63,6 +76,17 @@ class Potencial:
 
 class Attributes:
     status: Status
+    vitality: int = 0
+    constitution: int = 0
+    strength: int = 0
+    fortitude: int = 0
+    attunement: int = 0
+    intelligence: int = 0
+    will: int = 0
+    faith: int = 0
+    arcane: int = 0
+    dexterity: int = 0
+    fortune: int = 0
     def __init__(self, data : dict):
         self.attributes = data['attributes']
         self.potential = data['potential']
@@ -76,22 +100,36 @@ class Attributes:
         self.rest_xp = 0
 
 
-        self.vitality: int = self.attributes["vitality"]
-        self.constitution: int = self.attributes["constitution"]
-        self.strength: int  = self.attributes["strength"]
-        self.fortitude: int = self.attributes["fortitude"]
-        self.attunement: int = self.attributes["attunement"]
-        self.intelligence: int = self.attributes["intelligence"]
-        self.will: int = self.attributes["will"]
-        self.faith: int = self.attributes["faith"]
-        self.arcane: int = self.attributes["arcane"]
-        self.dexterity: int = self.attributes["dexterity"]
-        self.fortune: int = self.attributes["fortune"]
+        self._vitality: int = self.attributes["vitality"]
+        self._constitution: int = self.attributes["constitution"]
+        self._strength: int  = self.attributes["strength"]
+        self._fortitude: int = self.attributes["fortitude"]
+        self._attunement: int = self.attributes["attunement"]
+        self._intelligence: int = self.attributes["intelligence"]
+        self._will: int = self.attributes["will"]
+        self._faith: int = self.attributes["faith"]
+        self._arcane: int = self.attributes["arcane"]
+        self._dexterity: int = self.attributes["dexterity"]
+        self._fortune: int = self.attributes["fortune"]
+
+        self.vitality = self._vitality
+        self.constitution = self._constitution
+        self.strength = self._strength
+        self.fortitude = self._fortitude
+        self.attunement = self._attunement
+        self.intelligence = self._intelligence
+        self.will = self._will
+        self.arcane = self._arcane
+        self.dexterity = self._dexterity
+        self.fortune = self._fortune
+
+
 
         self.bonus = []
 
-
         self.potential: Potencial = Potencial(self.potential)
+        self.temp_stats: list[Temp] | None = []
+        self.temp: dict = {}
         self.init_status()
 
         self.resistancesBase : dict = self.resistances
@@ -100,6 +138,66 @@ class Attributes:
 
         self.elements = {}
         self.update_elements()
+
+
+    def update_temp(self):
+        tmp = {}
+        for temp in self.temp_stats:
+            if temp.turn > 0 or temp.time < 0:
+                if temp.status not in tmp.keys():
+                    tmp[temp.status] = []
+                    data =  {temp.typo: temp.value, "turns": temp.turn, "time": temp.time}
+                    tmp[temp.status].append(data)
+                else:
+                    data =  {temp.typo: temp.value, "turns": temp.turn, "time": temp.time}
+                    tmp[temp.status].append(data)
+
+        self.temp = tmp
+
+    def get_all_bonus(self,status,typo):
+        # Esse deve ser o código mais bosta que fiz na minha vida
+        value: float = 0.0
+        mult: float = 1
+        if status in self.temp.keys():
+            for bonus in self.temp[status]:
+                if typo in list(bonus.keys()):
+                    if typo == "add":
+                        value += bonus[typo]
+                    elif typo == "mult":
+                        mult += bonus[typo]
+                        value = mult
+                elif typo == "add":
+                    return 0
+                else:
+                    return 1
+        elif typo == "add":
+            return 0
+        else:
+            return 1
+
+
+        return value
+
+
+
+
+
+
+    def update_attributes(self):
+        self.update_temp()
+        self.vitality = trunc((self._vitality + self.get_all_bonus("vitality","add"))* self.get_all_bonus("vitality","mult"))
+        self.constitution = trunc((self._constitution + self.get_all_bonus("constitution", "add")) * self.get_all_bonus("constitution", "mult"))
+
+        #self.fortitude = trunc((self._fortitude + self.get_all_bonus("fortitude", "add")) * self.get_all_bonus("fortitude", "mult"))
+        #self.strength = trunc((self._strength + self.get_all_bonus("strength", "add")) * self.get_all_bonus("strength", "mult"))
+        #self.attunement = trunc((self._attunement + self.get_all_bonus("attunement", "add")) * self.get_all_bonus("attunement", "mult"))
+        #self.intelligence = trunc((self._intelligence + self.get_all_bonus("intelligence", "add")) * self.get_all_bonus("intelligence", "mult"))
+        #self.will = trunc((self._will + self.get_all_bonus("will", "add")) * self.get_all_bonus("will", "mult"))
+        #self.faith = trunc((self._faith + self.get_all_bonus("faith", "add")) * self.get_all_bonus("faith", "mult"))
+        #self.arcane = trunc((self._arcane + self.get_all_bonus("arcane", "add")) * self.get_all_bonus("arcane", "mult"))
+        #self.dexterity = trunc((self._dexterity + self.get_all_bonus("dexterity", "add")) * self.get_all_bonus("dexterity", "mult"))
+        #self.fortune = trunc((self._fortune + self.get_all_bonus("fortune", "add")) * self.get_all_bonus("fortune", "mult"))
+
 
 
     def add_xp(self,amount: float, owner: Character):
@@ -117,18 +215,17 @@ class Attributes:
     def level_up(self,owner: Character):
         if self.level + 1 <= 100:
             self.level += 1
-
-            self.vitality += 1
-            self.constitution += 1
-            self.strength += 1
-            self.fortitude += 1
-            self.attunement += 1
-            self.intelligence += 1
-            self.will += 1
-            self.faith += 1
-            self.arcane += 1
-            self.dexterity += 1
-            self.fortune += 1
+            self._vitality += 1
+            self._constitution += 1
+            self._fortitude += 1
+            self._strength += 1
+            self._attunement += 1
+            self._intelligence += 1
+            self._will += 1
+            self._faith += 1
+            self._arcane += 1
+            self._dexterity += 1
+            self._fortune += 1
 
             self.update_status(owner)
 
@@ -351,14 +448,12 @@ class Character:
 
         self.effects_handler: EffectHandler | None = EffectHandler()
 
-        self.ability = []
+
+
+
 
         print(f"[{self.name}]-->[{self.uuid}]")
 
-
-    def process_effects(self):
-        for effect in self.effects:
-            effect.process_effect()
 
 
     def add_id_attacks(self, ids: list[int] | list[str]):

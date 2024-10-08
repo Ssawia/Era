@@ -8,7 +8,7 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 
 - Fazer o front-end básico
 
-## Coisas para implementar
+## Implementações Básicas
 - [x] Implementar dano multiplo nos ataques.
 - [x] Refactorar os Atributos
 - [x] Terminar de testar o sistema de dano e tipos de dano.
@@ -24,11 +24,15 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 - [x] AI basica de combate.
 - [x] Adicionar as fases de combate ?.
 - [x] Teste básico do combate.
-- [ ] **Refactorar tudo que é possivel.**
-- [ ] Fazer o front-end básico
-- [ ] Implementar o Events Handler usando threads
-- [ ] Sistema de Level
-- [ ] Adicionar Efeitos
+- [x] Sistema de Level básico
+- [x] **Refactorar tudo que é possivel 1.**
+
+## Implementações Medianas.
+- [x] Adicionar Efeitos
+- [x] Prototipar Efeitos Temporários.
+- [x] Prototipar Listener
+- [x] Prototipar Events
+- [x] Prototipar  EventsHandler
 - [ ] Adicionar Facções
 - [ ] Adicionar mais tipo de dano.
 - [ ] Adicionar Habilidades.
@@ -43,6 +47,9 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 - [ ] Adicionar Sanidade.
 - [ ] Implementar Alma.
 - [ ] Implementar Tags.
+
+## Implementações Avançadas.
+- [ ] Fazer o front-end básico
 - [ ] Criar frontend Flask com Next.js ou React.
 - [ ] Adicionar criador de entidades.
 - [ ] Implementar o mapa global.

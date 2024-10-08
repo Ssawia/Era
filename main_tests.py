@@ -1,7 +1,7 @@
 
 
 import json
-import src.classes.entitiesC as entities
+import src.classes.entity_prototype as entities
 import src.classes.attacks.attackC as atk
 import src.classes.damages.damageTypeC as dmgType
 import abstraction

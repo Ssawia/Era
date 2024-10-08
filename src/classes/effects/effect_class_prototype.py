@@ -1,5 +1,5 @@
 from __future__ import annotations
-import src.classes.entitiesC as Character
+import src.classes.entity_prototype as Character
 import uuid
 
 

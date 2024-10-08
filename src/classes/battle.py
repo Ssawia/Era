@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from src.classes.entitiesC import Character
+from src.classes.entity_prototype import Character
 import helpers
 from random import choice
 

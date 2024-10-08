@@ -1,5 +1,5 @@
 from __future__ import annotations
-import src.classes.entitiesC as entities
+import src.classes.entity_prototype as entities
 import random
 from typing import List
 
@@ -15,7 +15,19 @@ def show_info_chara(obj : entities.Character):
     strg = f'''
 [{obj.name}]-->[Uuid: {obj.uuid}]
 [Level]: {obj.attributes.level}/{obj.attributes.max_level} XP: {obj.attributes.xp}/{obj.attributes.max_xp}
-[Attributes]: Vitality: {obj.attributes.vitality} | Constitution: {obj.attributes.constitution} | Strenght: {obj.attributes.strength} |  Fortitude: {obj.attributes.fortitude} | Attunement: {obj.attributes.attunement} | Inteligence: {obj.attributes.intelligence} | Will: {obj.attributes.will} | Faith: {obj.attributes.faith} Arcane: {obj.attributes.arcane} | Dexterity: {obj.attributes.dexterity} | Fortune: {obj.attributes.fortune}
+[Attributes]
+|Vitality: {obj.attributes.vitality}(+{obj.attributes.get_all_bonus("vitality","add")}/*{obj.attributes.get_all_bonus("vitality","mult")})
+|Constitution: {obj.attributes.constitution}(+{obj.attributes.get_all_bonus("constitution","add")}/*{obj.attributes.get_all_bonus("constitution","mult")})
+|Strength: {obj.attributes.strength}(+{obj.attributes.get_all_bonus("strength","add")}/*{obj.attributes.get_all_bonus("strength","mult")})
+|Fortitude: {obj.attributes.fortitude}(+{obj.attributes.get_all_bonus("fortitude","add")}/*{obj.attributes.get_all_bonus("fortitude","mult")})
+|Attunement: {obj.attributes.attunement}(+{obj.attributes.get_all_bonus("attunement","add")}/*{obj.attributes.get_all_bonus("attunement","mult")})
+|Intelligence: {obj.attributes.intelligence}(+{obj.attributes.get_all_bonus("intelligence","add")}/*{obj.attributes.get_all_bonus("intelligence","mult")})
+|Will: {obj.attributes.will}(+{obj.attributes.get_all_bonus("will","add")}/*{obj.attributes.get_all_bonus("will","mult")})
+|Faith: {obj.attributes.faith}(+{obj.attributes.get_all_bonus("faith","add")}/*{obj.attributes.get_all_bonus("faith","mult")})
+|Arcane: {obj.attributes.arcane}(+{obj.attributes.get_all_bonus("arcane","add")}/*{obj.attributes.get_all_bonus("arcane","mult")})
+|Dexterity: {obj.attributes.dexterity}(+{obj.attributes.get_all_bonus("dexterity","add")}/*{obj.attributes.get_all_bonus("dexterity","mult")})
+|Fortune: {obj.attributes.fortune}(+{obj.attributes.get_all_bonus("fortune","add")}/*{obj.attributes.get_all_bonus("fortune","mult")})
+[Status]
 |HP: {obj.attributes.status.hp}/{obj.attributes.status.maxHp}({obj.attributes.status.regenHp}) |SP: {obj.attributes.status.sp}/{obj.attributes.status.maxSp}({obj.attributes.status.regenSp}) |MP: {obj.attributes.status.mp}/{obj.attributes.status.maxMp}({obj.attributes.status.regenMp}) |SY: {obj.attributes.status.sanity}/{obj.attributes.status.maxSanity}
 |ATK: {obj.attributes.status.atk} |ATKM: {obj.attributes.status.atkM} |DEF: {obj.attributes.status.df} |DEFM: {obj.attributes.status.dfM} |RES: {obj.attributes.status.res} |RESM: {obj.attributes.status.resM} 
 |DGE: {obj.attributes.status.dodge} |SPD: {obj.attributes.status.spd} |CRIT: {obj.attributes.status.crit:.1f}% |CRITD: {obj.attributes.status.maxCrit:.1f}% |ITEM: {obj.attributes.status.item}% |LOAD: {obj.attributes.status.load}/kg

@@ -1,5 +1,5 @@
 from __future__ import annotations
-import src.classes.entitiesC as ent
+import src.classes.entity_prototype as ent
 import src.classes.attacks.attackC as atk
 from random import choice
 import helpers

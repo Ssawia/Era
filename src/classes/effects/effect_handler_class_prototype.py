@@ -45,7 +45,6 @@ class EffectHandler:
                 self.update_stack(effect.typo, effect)
 
 
-
     def update_stack(self, typo: str, eft: Effect):
         for effect in self.effects:
             if effect.typo == typo:
