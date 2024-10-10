@@ -1,10 +1,11 @@
 from __future__ import annotations
-import src.classes.entity_prototype as Character
+import src.classes.entity_prototype as ch
+import src.classes.temp.temp_class_handler as tp
 import uuid
 
 
 class Effect:
-    def __init__(self, typo, name, desc, turns, active, is_stackable,stacks, character):
+    def __init__(self, typo, name, desc, turns, active, is_stackable,stacks, character,has_temp, temp_objs,temp_owner):
         self.uuid = uuid.uuid4()
         self.typo = typo
         self.name = name
@@ -13,22 +14,31 @@ class Effect:
         self.active = active
         self.is_stackable = is_stackable
         self.stacks = stacks
-        self.owner : Character = character
+        self.has_temp = has_temp
+        self.temp_objs: list[tp.Temp] = temp_objs
+        self.temp_owner: ch.Character | ch.Attributes = temp_owner
+        self.owner : ch.Character = character
 
 
 
     def process_effect(self):
         pass
 
-    def del_effect(self):
-        pass
+    def end_effect(self):
+        self.active = False
+        print(f"[Log] Effect {self.name} has ended")
+        if self.has_temp:
+            if isinstance(self.temp_owner,ch.Character) and self.temp_owner.attributes is not None and self.temp_owner.attributes.temp_handler is not None:
+                self.temp_owner.attributes.temp_handler.remove_temp(list_temp=self.temp_objs)
+            elif isinstance(self.temp_owner,ch.Attributes) and self.temp_owner.attributes.temp_handler is not None:
+                self.temp_owner.temp_handler.remove_temp(list_temp=self.temp_objs)
 
 
 
 
 class Burn(Effect):
-    def __init__(self,typo,name,desc,turns,active,is_stackable,stacks,character):
-        super().__init__(typo=typo,name=name,desc=desc,turns=turns,active=active,is_stackable=is_stackable,stacks=stacks,character=character)
+    def __init__(self,typo,name,desc,turns,active,is_stackable,stacks,character, has_temp, temp_objs: list[tp.Temp] = None, temp_owner: ch.Character | ch.Attributes  = None):
+        super().__init__(typo=typo,name=name,desc=desc,turns=turns,active=active,is_stackable=is_stackable,stacks=stacks,character=character,has_temp=has_temp, temp_objs=temp_objs, temp_owner=temp_owner)
 
 
     def process_effect(self):
@@ -37,8 +47,9 @@ class Burn(Effect):
             print(f"{self.owner.name} tomou {dmg} de burn")
             self.owner.attributes.status.hp -= dmg
             self.turn -= 1
+
+            if self.turn <= 0:
+                self.end_effect()
+                return False
+
             return True
-        elif self.turn <= 0:
-            print("Efeito burn Acabou")
-            self.active = False
-            return False

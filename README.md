@@ -65,6 +65,3 @@ Um rpg de turno um pouco megalomaniaco, provavelmente não vai dar certo.
 **Back-end:** Python, Flask
 
 
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)

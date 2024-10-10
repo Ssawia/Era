@@ -9,16 +9,9 @@ import helpers
 import abstraction
 import src.classes.damages.damageTypeC as damageTypes
 import src.classes.attacks.attackC as Attacks
+from src.classes.temp.temp_class_handler import TempHandler
 
 
-@dataclass
-class Temp:
-        status: str
-        typo: str
-        turn: int
-        time: int
-        value: int
-        active: bool
 
 
 
@@ -87,7 +80,9 @@ class Attributes:
     arcane: int = 0
     dexterity: int = 0
     fortune: int = 0
-    def __init__(self, data : dict):
+    def __init__(self, data : dict, parent = None):
+        self._parent = parent
+
         self.attributes = data['attributes']
         self.potential = data['potential']
         self.resistances = data['resistances']
@@ -128,8 +123,7 @@ class Attributes:
         self.bonus = []
 
         self.potential: Potencial = Potencial(self.potential)
-        self.temp_stats: list[Temp] | None = []
-        self.temp: dict = {}
+        self.temp_handler: TempHandler | None = TempHandler(self)
         self.init_status()
 
         self.resistancesBase : dict = self.resistances
@@ -140,63 +134,74 @@ class Attributes:
         self.update_elements()
 
 
-    def update_temp(self):
-        tmp = {}
-        for temp in self.temp_stats:
-            if temp.turn > 0 or temp.time < 0:
-                if temp.status not in tmp.keys():
-                    tmp[temp.status] = []
-                    data =  {temp.typo: temp.value, "turns": temp.turn, "time": temp.time}
-                    tmp[temp.status].append(data)
-                else:
-                    data =  {temp.typo: temp.value, "turns": temp.turn, "time": temp.time}
-                    tmp[temp.status].append(data)
-
-        self.temp = tmp
-
-    def get_all_bonus(self,status,typo):
-        # Esse deve ser o código mais bosta que fiz na minha vida
-        value: float = 0.0
-        mult: float = 1
-        if status in self.temp.keys():
-            for bonus in self.temp[status]:
-                if typo in list(bonus.keys()):
-                    if typo == "add":
-                        value += bonus[typo]
-                    elif typo == "mult":
-                        mult += bonus[typo]
-                        value = mult
-                elif typo == "add":
-                    return 0
-                else:
-                    return 1
-        elif typo == "add":
-            return 0
-        else:
-            return 1
-
-
-        return value
-
-
-
-
-
+    def return_parent(self) -> any:
+        return self._parent
 
     def update_attributes(self):
-        self.update_temp()
-        self.vitality = trunc((self._vitality + self.get_all_bonus("vitality","add"))* self.get_all_bonus("vitality","mult"))
-        self.constitution = trunc((self._constitution + self.get_all_bonus("constitution", "add")) * self.get_all_bonus("constitution", "mult"))
+        add_vitality_bonus = 0
+        add_constitution_bonus = 0
+        add_fortitude_bonus = 0
+        add_strength_bonus = 0
+        add_attunement_bonus = 0
+        add_intelligence_bonus = 0
+        add_will_bonus = 0
+        add_faith_bonus = 0
+        add_arcane_bonus = 0
+        add_dexterity_bonus = 0
+        add_fortune_bonus = 0
 
-        #self.fortitude = trunc((self._fortitude + self.get_all_bonus("fortitude", "add")) * self.get_all_bonus("fortitude", "mult"))
-        #self.strength = trunc((self._strength + self.get_all_bonus("strength", "add")) * self.get_all_bonus("strength", "mult"))
-        #self.attunement = trunc((self._attunement + self.get_all_bonus("attunement", "add")) * self.get_all_bonus("attunement", "mult"))
-        #self.intelligence = trunc((self._intelligence + self.get_all_bonus("intelligence", "add")) * self.get_all_bonus("intelligence", "mult"))
-        #self.will = trunc((self._will + self.get_all_bonus("will", "add")) * self.get_all_bonus("will", "mult"))
-        #self.faith = trunc((self._faith + self.get_all_bonus("faith", "add")) * self.get_all_bonus("faith", "mult"))
-        #self.arcane = trunc((self._arcane + self.get_all_bonus("arcane", "add")) * self.get_all_bonus("arcane", "mult"))
-        #self.dexterity = trunc((self._dexterity + self.get_all_bonus("dexterity", "add")) * self.get_all_bonus("dexterity", "mult"))
-        #self.fortune = trunc((self._fortune + self.get_all_bonus("fortune", "add")) * self.get_all_bonus("fortune", "mult"))
+        mult_vitality_bonus = 1
+        mult_constitution_bonus = 1
+        mult_fortitude_bonus = 1
+        mult_strength_bonus = 1
+        mult_attunement_bonus = 1
+        mult_intelligence_bonus = 1
+        mult_will_bonus = 1
+        mult_faith_bonus = 1
+        mult_arcane_bonus = 1
+        mult_dexterity_bonus = 1
+        mult_fortune_bonus = 1
+
+        if self.temp_handler is not None:
+            self.temp_handler.update_temp()
+
+            # ADD
+            add_vitality_bonus = self.temp_handler.get_add_bonus("vitality","add")
+            add_constitution_bonus = self.temp_handler.get_add_bonus("constitution","add")
+            add_fortitude_bonus = self.temp_handler.get_add_bonus("fortitude","add")
+            add_strength_bonus = self.temp_handler.get_add_bonus("strength","add")
+            add_attunement_bonus = self.temp_handler.get_add_bonus("attunement","add")
+            add_intelligence_bonus = self.temp_handler.get_add_bonus("intelligence","add")
+            add_will_bonus = self.temp_handler.get_add_bonus("will","add")
+            add_faith_bonus = self.temp_handler.get_add_bonus("faith","add")
+            add_arcane_bonus = self.temp_handler.get_add_bonus("arcane","add")
+            add_dexterity_bonus = self.temp_handler.get_add_bonus("dexterity","add")
+            add_fortune_bonus = self.temp_handler.get_add_bonus("fortune","add")
+            # Mult
+            mult_vitality_bonus = self.temp_handler.get_mult_bonus("vitality","mult")
+            mult_constitution_bonus = self.temp_handler.get_mult_bonus("constitution","mult")
+            mult_fortitude_bonus = self.temp_handler.get_mult_bonus("fortitude","mult")
+            mult_strength_bonus = self.temp_handler.get_mult_bonus("strength","mult")
+            mult_attunement_bonus = self.temp_handler.get_mult_bonus("attunement","mult")
+            mult_intelligence_bonus = self.temp_handler.get_mult_bonus("intelligence","mult")
+            mult_will_bonus = self.temp_handler.get_mult_bonus("will","mult")
+            mult_faith_bonus = self.temp_handler.get_mult_bonus("faith","mult")
+            mult_arcane_bonus = self.temp_handler.get_mult_bonus("arcane","mult")
+            mult_dexterity_bonus = self.temp_handler.get_mult_bonus("dexterity","mult")
+            mult_fortune_bonus = self.temp_handler.get_mult_bonus("fortune","mult")
+
+
+        self.vitality = trunc((self._vitality + add_vitality_bonus) * mult_vitality_bonus)
+        self.constitution = trunc((self._constitution + add_constitution_bonus) * mult_constitution_bonus)
+        self.fortitude = trunc((self._fortitude + add_fortitude_bonus) * mult_fortitude_bonus)
+        self.strength = trunc((self._strength + add_strength_bonus) * mult_strength_bonus)
+        self.attunement = trunc((self._attunement + add_attunement_bonus) * mult_attunement_bonus)
+        self.intelligence = trunc((self._intelligence + add_intelligence_bonus) * mult_intelligence_bonus)
+        self.will = trunc((self._will + add_will_bonus) * mult_will_bonus)
+        self.faith = trunc((self._faith + add_faith_bonus) * mult_faith_bonus)
+        self.arcane = trunc((self._arcane + add_arcane_bonus) * mult_arcane_bonus)
+        self.dexterity = trunc((self._dexterity + add_dexterity_bonus) * mult_dexterity_bonus)
+        self.fortune = trunc((self._fortune + add_fortune_bonus) * mult_fortune_bonus)
 
 
 
@@ -424,7 +429,7 @@ class Character:
     attacks: list[Attacks.Attack]
 
 
-    def __init__(self, data_chara, _type : str, attributes : Attributes | None):
+    def __init__(self, data_chara, _type : str):
 
         self._id = data_chara['_id']
         self.uuid = uuid.uuid4()
@@ -441,7 +446,7 @@ class Character:
 
         self.ai : Ai = Ai("attack_all",self.uuid,_type)
 
-        self.attributes: Attributes | None  = attributes
+        self.attributes: Attributes | None  = Attributes(data_chara,self)
 
         self.ids_attacks: list[int] = data_chara['attacks']
         self.get_attacks()
@@ -452,7 +457,7 @@ class Character:
 
 
 
-        print(f"[{self.name}]-->[{self.uuid}]")
+        print(f"[Log][Character][{self.name}]-->[{self.uuid}]")
 
 
 

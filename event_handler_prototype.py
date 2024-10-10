@@ -1,6 +1,7 @@
 import uuid
 import json
-from src.classes.entity_prototype import Character,Attributes,Temp
+from src.classes.entity_prototype import Character,Attributes
+from src.classes.temp.temp_class_handler import Temp
 from abstraction import get_data_from_id,get_all_json_from_path
 from src.classes.effects.effect_class_prototype import Burn
 import helpers
@@ -14,8 +15,8 @@ chara_data: list[dict] = get_all_json_from_path(path_character,'characters')
 flandre_data = get_data_from_id(0,chara_data,"[characters]")
 remilia_data = get_data_from_id(1,chara_data,"[characters]")
 
-remilia = Character(remilia_data,"Player",Attributes(remilia_data))
-flande = Character(flandre_data,"Enemy",Attributes(flandre_data))
+remilia = Character(remilia_data,"Player")
+flande = Character(flandre_data,"Enemy")
 
 
 
@@ -72,12 +73,16 @@ class OnAttack(Events):
 
 class Listener:
     def __init__(self,listen_type,owner):
+        self.uid = uuid.uuid4()
         self.listen_type = listen_type
         self.owner = owner
 
 
 
     def listen(self,event):
+        pass
+
+    def end(self):
         pass
 
 
@@ -95,8 +100,18 @@ class BurnEverything(Listener):
                 caster:Character = event.caster
                 print(f"[Event] {event.caster.name} cast the event [{event.event_type}] and activated the Ability [BurnEverything] from {self.owner.name}")
 
-                effect = Burn("burn_effect_01",'Burn','Burn Effect',1,True,True,1,caster)
-                caster.effects_handler.add_effects([effect,effect])
+                temp = Temp("faith", "add", 1, 0, 10, True,True,False,caster.uuid)
+                self.owner.attributes.temp_handler.add_temp([temp])
+
+
+
+
+                effect = Burn("burn_effect_01",'Burn','Burn Effect',1,True,True,1,caster,True,[temp],self.owner)
+                caster.effects_handler.add_effects([effect])
+
+
+                self.end()
+
 
 
 
@@ -153,19 +168,12 @@ class Handler:
         self.events = new_list
 
 
-temp = Temp("vitality","add",1,0,10,True)
-temp2 = Temp("vitality","add",1,0,1,True)
-temp1 = Temp("hp","mult",1,0,2,True)
+
+temp2 = Temp("vitality","add",1,0,10,True, True, False, None)
+temp1 = Temp("vitality","mult",1,0,1,True, True, False, None)
 
 
-flande.attributes.temp_stats.append(temp)
-flande.attributes.temp_stats.append(temp2)
-flande.attributes.temp_stats.append(temp1)
-
-flande.attributes.update_temp()
-
-flande.attributes.update_attributes()
-helpers.show_info_chara(flande)
+flande.attributes.temp_handler.add_temp([temp2])
 
 
 queue = [flande,remilia]
@@ -192,8 +200,11 @@ basicHandler.listeners.append(burn)
 
 
 basicHandler.add_events([atkEvent,atkEvent1])
-flande.effects_handler.process_effects()
 basicHandler.process_events()
+flande.effects_handler.process_effects()
+
+
+helpers.show_info_chara(remilia)
 
 basicHandler.remove_events()
 
