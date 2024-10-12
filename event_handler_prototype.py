@@ -5,6 +5,7 @@ from src.classes.temp.temp_class_handler import Temp
 from abstraction import get_data_from_id,get_all_json_from_path
 from src.classes.effects.effect_class_prototype import Burn
 import helpers
+from helpers import log,Log
 
 
 from dataclasses import dataclass
@@ -98,7 +99,7 @@ class BurnEverything(Listener):
         if event.caster is not None and isinstance(event.caster,Character) and self.owner != event.caster:
             if self.listen_type == event.event_type:
                 caster:Character = event.caster
-                print(f"[Event] {event.caster.name} cast the event [{event.event_type}] and activated the Ability [BurnEverything] from {self.owner.name}")
+                log(Log.EVENT, f"{event.caster.name} cast the event [{event.event_type}] and activated the Ability [BurnEverything] from {self.owner.name}")
 
                 temp = Temp("faith", "add", 1, 0, 10, True,True,False,caster.uuid)
                 self.owner.attributes.temp_handler.add_temp([temp])

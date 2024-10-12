@@ -2,6 +2,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import src.classes.entity_prototype as character
 import uuid
+from helpers import log,Log
 
 
 @dataclass
@@ -42,14 +43,20 @@ class TempHandler:
             self.list_temps.append(tmp)
             if isinstance(self._parent.return_parent(), character.Character):
                 parent: character.Character = self._parent.return_parent()
-                print(f"[Log][{parent.name}][TempHandler] Temp Status: {tmp.status} added.")
+
+                log(Log.DEBUG, f"Temp Status: {tmp.status} added.", f"[{parent.name}][Attributes][TempHandler]")
+
+
 
         self.update_temp()
         if isinstance(self._parent,character.Attributes):
-            print("[Log][TempHandler] Parent is a instance of Attributes, updating the the attributes")
+            parent: character.Character = self._parent.return_parent()
+
+            log(Log.DEBUG, f"Parent is a instance of Attributes, updating the the attributes", f"[{parent.name}][Attributes][TempHandler]")
             self._parent.update_attributes()
         else:
-            print(f"[Erro] Is not a Instance: {type(self._parent)}")
+            log(Log.ERROR, f"Is not a Instance: {type(self._parent)}", f"[Attributes][TempHandler]")
+
 
     def remove_temp(self, all_temp: bool = False, list_temp: list[Temp] | None = None) -> None:
         """
@@ -57,7 +64,7 @@ class TempHandler:
         """
         if all_temp:
             self.list_temps = []
-            print(f"[Log][TempHandler] All temps removed")
+            print(f"[LOG][TempHandler] All temps removed")
 
         if list_temp is not None:
             for temp in list_temp:
@@ -65,13 +72,15 @@ class TempHandler:
 
                 if isinstance(self._parent.return_parent(), character.Character):
                     parent: character.Character = self._parent.return_parent()
-                    print(f"[Log][{parent.name}][TempHandler] Temp Status: {temp.status} removed")
+                    log(Log.DEBUG, f"Temp Status: {temp.status} removed", f"[{parent.name}][Attributes][TempHandler]")
+
                 if isinstance(self._parent, character.Attributes):
-                    print("[Log][TempHandler] Parent is a instance of Attributes, updating the the attributes")
+                    parent: character.Character = self._parent.return_parent()
+                    log(Log.DEBUG, f"Parent is a instance of Attributes, updating the the attributes", f"[{parent.name}][Attributes][TempHandler]")
                     self._parent.update_attributes()
 
         else:
-            print("[Erro][TempHandler] Temp não existe")
+            print("[ERROR][TempHandler] Temp não existe")
 
 
     def update_time_turn(self, turn: int = 1 ,time: float = 1.0) -> None:

@@ -18,14 +18,14 @@ remilia_data = get_data_from_id(1,chara_data,"[characters]")
 sakuya_data = get_data_from_id(2,chara_data,"[characters]")
 artoria_data = get_data_from_id(300,chara_data,"[characters]")
 
-flande = Character(flandre_data,"Enemy",Attributes(flandre_data))
-remilia = Character(remilia_data,"Player",Attributes(remilia_data))
-sakuya =Character(sakuya_data,"Enemy",Attributes(sakuya_data))
-artoria = Character(artoria_data,"Player",Attributes(artoria_data))
+flande = Character(flandre_data,"Enemy")
+remilia = Character(remilia_data,"Player")
+sakuya =Character(sakuya_data,"Enemy")
+artoria = Character(artoria_data,"Player")
 
 
 
-artoria.attributes.add_xp(1000000,artoria) 
+#artoria.attributes.add_xp(1000000,artoria)
 #helpers.show_info_chara(remilia)
 
 

@@ -6,6 +6,7 @@ from dataclasses import dataclass
 import uuid
 import random
 import helpers
+from helpers import log,Log
 import abstraction
 import src.classes.damages.damageTypeC as damageTypes
 import src.classes.attacks.attackC as Attacks
@@ -45,10 +46,45 @@ class Status:
         self.maxSanity = self.sanity
 
         self.load = load
-        self.bonus = []
+
+
+    def get_info_dict(self):
+
+        data = {
+            "status": {
+                "hp": self.hp,
+                "max_hp": self.maxHp,
+                "regen_hp": self.regenHp,
+                "mp": self.mp,
+                "max_mp": self.maxMp,
+                "regen_mp": self.regenMp,
+                "sp": self.sp,
+                "max_sp": self.maxSp,
+                "regen_sp": self.regenSp,
+                "atk": self.atk,
+                "atk_m": self.atkM,
+                "df": self.df,
+                "df_m": self.dfM,
+                "res": self.res,
+                "res_m": self.resM,
+                "spd": self.spd,
+                "crit": self.crit,
+                "max_crit": self.maxCrit,
+                "dodge": self.dodge,
+                "item": self.item,
+                "sanity": self.sanity,
+                "max_sanity": self.maxSanity,
+                "load": self.load
+            }
+        }
+
+
+
+        return data
 
 
 class Potencial:
+
     def __init__(self, potential) -> None:
         self.vitality: float = potential["vitality"]
         self.constitution: float = potential["constitution"]
@@ -67,6 +103,10 @@ class Potencial:
 
 
 
+
+
+
+
 class Attributes:
     status: Status
     vitality: int = 0
@@ -81,7 +121,7 @@ class Attributes:
     dexterity: int = 0
     fortune: int = 0
     def __init__(self, data : dict, parent = None):
-        self._parent = parent
+        self._parent: Character | None = parent
 
         self.attributes = data['attributes']
         self.potential = data['potential']
@@ -107,6 +147,8 @@ class Attributes:
         self._dexterity: int = self.attributes["dexterity"]
         self._fortune: int = self.attributes["fortune"]
 
+
+
         self.vitality = self._vitality
         self.constitution = self._constitution
         self.strength = self._strength
@@ -126,6 +168,7 @@ class Attributes:
         self.temp_handler: TempHandler | None = TempHandler(self)
         self.init_status()
 
+
         self.resistancesBase : dict = self.resistances
         self.resistances: dict = {}
         self.update_resistances()
@@ -134,74 +177,54 @@ class Attributes:
         self.update_elements()
 
 
+    def get_all_attr(self) -> dict[str,dict[str,list]]:
+
+
+
+        data = {
+            "attributes": {
+                "vitality": ["Vitality",self.vitality,helpers.get_potencial_string(self.potential.vitality) ,self.temp_handler.get_add_bonus("vitality","add"), self.temp_handler.get_mult_bonus("vitality","mult")],
+                "constitution": ["Constitution",self.constitution, helpers.get_potencial_string(self.potential.constitution), self.temp_handler.get_add_bonus("constitution", "add"), self.temp_handler.get_mult_bonus("constitution", "mult")],
+                "fortitude": ["Fortitude",self.fortitude, helpers.get_potencial_string(self.potential.fortitude), self.temp_handler.get_add_bonus("fortitude", "add"), self.temp_handler.get_mult_bonus("fortitude", "mult")],
+                "strength": ["Strength",self.strength, helpers.get_potencial_string(self.potential.strength), self.temp_handler.get_add_bonus("strength", "add"), self.temp_handler.get_mult_bonus("strength", "mult")],
+                "attunement": ["Attunement",self.attunement, helpers.get_potencial_string(self.potential.attunement), self.temp_handler.get_add_bonus("attunement", "add"), self.temp_handler.get_mult_bonus("attunement", "mult")],
+                "intelligence": ["Intelligence",self.intelligence, helpers.get_potencial_string(self.potential.intelligence), self.temp_handler.get_add_bonus("intelligence", "add"), self.temp_handler.get_mult_bonus("intelligence", "mult")],
+                "will": ["Will",self.will, helpers.get_potencial_string(self.potential.will), self.temp_handler.get_add_bonus("will", "add"), self.temp_handler.get_mult_bonus("will", "mult")],
+                "faith": ["Faith",self.faith, helpers.get_potencial_string(self.potential.faith), self.temp_handler.get_add_bonus("faith", "add"), self.temp_handler.get_mult_bonus("faith", "mult")],
+                "arcane": ["Arcane",self.arcane, helpers.get_potencial_string(self.potential.arcane), self.temp_handler.get_add_bonus("arcane", "add"), self.temp_handler.get_mult_bonus("arcane", "mult")],
+                "dexterity": ["Dexterity",self.dexterity, helpers.get_potencial_string(self.potential.dexterity), self.temp_handler.get_add_bonus("dexterity", "add"), self.temp_handler.get_mult_bonus("dexterity", "mult")],
+                "fortune": ["Fortune",self.fortune, helpers.get_potencial_string(self.potential.fortune), self.temp_handler.get_add_bonus("fortune", "add"), self.temp_handler.get_mult_bonus("fortune", "mult")],
+
+            }
+        }
+
+
+        return data
+
+
+    def pos_init(self):
+        self.update_attributes()
+
+
     def return_parent(self) -> any:
         return self._parent
 
     def update_attributes(self):
-        add_vitality_bonus = 0
-        add_constitution_bonus = 0
-        add_fortitude_bonus = 0
-        add_strength_bonus = 0
-        add_attunement_bonus = 0
-        add_intelligence_bonus = 0
-        add_will_bonus = 0
-        add_faith_bonus = 0
-        add_arcane_bonus = 0
-        add_dexterity_bonus = 0
-        add_fortune_bonus = 0
+        log(Log.DEBUG, "Updating Attributes", f"[{self._parent.name}][Attributes]")
 
-        mult_vitality_bonus = 1
-        mult_constitution_bonus = 1
-        mult_fortitude_bonus = 1
-        mult_strength_bonus = 1
-        mult_attunement_bonus = 1
-        mult_intelligence_bonus = 1
-        mult_will_bonus = 1
-        mult_faith_bonus = 1
-        mult_arcane_bonus = 1
-        mult_dexterity_bonus = 1
-        mult_fortune_bonus = 1
+        self.vitality = trunc((self._vitality + self.temp_handler.get_add_bonus("vitality","add")) * self.temp_handler.get_mult_bonus("vitality","mult"))
+        self.constitution = trunc((self._constitution + self.temp_handler.get_add_bonus("constitution","add")) * self.temp_handler.get_mult_bonus("constitution","mult"))
+        self.fortitude = trunc((self._fortitude + self.temp_handler.get_add_bonus("fortitude","add")) * self.temp_handler.get_mult_bonus("fortitude","mult"))
+        self.strength = trunc((self._strength + self.temp_handler.get_add_bonus("strength","add")) * self.temp_handler.get_mult_bonus("strength","mult"))
+        self.attunement = trunc((self._attunement + self.temp_handler.get_add_bonus("attunement","add")) * self.temp_handler.get_mult_bonus("attunement","mult"))
+        self.intelligence = trunc((self._intelligence + self.temp_handler.get_add_bonus("intelligence","add")) * self.temp_handler.get_mult_bonus("intelligence","mult"))
+        self.will = trunc((self._will + self.temp_handler.get_add_bonus("will","add")) * self.temp_handler.get_mult_bonus("will","mult"))
+        self.faith = trunc((self._faith + self.temp_handler.get_add_bonus("faith","add")) * self.temp_handler.get_mult_bonus("faith","mult"))
+        self.arcane = trunc((self._arcane + self.temp_handler.get_add_bonus("arcane","add")) * self.temp_handler.get_mult_bonus("arcane","mult"))
+        self.dexterity = trunc((self._dexterity + self.temp_handler.get_add_bonus("dexterity","add")) * self.temp_handler.get_mult_bonus("dexterity","mult"))
+        self.fortune = trunc((self._fortune + self.temp_handler.get_add_bonus("fortune","add")) * self.temp_handler.get_mult_bonus("fortune","mult"))
 
-        if self.temp_handler is not None:
-            self.temp_handler.update_temp()
-
-            # ADD
-            add_vitality_bonus = self.temp_handler.get_add_bonus("vitality","add")
-            add_constitution_bonus = self.temp_handler.get_add_bonus("constitution","add")
-            add_fortitude_bonus = self.temp_handler.get_add_bonus("fortitude","add")
-            add_strength_bonus = self.temp_handler.get_add_bonus("strength","add")
-            add_attunement_bonus = self.temp_handler.get_add_bonus("attunement","add")
-            add_intelligence_bonus = self.temp_handler.get_add_bonus("intelligence","add")
-            add_will_bonus = self.temp_handler.get_add_bonus("will","add")
-            add_faith_bonus = self.temp_handler.get_add_bonus("faith","add")
-            add_arcane_bonus = self.temp_handler.get_add_bonus("arcane","add")
-            add_dexterity_bonus = self.temp_handler.get_add_bonus("dexterity","add")
-            add_fortune_bonus = self.temp_handler.get_add_bonus("fortune","add")
-            # Mult
-            mult_vitality_bonus = self.temp_handler.get_mult_bonus("vitality","mult")
-            mult_constitution_bonus = self.temp_handler.get_mult_bonus("constitution","mult")
-            mult_fortitude_bonus = self.temp_handler.get_mult_bonus("fortitude","mult")
-            mult_strength_bonus = self.temp_handler.get_mult_bonus("strength","mult")
-            mult_attunement_bonus = self.temp_handler.get_mult_bonus("attunement","mult")
-            mult_intelligence_bonus = self.temp_handler.get_mult_bonus("intelligence","mult")
-            mult_will_bonus = self.temp_handler.get_mult_bonus("will","mult")
-            mult_faith_bonus = self.temp_handler.get_mult_bonus("faith","mult")
-            mult_arcane_bonus = self.temp_handler.get_mult_bonus("arcane","mult")
-            mult_dexterity_bonus = self.temp_handler.get_mult_bonus("dexterity","mult")
-            mult_fortune_bonus = self.temp_handler.get_mult_bonus("fortune","mult")
-
-
-        self.vitality = trunc((self._vitality + add_vitality_bonus) * mult_vitality_bonus)
-        self.constitution = trunc((self._constitution + add_constitution_bonus) * mult_constitution_bonus)
-        self.fortitude = trunc((self._fortitude + add_fortitude_bonus) * mult_fortitude_bonus)
-        self.strength = trunc((self._strength + add_strength_bonus) * mult_strength_bonus)
-        self.attunement = trunc((self._attunement + add_attunement_bonus) * mult_attunement_bonus)
-        self.intelligence = trunc((self._intelligence + add_intelligence_bonus) * mult_intelligence_bonus)
-        self.will = trunc((self._will + add_will_bonus) * mult_will_bonus)
-        self.faith = trunc((self._faith + add_faith_bonus) * mult_faith_bonus)
-        self.arcane = trunc((self._arcane + add_arcane_bonus) * mult_arcane_bonus)
-        self.dexterity = trunc((self._dexterity + add_dexterity_bonus) * mult_dexterity_bonus)
-        self.fortune = trunc((self._fortune + add_fortune_bonus) * mult_fortune_bonus)
+        self.update_status(self._parent)
 
 
 
@@ -232,6 +255,7 @@ class Attributes:
             self._dexterity += 1
             self._fortune += 1
 
+            self.update_attributes()
             self.update_status(owner)
 
 
@@ -314,37 +338,38 @@ class Attributes:
 
     def update_status(self,owner : Character):
 
+        log(Log.DEBUG, "Updating Status",  f"[{self._parent.name}][Attributes][Status]")
 
         #Vitality
-        hp = trunc((self.vitality * 500 * self.potential.vitality) * 1)
-        load = trunc((self.vitality * 10 * self.potential.vitality) * .5)
+        hp = trunc(((self.vitality * 500 * self.potential.vitality) + self.temp_handler.get_add_bonus("hp","add")) * self.temp_handler.get_mult_bonus("hp","mult"))
+        load = trunc(((self.vitality * 10 * self.potential.vitality) * .5) + self.temp_handler.get_add_bonus("load","add")) * self.temp_handler.get_mult_bonus("load","mult")
         #Constitution
-        res = trunc((self.constitution * 5 * self.potential.constitution) * 1)
-        hp_regen = trunc(((hp * .01) * self.constitution * self.potential.constitution) * .1)
+        res = trunc((self.constitution * 5 * self.potential.constitution) + self.temp_handler.get_add_bonus("res","add")) * self.temp_handler.get_mult_bonus("res","mult")
+        hp_regen = trunc((((hp * .01) * self.constitution * self.potential.constitution) * .1) + self.temp_handler.get_add_bonus("hp_regen","add")) * self.temp_handler.get_mult_bonus("hp_regen","mult")
         #Strength
-        atk = trunc((self.strength * 20 * self.potential.strength) * 1)
+        atk = trunc((self.strength * 20 * self.potential.strength) + self.temp_handler.get_add_bonus("atk","add")) * self.temp_handler.get_mult_bonus("atk","mult")
         #Fortitude
-        df = trunc(((self.fortitude + (self.strength * .5 * self.potential.strength)) * 10 * self.potential.fortitude) * 1)
-        sp = trunc((self.fortitude * 100 * self.potential.fortitude) * .5)
-        sp_regen = trunc(((sp * .01) * self.fortitude * self.potential.constitution) * .1)
+        df = trunc((self.fortitude + (self.strength * .5 * self.potential.strength) * 10 * self.potential.fortitude) + self.temp_handler.get_add_bonus("df","add")) * self.temp_handler.get_mult_bonus("df","mult")
+        sp = trunc(((self.fortitude * 100 * self.potential.fortitude) * .5) + self.temp_handler.get_add_bonus("sp","add")) * self.temp_handler.get_mult_bonus("sp","mult")
+        sp_regen = trunc((((sp * .01) * self.fortitude * self.potential.constitution) * .1) + self.temp_handler.get_add_bonus("sp_regen","add")) * self.temp_handler.get_mult_bonus("sp_regen","mult")
         #Attunement
-        mp = trunc((self.attunement * 100 * self.potential.attunement) * 1)
+        mp = trunc((self.attunement * 100 * self.potential.attunement) + self.temp_handler.get_add_bonus("mp","add")) * self.temp_handler.get_mult_bonus("mp","mult")
         #Intelligence
-        atk_m = trunc(((self.intelligence + (self.arcane * .5 * self.potential.arcane)) * 10 * self.potential.intelligence) * 1)
-        df_m = trunc(((self.intelligence + (self.faith * .5 * self.potential.faith)) * 10 * self.potential.intelligence) * .5)
+        atk_m = trunc((((self.intelligence + (self.arcane * .5 * self.potential.arcane)) * 10 * self.potential.intelligence) + self.temp_handler.get_add_bonus("atk_m","add"))) * self.temp_handler.get_mult_bonus("atk_m","mult")
+        df_m = trunc((((self.intelligence + (self.faith * .5 * self.potential.faith)) * 10 * self.potential.intelligence) * .5) + self.temp_handler.get_add_bonus("df_m","add")) * self.temp_handler.get_mult_bonus("df_m","mult")
         #Will
-        res_m = trunc((self.will * 5 * self.potential.will) * 1)
-        mp_regen = trunc(((mp * .01) * self.will * self.potential.will) * .1)
-        sanity = trunc((self.will * 10 * self.potential.will) * .5)
+        res_m = trunc((self.will * 5 * self.potential.will) + self.temp_handler.get_add_bonus("res_m","add")) * self.temp_handler.get_mult_bonus("res_m","mult")
+        mp_regen = trunc((((mp * .01) * self.will * self.potential.will) * .1) + self.temp_handler.get_add_bonus("mp_regen","add")) * self.temp_handler.get_mult_bonus("mp_regen","mult")
+        sanity = trunc(((self.will * 10 * self.potential.will) * .5) + self.temp_handler.get_add_bonus("sanity","add")) * self.temp_handler.get_mult_bonus("sanity","mult")
         #faith - voltar depois para adicionar os elementos
         #arcane
         #dexterity
-        spd = trunc((self.dexterity * 10 * self.potential.dexterity) * 1)
-        dodge = trunc(((self.dexterity + (self.fortune * .5 * self.potential.fortune)) * 10 * self.potential.dexterity) * .5)
-        max_crit = 200 + (self.dexterity * self.potential.dexterity)
+        spd = trunc((self.dexterity * 10 * self.potential.dexterity) + self.temp_handler.get_add_bonus("spd","add")) * self.temp_handler.get_mult_bonus("spd","mult")
+        dodge = trunc((((self.dexterity + (self.fortune * .5 * self.potential.fortune)) * 10 * self.potential.dexterity) * .5) + self.temp_handler.get_add_bonus("dodge","add")) * self.temp_handler.get_mult_bonus("dodge","mult")
+        max_crit = (200 + (self.dexterity * self.potential.dexterity) + self.temp_handler.get_add_bonus("max_crit","add")) * self.temp_handler.get_mult_bonus("max_crit","mult")
         #fortune
-        crit = ((self.fortune + (self.arcane * .01 * self.potential.arcane)) * .4 * self.potential.fortune) * .5
-        item = trunc(((self.fortune + (self.faith * 10 * self.potential.faith)) * .1 * self.potential.fortitude) * .5)
+        crit = (((self.fortune + (self.arcane * .01 * self.potential.arcane)) * .4 * self.potential.fortune) * .5 + self.temp_handler.get_add_bonus("crit","add")) * self.temp_handler.get_mult_bonus("crit","mult")
+        item = trunc((((self.fortune + (self.faith * 10 * self.potential.faith)) * .1 * self.potential.fortitude) * .5) + self.temp_handler.get_add_bonus("item","add")) * self.temp_handler.get_mult_bonus("item","mult")
 
 
 
@@ -425,6 +450,7 @@ class Attributes:
 
 
 
+
 class Character:
     attacks: list[Attacks.Attack]
 
@@ -446,18 +472,22 @@ class Character:
 
         self.ai : Ai = Ai("attack_all",self.uuid,_type)
 
+        self.ids_attacks: list[int] = data_chara['attacks']
+
+        self.attacks = abstraction.get_attack_class(self.ids_attacks)
+
         self.attributes: Attributes | None  = Attributes(data_chara,self)
 
-        self.ids_attacks: list[int] = data_chara['attacks']
-        self.get_attacks()
-
-        self.effects_handler: EffectHandler | None = EffectHandler()
+        self.update_damage_attacks()
 
 
 
+        self.effects_handler: EffectHandler | None = EffectHandler(self)
 
 
-        print(f"[Log][Character][{self.name}]-->[{self.uuid}]")
+
+
+        log(Log.DEBUG, f"[{self.name}]-->[{self.uuid}]", "[Character]")
 
 
 
@@ -503,6 +533,7 @@ class Character:
 
     def get_attacks(self):
         attack : Attacks.Attack
+        print(self.ids_attacks)
         self.attacks = abstraction.get_attack_class(self.ids_attacks)
         self.update_damage_attacks()
 

@@ -25,7 +25,7 @@
             "potential":{
                     "vitality": 2,
                     "constitution": 1.5,
-                    "strength": 2,
+                    "strength": 2.0,
                     "fortitude": 1.6,
                     "attunement": 1.0,
                     "intelligence": 1,

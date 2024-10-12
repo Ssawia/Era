@@ -1,14 +1,15 @@
 from __future__ import annotations
-
-from inspect import stack
-
 from src.classes.effects.effect_class_prototype import Effect
+from helpers import log, Log
 import uuid
 
 class EffectHandler:
     effects: list[Effect] = []
     effects_ids: list[uuid.UUID] = []
     typo_list: list[str] = []
+
+    def __init__(self, parent) -> None:
+        self._parent = parent
 
     def update_effects_uuid(self):
         if len(self.effects) > 0:
@@ -40,7 +41,7 @@ class EffectHandler:
                 self.effects.append(effect)
                 self.update_effects_uuid()
                 self.update_effect_typos()
-                print(f"[+] Effect {effect.name} added to Effects Handler")
+                log(Log.DEBUG, f"Effect {effect.name} added to Effect Handler", f"[{self._parent.name}][EffectHandler]")
             elif effect.typo in self.typo_list and effect.is_stackable:
                 self.update_stack(effect.typo, effect)
 

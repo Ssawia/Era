@@ -2,6 +2,7 @@ from __future__ import annotations
 import src.classes.entity_prototype as ch
 import src.classes.temp.temp_class_handler as tp
 import uuid
+from helpers import log, Log
 
 
 class Effect:
@@ -26,7 +27,8 @@ class Effect:
 
     def end_effect(self):
         self.active = False
-        print(f"[Log] Effect {self.name} has ended")
+        log(Log.DEBUG,f"Effect {self.name} has ended", f"[{self.owner.name}][EffectHandler][Effect]")
+
         if self.has_temp:
             if isinstance(self.temp_owner,ch.Character) and self.temp_owner.attributes is not None and self.temp_owner.attributes.temp_handler is not None:
                 self.temp_owner.attributes.temp_handler.remove_temp(list_temp=self.temp_objs)
@@ -44,7 +46,7 @@ class Burn(Effect):
     def process_effect(self):
         if self.turn > 0 and self.active:
             dmg = self.owner.attributes.status.hp * (0.1 * self.stacks)
-            print(f"{self.owner.name} tomou {dmg} de burn")
+            log(Log.MAIN, f"took {dmg} burn damage", f"[{self.owner.name}][Effect]")
             self.owner.attributes.status.hp -= dmg
             self.turn -= 1
 

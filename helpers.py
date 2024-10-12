@@ -1,58 +1,185 @@
 from __future__ import annotations
+
+from math import trunc
+from tkinter.ttk import Treeview
+
 import src.classes.entity_prototype as entities
 import random
 from typing import List
+from enum import Enum
+
+class Log(Enum):
+    DEBUG = '\033[32m'
+    INFO = '\033[34m'
+    ERROR = '\033[31m'
+    WARNING = '\033[33m'
+    MAIN = '\033[35m'
+    EVENT = '\033[36m'
+
+def log(typ: Log, message: str, append : str = ''):
+
+
+    reset = '\033[0m'
+
+    msg = f"[{typ.value}{typ.name}{reset}]{append} {message}"
+
+    print(msg)
+
+
+
+
+
+
+def get_potencial_string(number: float) -> str:
+    potencial = {
+        1.0: "G",
+        1.1: "F",
+        1.2: "E",
+        1.3: "D",
+        1.4: "C",
+        1.5: "B",
+        1.6: "A",
+        1.7: "S",
+        1.8: "SS",
+        1.9: "SSS",
+        2.0: "EX"
+    }
+
+    if 1.0 <= number <= 2.0:
+        return potencial[number]
+    else:
+        return potencial[1.0]
+
 
 def show_info_chara(obj : entities.Character):
-    resistances = ""
-    elements = ""
+    if obj.alive:
+        alive = "Alive"
+    else:
+        alive = "Dead"
 
-    for chave, valor in obj.attributes.resistances.items():
-        resistances += f"{chave}: {valor}({obj.attributes.resistancesBase[chave]})|"
-
-    for chave, valor in obj.attributes.elements.items():
-        elements += f"{chave}: {valor}|"
-    strg = f'''
-[{obj.name}]-->[Uuid: {obj.uuid}]
+    data = f'''
+[{obj.name}]-->[Uuid: {obj.uuid}]-->[{alive}]
+|Name: {obj.name}
+|Gender: {obj.gender}
+|Age: {obj.age}
+|Desc: {obj.desc}
 [Level]: {obj.attributes.level}/{obj.attributes.max_level} XP: {obj.attributes.xp}/{obj.attributes.max_xp}
 [Attributes]
-|Vitality: {obj.attributes.vitality}(+{obj.attributes.temp_handler.get_add_bonus("vitality","add")}/*{obj.attributes.temp_handler.get_mult_bonus("vitality","mult")})
-|Constitution: {obj.attributes.constitution}(+{obj.attributes.temp_handler.get_add_bonus("constitution","add")}/*{obj.attributes.temp_handler.get_mult_bonus("constitution","mult")})
-|Strength: {obj.attributes.strength}(+{obj.attributes.temp_handler.get_add_bonus("strength","add")}/*{obj.attributes.temp_handler.get_mult_bonus("strength","mult")})
-|Fortitude: {obj.attributes.fortitude}(+{obj.attributes.temp_handler.get_add_bonus("fortitude","add")}/*{obj.attributes.temp_handler.get_mult_bonus("fortitude","mult")})
-|Attunement: {obj.attributes.attunement}(+{obj.attributes.temp_handler.get_add_bonus("attunement","add")}/*{obj.attributes.temp_handler.get_mult_bonus("attunement","mult")})
-|Intelligence: {obj.attributes.intelligence}(+{obj.attributes.temp_handler.get_add_bonus("intelligence","add")}/*{obj.attributes.temp_handler.get_mult_bonus("intelligence","mult")})
-|Will: {obj.attributes.will}(+{obj.attributes.temp_handler.get_add_bonus("will","add")}/*{obj.attributes.temp_handler.get_mult_bonus("will","mult")})
-|Faith: {obj.attributes.faith}(+{obj.attributes.temp_handler.get_add_bonus("faith","add")}/*{obj.attributes.temp_handler.get_mult_bonus("faith","mult")})
-|Arcane: {obj.attributes.arcane}(+{obj.attributes.temp_handler.get_add_bonus("arcane","add")}/*{obj.attributes.temp_handler.get_mult_bonus("arcane","mult")})
-|Dexterity: {obj.attributes.dexterity}(+{obj.attributes.temp_handler.get_add_bonus("dexterity","add")}/*{obj.attributes.temp_handler.get_mult_bonus("dexterity","mult")})
-|Fortune: {obj.attributes.fortune}(+{obj.attributes.temp_handler.get_add_bonus("fortune","add")}/*{obj.attributes.temp_handler.get_mult_bonus("fortune","mult")})
+{get_info_attributes(obj)}
 [Status]
-|HP: {obj.attributes.status.hp}/{obj.attributes.status.maxHp}({obj.attributes.status.regenHp}) |SP: {obj.attributes.status.sp}/{obj.attributes.status.maxSp}({obj.attributes.status.regenSp}) |MP: {obj.attributes.status.mp}/{obj.attributes.status.maxMp}({obj.attributes.status.regenMp}) |SY: {obj.attributes.status.sanity}/{obj.attributes.status.maxSanity}
-|ATK: {obj.attributes.status.atk} |ATKM: {obj.attributes.status.atkM} |DEF: {obj.attributes.status.df} |DEFM: {obj.attributes.status.dfM} |RES: {obj.attributes.status.res} |RESM: {obj.attributes.status.resM} 
-|DGE: {obj.attributes.status.dodge} |SPD: {obj.attributes.status.spd} |CRIT: {obj.attributes.status.crit:.1f}% |CRITD: {obj.attributes.status.maxCrit:.1f}% |ITEM: {obj.attributes.status.item}% |LOAD: {obj.attributes.status.load}/kg
-
-[Elements]: {elements}
-[Resistances]: {resistances}
+{get_info_status(obj)}
+[Elements]
+{get_info_elements(obj)}
+[Resistances]
+{get_info_resistances(obj)}
 '''
-    print(strg)
+    print(data)
+
+def get_info_resistances(obj: entities.Character) -> str:
+    data = ""
+
+
+
+    cont = 1
+    for chave, valor in obj.attributes.resistances.items():
+        data += f"|{chave}: {valor}({obj.attributes.resistancesBase[chave]})".ljust(30)
+
+        cont += 1
+        if cont > 4:
+            data += "\n"
+            cont = 1
+
+    return data
+
+def get_info_elements(obj: entities.Character) -> str:
+    data = ""
+
+    cont = 1
+    for chave, valor in obj.attributes.elements.items():
+        data += f"|{chave}: {valor}".ljust(30)
+
+        cont += 1
+
+        if cont > 4:
+            data += "\n"
+            cont = 1
+
+    return data
+
+
+
+def get_info_attributes(obj: entities.Character) -> str:
+    info = obj.attributes.get_all_attr()['attributes']
+    data = ""
+    cont = 1
+    for key,item in enumerate(info.items()):
+        chave = item[1]
+
+        data += f"|{chave[0]}({chave[2]}): {chave[1]}(+{chave[3]}/*{chave[4]})".ljust(30)
+
+        cont += 1
+
+        if cont > 4:
+            data += "\n"
+            cont = 1
+
+
+
+    return data
+
+
+def get_info_status(obj: entities.Character) -> str:
+    info = obj.attributes.status.get_info_dict()['status']
+    data = ""
+
+    str_just = 30
+
+    cont = 1
+    for index,item in enumerate(info.keys()):
+
+        info[item] = trunc(info[item])
+
+        if item == f"max_hp" or item == "max_mp" or item == "max_sp" or item == "max_sanity" or item == "regen_hp" or item == "regen_mp" or item == "regen_sp":
+            continue
+
+        st = ''
+
+        if "_" in item:
+            st = item.replace("_","").upper()
+        else:
+            st = item.upper()
+
+
+        if item == "hp" or item == "mp" or item == "sp":
+            max_s = f"max_{item}"
+            regen = f"regen_{item}"
+            data += f"|{st}: {info[item]}/{info[max_s]}/{info[regen]}(+{obj.attributes.temp_handler.get_add_bonus(info[item],"add")}/*{obj.attributes.temp_handler.get_mult_bonus(info[item],"mult")})".ljust(str_just)
+        elif item == "sanity":
+            max_s = f"max_{item}"
+            data += f"|SY: {info[item]}/{info[max_s]}(+{obj.attributes.temp_handler.get_add_bonus(info[item],"add")}/*{obj.attributes.temp_handler.get_mult_bonus(info[item],"mult")}) ".ljust(str_just)
+        else:
+            data += f"|{st}: {info[item]}(+{obj.attributes.temp_handler.get_add_bonus(info[item],"add")}/*{obj.attributes.temp_handler.get_mult_bonus(info[item],"mult")}) ".ljust(str_just)
+
+
+        cont += 1
+
+        if cont > 4:
+            data += "\n"
+            cont = 1
+
+
+    return data
+
 
 
 
 
 def show_info_queue(queue: List[entities.Character]):
-    print("=="*40)
-    for index,chara in  enumerate(queue):
+
+    while True:
+        print("==" * 40)
+        for index, chara in enumerate(queue):
             chara.get_status(index)
-    
-    msg = input('More Informations ? y n :')
-
-    check = False
-
-    if msg == "y":
-        check = True
-    
-    while check:
         check_id = input("[999 exit] ID: ")
 
         if check_id == "999":
@@ -61,7 +188,9 @@ def show_info_queue(queue: List[entities.Character]):
         if len(check_id) > 0:
             try:
                 sid = int(check_id)
-                show_info_chara(queue[sid])
+                obj = queue[sid]
+                obj.attributes.update_attributes()
+                show_info_chara(obj)
             except Exception as e:
                 print(f"ID: {e}")
         else:
