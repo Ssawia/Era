@@ -170,11 +170,8 @@ class Handler:
 
 
 
-temp2 = Temp("vitality","add",1,0,10,True, True, False, None)
-temp1 = Temp("vitality","mult",1,0,1,True, True, False, None)
 
 
-flande.attributes.temp_handler.add_temp([temp2])
 
 
 queue = [flande,remilia]

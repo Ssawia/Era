@@ -7,7 +7,8 @@
     "characters_path": "src/data/chara/",
     "attributes": [
 
-    ]
+    ],
+    "debug": true
     
 
 

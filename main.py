@@ -4,6 +4,7 @@ import json
 from src.classes.entity_prototype import Character,Attributes
 from abstraction import get_data_from_id,get_all_json_from_path
 from src.classes.battle import Battle
+from src.classes.temp.temp_class_handler import Temp
 
 
 
@@ -28,7 +29,7 @@ artoria = Character(artoria_data,"Player")
 #artoria.attributes.add_xp(1000000,artoria)
 #helpers.show_info_chara(remilia)
 
-
+remilia.abilities.append('Phoenix Blessing')
 
 queue : list[Character] = [flande,remilia,sakuya,artoria]
 

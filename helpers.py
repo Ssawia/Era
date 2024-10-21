@@ -4,12 +4,18 @@ from math import trunc
 from tkinter.ttk import Treeview
 
 import src.classes.entity_prototype as entities
+import src.classes.temp.temp_class_handler as tp
 import random
 from typing import List
 from enum import Enum
+import json
+
+config = json.load(open('config/config.json'))
+is_debug = config['debug']
 
 class Log(Enum):
     DEBUG = '\033[32m'
+    CHAT = '\033[94m'
     INFO = '\033[34m'
     ERROR = '\033[31m'
     WARNING = '\033[33m'
@@ -17,13 +23,19 @@ class Log(Enum):
     EVENT = '\033[36m'
 
 def log(typ: Log, message: str, append : str = ''):
-
-
     reset = '\033[0m'
 
-    msg = f"[{typ.value}{typ.name}{reset}]{append} {message}"
 
-    print(msg)
+    if is_debug and typ == Log.DEBUG:
+        msg = f"[{typ.value}{typ.name}{reset}]{append} {message}"
+        print(msg)
+    else:
+        msg = ''
+        print(msg,end="")
+
+    if typ != Log.DEBUG:
+        msg = f"[{typ.value}{typ.name}{reset}]{append} {message}"
+        print(msg)
 
 
 
@@ -59,11 +71,17 @@ def show_info_chara(obj : entities.Character):
 
     data = f'''
 [{obj.name}]-->[Uuid: {obj.uuid}]-->[{alive}]
+[Attributes]-->[Uuid: {obj.attributes.uid}]
+[TempHandler]-->[Uuid: {obj.attributes.temp_handler.uid}|{obj.attributes.temp_handler.name}]
 |Name: {obj.name}
 |Gender: {obj.gender}
 |Age: {obj.age}
 |Desc: {obj.desc}
 [Level]: {obj.attributes.level}/{obj.attributes.max_level} XP: {obj.attributes.xp}/{obj.attributes.max_xp}
+[Abilities]
+{obj.abilities}
+[Temp]
+{get_info_temps(obj)}
 [Attributes]
 {get_info_attributes(obj)}
 [Status]
@@ -75,6 +93,17 @@ def show_info_chara(obj : entities.Character):
 '''
     print(data)
 
+def get_info_temps(obj: entities.Character):
+    data = ""
+    temp : tp.Temp
+    if len(obj.attributes.temp_handler.list_temps) > 0:
+        for temp in obj.attributes.temp_handler.list_temps:
+            data += f"|Status: {temp.status} Type: {temp.typo} Turn: {temp.turn} Time: {temp.time} Value: {temp.value}\n"
+
+    return data
+
+
+
 def get_info_resistances(obj: entities.Character) -> str:
     data = ""
 
@@ -82,7 +111,8 @@ def get_info_resistances(obj: entities.Character) -> str:
 
     cont = 1
     for chave, valor in obj.attributes.resistances.items():
-        data += f"|{chave}: {valor}({obj.attributes.resistancesBase[chave]})".ljust(30)
+        reskey = chave + "_Res"
+        data += f"|{chave}: {valor}(+{obj.attributes.temp_handler.get_add_bonus(reskey,"add")}/*{obj.attributes.temp_handler.get_mult_bonus(reskey,"mult")})({obj.attributes.resistancesBase[chave]})".ljust(30)
 
         cont += 1
         if cont > 4:
@@ -96,7 +126,7 @@ def get_info_elements(obj: entities.Character) -> str:
 
     cont = 1
     for chave, valor in obj.attributes.elements.items():
-        data += f"|{chave}: {valor}".ljust(30)
+        data += f"|{chave}: {valor}(+{obj.attributes.temp_handler.get_add_bonus(chave,"add")}/*{obj.attributes.temp_handler.get_mult_bonus(chave,"mult")})".ljust(30)
 
         cont += 1
 
@@ -223,7 +253,7 @@ def check_line(line: str,lines:dict[str,list[str]]) -> bool:
 def say_line(chara: entities.Character,line_type: str):
     if check_line(line_type,chara.lines):
         line = random.choice(chara.lines[line_type])
-        print(f"{chara.name}: {line}")
+        log(Log.CHAT,line,f"[{chara.name}]")
 
 
 def check_if_attributes_exist(owner: entities.Character):

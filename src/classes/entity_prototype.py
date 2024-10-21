@@ -10,9 +10,7 @@ from helpers import log,Log
 import abstraction
 import src.classes.damages.damageTypeC as damageTypes
 import src.classes.attacks.attackC as Attacks
-from src.classes.temp.temp_class_handler import TempHandler
-
-
+from src.classes.temp.temp_class_handler import TempHandler, Temp
 
 
 
@@ -121,6 +119,7 @@ class Attributes:
     dexterity: int = 0
     fortune: int = 0
     def __init__(self, data : dict, parent = None):
+        self.uid =  uuid.uuid4()
         self._parent: Character | None = parent
 
         self.attributes = data['attributes']
@@ -165,7 +164,7 @@ class Attributes:
         self.bonus = []
 
         self.potential: Potencial = Potencial(self.potential)
-        self.temp_handler: TempHandler | None = TempHandler(self)
+        self.temp_handler: TempHandler = TempHandler(self,self._parent.name)
         self.init_status()
 
 
@@ -294,7 +293,10 @@ class Attributes:
                 attr_multply = self.potential.arcane
                 attr_stats = self.arcane
                 res_base = self.status.resM
-            res = ((attr_stats * 10 * attr_multply) * resBase) + res_base
+
+            res_key = key + "_Res"
+
+            res = (((attr_stats * 10 * attr_multply) * resBase) + res_base + self.temp_handler.get_add_bonus(res_key,"add")) * self.temp_handler.get_mult_bonus(res_key,"mult")
             resD[key] = trunc(res)
         
         self.resistances = resD
@@ -328,7 +330,8 @@ class Attributes:
                 atk_base = self.status.atkM
 
 
-            res = (attr_stats * 10 * attr_multply) + atk_base
+            res = ((attr_stats * 10 * attr_multply) + atk_base + self.temp_handler.get_add_bonus(key,"add")) * self.temp_handler.get_mult_bonus(key,"mult")
+
             res_d[key] = trunc(res)
 
         self.elements = res_d
@@ -480,6 +483,8 @@ class Character:
 
         self.update_damage_attacks()
 
+        self.abilities = []
+
 
 
         self.effects_handler: EffectHandler | None = EffectHandler(self)
@@ -488,6 +493,18 @@ class Character:
 
 
         log(Log.DEBUG, f"[{self.name}]-->[{self.uuid}]", "[Character]")
+
+
+    def check_abilities(self):
+        for aby in self.abilities:
+            if aby == "Phoenix Blessing" and aby not in self.attributes.temp_handler.flags:
+                log(Log.DEBUG, f"{self.name} has the ability Phoenix Blessing")
+                test = Temp("Fire","add",0,0,1000,True,False,False, "Phoenix Blessing")
+                self.attributes.temp_handler.add_temp([test])
+
+    def on_death_abylity(self):
+        self.attributes.temp_handler.remove_temp(flags=self.abilities)
+
 
 
 
@@ -596,11 +613,12 @@ class Character:
                     
                     #print(f"{self.name} tomou {dmgType.formula}*[{crit_dmg}]-[{ty}:{df}]-[RES:{res}]=[{dmg}] de dano do tipo {dmgType.defType}")
                     
-            
-            print(f"{owner.name} used {attack_name} and dealt {total_dmg} {types} damage to {self.name}")
+
+            log(Log.INFO, f"{owner.name} used {attack_name} and dealt {total_dmg} {types} damage to {self.name}")
             if helpers.check_line('damage',self.lines):
                 line = random.choice(self.lines['damage'])
-                print(f"{self.name}: {line}")
+                log(Log.CHAT,line,f"[{self.name}]")
+
             self.is_alive()
 
         else:

@@ -3,6 +3,7 @@ import src.classes.entity_prototype as ent
 import src.classes.attacks.attackC as atk
 from random import choice
 import helpers
+from helpers import Log,log
 
 
 
@@ -78,10 +79,10 @@ class Ai:
                     elif target == "single":
                          dmg_list = select_ai(target_limit,targets_list,host,attack.name)
                     elif target == "multi":
-                         print(f'{host.name} chose {attack.name} attack everyone!')
+                         log(Log.INFO,f'{host.name} chose attack everyone with {attack.name}!')
                          dmg_list = targets_list
                     elif target == "self":
-                         print(f'{host.name} chose {attack.name} used on himself')
+                         log(Log.INFO, f'{host.name} chose {attack.name} used on himself')
                          dmg_list.append(host)
                     
 
@@ -101,7 +102,7 @@ def select_ai(target_limit, targets_list: list[ent.Character],host: ent.Characte
           target_choice = choice(targets_list)
 
 
-          print(f'{host.name} chose {attack_name} and attack {target_choice.name}')
+          log(Log.INFO,f'{host.name} chose {attack_name} and attack {target_choice.name}')
           dmg_list.append(target_choice)
           targets_list.remove(target_choice)
 

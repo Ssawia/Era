@@ -1,5 +1,6 @@
 import src.classes.entity_prototype as Chara
 import src.classes.damages.damageTypeC as dmgType
+from helpers import Log, log
 
 import random
 
@@ -23,7 +24,7 @@ class Fire(dmgType.DamageType):
 
         num = random.randint(1,100)
         if num <= chance_to_burn:
-            print(f"{target.name} was burned alive")
+            log(Log.INFO,f"{target.name} was burned alive",f"[AttackEffect][{owner.name}]")
             #target.alive = False
 
 

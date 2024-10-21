@@ -4,12 +4,12 @@ from helpers import log, Log
 import uuid
 
 class EffectHandler:
-    effects: list[Effect] = []
-    effects_ids: list[uuid.UUID] = []
-    typo_list: list[str] = []
 
     def __init__(self, parent) -> None:
         self._parent = parent
+        self.effects: list[Effect] = []
+        self.effects_ids: list[uuid.UUID] = []
+        self.typo_list: list[str] = []
 
     def update_effects_uuid(self):
         if len(self.effects) > 0:

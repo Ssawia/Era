@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from src.classes.entity_prototype import Character
 import helpers
+from helpers import log,Log
 from random import choice
 
 #Provavelmente isso não é a melhor maneira de implementar várias classes, mas por enquanto vai dar certo, confia
@@ -63,33 +64,66 @@ class Battle:
         self.turn += 1
 
     def turn_player(self, chara: Character):
-        print(f"{chara.name} turn.")
-        print(
-            f"[P][{chara.nick}] HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} SPD: {chara.attributes.status.spd}")
-        print("======================================================================")
         while self.pturn and self.check_battle_conditions():
+            print("======================================================================")
+            log(Log.INFO, f"{chara.name} turn", f"[Turn: {self.turn}]")
+            log(Log.INFO,
+                f"HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} SPD: {chara.attributes.status.spd}",
+                f"[Player][{chara.nick}]")
+            print("======================================================================")
+
             print("[1] Atacar")
             print("[2] Status")
             print("[3] Passar")
-            msg = int(input(f"Digite o menu: "))
+            print("[4] Actions")
+            msg = input(f"> ")
 
-            if msg == 1:
+            if msg == "1":
                 self.phase = "Attack"
                 self.menu_attack(chara)
                 self.menu_pass(chara)
-            elif msg == 2:
+            elif msg == "2":
                 self.phase = "Status"
                 self.menu_status()
-            elif msg == 3:
+            elif msg == "3":
                 self.phase = "Pass"
                 self.menu_pass(chara)
+            elif msg == "4":
+                self.phase = "Debug"
+                self.menu_debug(chara)
+
+
+    def menu_debug(self,chara: Character) -> None:
+        print("[1] Abilities")
+        msg = input("debug> ")
+        if msg == "1":
+
+            print("[1] Add Ability")
+            print("[2] Delete all abilities")
+            print(f"Object Abilities: {chara.abilities}")
+            msg = input("debug/abilities> ")
+            if msg == "1":
+                ab = input("debug/abilities/add> ")
+                if ab not in chara.abilities and len(ab) > 0:
+                    chara.abilities.append(ab)
+                    chara.check_abilities()
+                else:
+                    log(Log.WARNING, "Ability already exist in object")
+
+            elif msg == "2":
+                chara.on_death_abylity()
+
+
+
+
 
     def turn_enemy(self, chara: Character):
 
         if self.check_battle_conditions():
-            print(f"{chara.name} turn.")
-            print(
-                f"[E][{chara.nick}] HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} SPD: {chara.attributes.status.spd}")
+            log(Log.INFO, f"{chara.name} turn", f"[Turn: {self.turn}]")
+            log(Log.INFO,
+                f"HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} SPD: {chara.attributes.status.spd}",
+                f"[Enemy][{chara.nick}]")
             chara.ai.decide_attack(chara, self.queue, on_enemy=True)
             self.menu_pass(chara)
 
@@ -112,7 +146,10 @@ class Battle:
         for char in self.queue:
             if helpers.check_line(phrase, char.lines):
                 line = choice(char.lines[phrase])
-                print(f"{char.name}: {line}")
+                log(Log.CHAT,line,f"[{char.name}]")
+
+
+
 
     def get_len_types(self):
         char: Character
@@ -137,7 +174,6 @@ class Battle:
 
         print("======================================================================")
         self.lines_battle_start('battle_start')
-        print("======================================================================")
 
         while self.check_battle_conditions():
 
@@ -148,11 +184,18 @@ class Battle:
 
             chara = self.queue[self.turn]
 
+            chara.check_abilities()
+
+
             if chara.ai.typeAi == "Player":
                 self.phase = "Menu"
                 self.pturn = True
                 self.turn_player(chara)
             elif chara.ai.typeAi == "Enemy":
                 self.turn_enemy(chara)
+
+
+            chara.attributes.temp_handler.update_time_turn(turn=1)
+
 
         print("The Battle has ended!.")

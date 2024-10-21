@@ -1,25 +1,32 @@
 from __future__ import annotations
-from dataclasses import dataclass
+from msilib import type_localizable
+from threading import activeCount
+
 import src.classes.entity_prototype as character
 import uuid
 from helpers import log,Log
 
 
-@dataclass
+
 class Temp:
     """
     Classe responsável por definir a estrutura base de um atributo temporário dentro em um objeto.
     """
 
-    status: str
-    typo: str
-    turn: int
-    time: int
-    value: int
-    active: bool
-    isTurn: bool
-    isTime: bool
-    active_uid: uuid
+
+    def __init__(self, status: str, typo: str, turn: int,time: int,value:int,active:bool,is_turn:bool,is_time:bool, active_flag: str | None) -> None:
+        self.uid = uuid.uuid4()
+
+        self.status = status
+        self.typo = typo
+        self.turn = turn
+        self.time = time
+        self.value = value
+        self.active = active
+        self.isTurn = is_turn
+        self.isTime = is_time
+        self.active_flag = active_flag
+
 
 
 
@@ -27,11 +34,14 @@ class TempHandler:
     """
     Classe responsável por gerenciar os temp em um objeto
     """
-    list_temps: list[Temp] = []
-    temps_info: dict = {}
 
-    def __init__(self,parent) -> None:
+    def __init__(self,parent, name) -> None:
+        self.uid = uuid.uuid4()
         self._parent = parent
+        self.name = name
+        self.list_temps: list[Temp] = []
+        self.temps_info: dict = {}
+        self.flags = []
 
 
     def add_temp(self, temp: list[Temp]) -> None:
@@ -58,20 +68,39 @@ class TempHandler:
             log(Log.ERROR, f"Is not a Instance: {type(self._parent)}", f"[Attributes][TempHandler]")
 
 
-    def remove_temp(self, all_temp: bool = False, list_temp: list[Temp] | None = None) -> None:
+    def remove_temp(self, all_temp: bool = False, list_temp: list[Temp] | None = None, flags: list[str]  = None) -> None:
         """
-        Remove a temp with the objet or by the UID
+        Remove a temp with the Objet, UID or the Flag
         """
+        parent: character.Character = self._parent.return_parent()
+
+
+        if flags is not None and len(flags) > 0:
+            if list_temp is None:
+                list_temp = []
+            for flag in flags:
+                for temp in self.list_temps:
+                    if flag == temp.active_flag:
+                        log(Log.DEBUG, f"[{flag}] Temp Status: {temp.status} flagged", f"[{parent.name}][Attributes][TempHandler][Flag]")
+                        list_temp.append(temp)
+
+
+
+
+
+
+
         if all_temp:
             self.list_temps = []
             print(f"[LOG][TempHandler] All temps removed")
+            log(Log.DEBUG, "All temps removed", f"[{parent.name}][Attributes][TempHandler]")
 
         if list_temp is not None:
             for temp in list_temp:
                 self.list_temps.remove(temp)
 
                 if isinstance(self._parent.return_parent(), character.Character):
-                    parent: character.Character = self._parent.return_parent()
+
                     log(Log.DEBUG, f"Temp Status: {temp.status} removed", f"[{parent.name}][Attributes][TempHandler]")
 
                 if isinstance(self._parent, character.Attributes):
@@ -84,18 +113,37 @@ class TempHandler:
 
 
     def update_time_turn(self, turn: int = 1 ,time: float = 1.0) -> None:
+        parent: character.Character = self._parent.return_parent()
+        log_append = f"[{parent.name}][Attributes][TempHandler]"
+        log(Log.DEBUG,f"Updating Temps: {len(self.list_temps)}", log_append)
+
+        temps_to_remove = []
+        flags = []
 
         for tmp in self.list_temps:
-            if tmp.isTurn and tmp.turn > 0:
-                tmp.turn -= turn
-            elif tmp.turn < 0:
-                self.remove_temp(list_temp=[tmp])
+            log(Log.DEBUG,f"Temp: {tmp.uid}", log_append)
+            if tmp.isTurn and tmp.active_flag is None:
+                if tmp.turn > 0:
+                    tmp.turn -= turn
 
-            if tmp.isTime and (tmp.time - time) > 0:
-                tmp.turn -= time
-            elif tmp.time < 0:
-                self.remove_temp(list_temp=[tmp])
+                if tmp.turn <= 0:
+                    log(Log.DEBUG,f"Temp {tmp.status} has 0 turn", log_append)
+                    temps_to_remove.append(tmp)
 
+            if tmp.active_flag is None:
+                if tmp.isTime and (tmp.time - time) > 0:
+                    tmp.turn -= time
+                elif tmp.time < 0:
+                    self.remove_temp(list_temp=[tmp])
+
+            if tmp.active_flag is not None:
+                log(Log.DEBUG, f"Temp {tmp.status} has a flag {tmp.active_flag}", log_append)
+                flags.append(tmp.active_flag)
+
+
+        self.flags = flags
+
+        self.remove_temp(list_temp=temps_to_remove)
         self.update_temp()
 
 
@@ -105,12 +153,20 @@ class TempHandler:
         Atualiza a lista de atributos do temps_info com todos os bonus dos Temps
         """
         tmp = {}
+
+        parent: character.Character = self._parent.return_parent()
+        log_append = f"[{parent.name}][Attributes][TempHandler]"
+        log(Log.DEBUG, f"Updating Temps Dict: {len(self.list_temps)}", log_append)
+
+
         for temp in self.list_temps:
             if temp.status not in tmp.keys():
                 tmp[temp.status] = []
+                log(Log.DEBUG, f"Updating Temp info: {temp.uid}", log_append)
                 data =  {temp.typo: temp.value, "turns": temp.turn, "time": temp.time}
                 tmp[temp.status].append(data)
             else:
+                log(Log.DEBUG, f"Updating Temp info: {temp.uid}", log_append)
                 data =  {temp.typo: temp.value, "turns": temp.turn, "time": temp.time}
                 tmp[temp.status].append(data)
 
