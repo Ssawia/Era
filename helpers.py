@@ -98,7 +98,7 @@ def get_info_temps(obj: entities.Character):
     temp : tp.Temp
     if len(obj.attributes.temp_handler.list_temps) > 0:
         for temp in obj.attributes.temp_handler.list_temps:
-            data += f"|Status: {temp.status} Type: {temp.typo} Turn: {temp.turn} Time: {temp.time} Value: {temp.value}\n"
+            data += f"|Status: {temp.status} Type: {temp.typo} Turn: {temp.turn} Time: {temp.time} Value: {temp.value} Flag: {temp.active_flag}\n"
 
     return data
 

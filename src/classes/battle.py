@@ -7,7 +7,7 @@ from random import choice
 
 #Provavelmente isso não é a melhor maneira de implementar várias classes, mas por enquanto vai dar certo, confia
 import src.classes.attacks.attackC as Attacks
-
+from src.classes.temp.temp_class_handler import Temp
 
 
 
@@ -75,7 +75,7 @@ class Battle:
             print("[1] Atacar")
             print("[2] Status")
             print("[3] Passar")
-            print("[4] Actions")
+            print("[4] Debug")
             msg = input(f"> ")
 
             if msg == "1":
@@ -94,25 +94,125 @@ class Battle:
 
 
     def menu_debug(self,chara: Character) -> None:
-        print("[1] Abilities")
+        print("[4] Temps")
+        print("[5] Abilities")
         msg = input("debug> ")
+        if msg == "4":
+            self.debug_temps(chara)
+        if msg == "5":
+            self.debug_abilities(chara)
+    
+
+    def debug_temps(self, chara: Character):
+        print("[1] Create Temp")
+        print("[2] Remove Temp")
+        print("[3] Check Temps")
+        print("[4] Check Temp Infos")
+        msg = input("debug/temps> ")
+
         if msg == "1":
+            temp = self.debug_create_temp()
+            chara.attributes.temp_handler.add_temp([temp])
+        elif msg == "2":
+            if len(chara.attributes.temp_handler.list_temps) > 0:
+                for index,temp in enumerate(chara.attributes.temp_handler.list_temps):
+                    log(Log.INFO,f"Status: {temp.status} Type: {temp.typo} Value: {temp.value} Flag: {temp.active_flag}", f"[Temp][{index}]")
 
-            print("[1] Add Ability")
-            print("[2] Delete all abilities")
-            print(f"Object Abilities: {chara.abilities}")
-            msg = input("debug/abilities> ")
-            if msg == "1":
-                ab = input("debug/abilities/add> ")
-                if ab not in chara.abilities and len(ab) > 0:
-                    chara.abilities.append(ab)
-                    chara.check_abilities()
+                ab = input("> ")
+
+                if ab.isnumeric():
+                    
+                    temp = chara.attributes.temp_handler.list_temps[int(ab)]
+                    chara.attributes.temp_handler.remove_temp(list_temp=[temp])
+                    chara.attributes.temp_handler.update_temp()
                 else:
-                    log(Log.WARNING, "Ability already exist in object")
+                    chara.attributes.temp_handler.remove_temp(flags=[ab])
+                    chara.attributes.temp_handler.update_temp()
+            else:
+                log(Log.WARNING, "Object has no temp to remove")
 
-            elif msg == "2":
-                chara.on_death_abylity()
 
+        elif msg == "3":
+            if len(chara.attributes.temp_handler.list_temps) > 0:
+                for index,temp in enumerate(chara.attributes.temp_handler.list_temps):
+                    log(Log.INFO,f"Status: {temp.status} Type: {temp.typo} Value: {temp.value} Flag: {temp.active_flag}", f"[Temp][{index}]" )
+
+            else:
+                log(Log.WARNING, "Object has no temp to show")
+        elif msg == "4":
+            for key in chara.attributes.temp_handler.temps_info.keys():
+                data = chara.attributes.temp_handler.temps_info[key]
+                log(Log.INFO,f"{key}")
+                for dta in data:
+                    typo = ''
+                    keys = list(dta.keys())
+                    if keys[0] == 'add':
+                        typo = "add"
+                    else:
+                        typo = "mult"
+                    print(f"Type: {typo} Value: {dta[typo]} Turns: {dta['turns']} Time: {dta['time']}")
+    
+    def debug_create_temp(self) -> Temp:
+
+        print("[1] Create")
+        print("[2] Default")
+        print("[3] Random")
+
+        msg = input("> ")
+        
+        if msg == "1":
+            status = input("Status: ")
+            typo = input("Type: ")
+            turn = int(input("Turn: "))
+            time = int(input("Time: "))
+            value = int(input("Value: "))
+            active = bool(input("Activacted: "))
+            is_turn = bool(input("isTurn: "))
+            is_time = bool(input("isTime: "))
+            flag = input("Flag: ")
+            if len(flag) <= 0:
+                flag = None
+            tmp = Temp(status,typo,turn,time,value,active,is_turn,is_time,flag)
+            return tmp
+        elif msg == "2":
+            tmp = Temp("Fire","add",0,0,1000,True,False,False, "Phoenix Blessing")
+            return tmp
+        elif msg == "3":
+            status_choice = choice(['hp','Fire',''])
+
+
+    def debug_abilities(self, chara: Character):
+        print("[1] Add Ability")
+        print("[2] Delete all abilities")
+        print("[3] Update Abilities")
+        print("[4] Remove Ability")
+        log(Log.INFO, f"Object Abilities: {chara.abilities}")
+        msg = input("debug/abilities> ")
+        if msg == "1":
+            ab = input("debug/abilities/add> ")
+            if ab not in chara.abilities and len(ab) > 0:
+                chara.abilities.append(ab)
+                chara.check_abilities()
+            else:
+                log(Log.WARNING, "Ability already exist in object")
+
+        elif msg == "2":
+            chara.on_death_abylity()
+        elif msg == "3":
+            chara.check_abilities()
+        elif msg == "4":
+            if len(chara.abilities) > 0:
+                for index,ability in enumerate(chara.abilities):
+                    log(Log.INFO,f" {ability}", f"[{index}]", "[Temp]")
+                    ab = int(input("> "))
+                    aby = chara.abilities[ab]
+                    chara.attributes.temp_handler.remove_temp(flags=[aby])
+                    chara.abilities.remove(aby)
+                    chara.attributes.temp_handler.update_temp()
+                        
+                    log(Log.INFO, f"Ability {aby} from {chara.nick} has removed.")
+            else:
+                log(Log.WARNING, "Object has no ability to remove")
 
 
 
@@ -183,8 +283,6 @@ class Battle:
                 self.turn = 0
 
             chara = self.queue[self.turn]
-
-            chara.check_abilities()
 
 
             if chara.ai.typeAi == "Player":
