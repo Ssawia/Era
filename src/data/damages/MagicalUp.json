@@ -11,8 +11,7 @@
             "desc": "Quando produz o esplendor, ela denomina-se luz. É essa substância que Deus cria antes de todas as coisas.",
             "type": "damage",
             "defType":"Telesma",
-            "Rscale": "Faith",
-            "Ascale": "Intelligence",
+            "Ascale": "Faith",
             "dmgMult": 2,
             "resMult": 0.7
         },
@@ -27,8 +26,7 @@
             "desc": "O Fogo que transforma e revela o mundo em sua volta, é o mesmo que consome e destrói.",
             "type": "damage",
             "defType":"Fire",
-            "Rscale": "Faith",
-            "Ascale": "Intelligence",
+            "Ascale": "Faith",
             "dmgMult": 1.2,
             "resMult": 0.9
         },
@@ -43,7 +41,6 @@
             "desc": "Agua lorem ipsum",
             "type": "damage",
             "defType":"Water",
-            "Rscale": "Faith",
             "Ascale": "Intelligence",
             "dmgMult": 1,
             "resMult": 1
@@ -59,7 +56,6 @@
             "desc": "Earth lorem ipsum",
             "type": "damage",
             "defType":"Earth",
-            "Rscale": "Faith",
             "Ascale": "Intelligence",
             "dmgMult": 1,
             "resMult": 1
@@ -75,8 +71,7 @@
             "desc": "Wind lorem ipsum",
             "type": "damage",
             "defType":"Wind",
-            "Rscale": "Faith",
-            "Ascale": "Intelligence",
+            "Ascale": "Faith",
             "dmgMult": 1,
             "resMult": 1
         },
@@ -86,13 +81,11 @@
             "classType": "damages",
             "file": "Healing",
             "className": "Healing", 
-
             "name": "Healing", 
             "desc": "Healing Magic", 
             "type": "healing",
             "defType": "MagicalHealing",
-            "Rscale": "Arcane",
-            "Ascale": "Will",
+            "Ascale": "Faith",
             "dmgMult": 1,
             "resMult": 1
         }

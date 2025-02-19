@@ -13,29 +13,18 @@ class PhysicalAttack(Attack):
     def __init__(self, attack_data, dmg_type):
         super().__init__(attack_data=attack_data, dmg_type=dmg_type)
     
-    def doDamage(self, owner : Chara.Character | None = None, queue: list | None = None, ai = False,  args: list = None):
+    def doDamage(self, args: list = None):
 
 
         if args is not None:
-            owner = args[0]
-            queue = args[1]
-            ai = args[2]
-
-        if not ai:
-            self.init_select(queue)
-            queue = self.check_target(owner)
+            self.owner = args[0]
+            self.queue = args[1]
+            self.ai = args[2]
 
 
 
-        crit = isCrit(owner.attributes.status.crit)
-
-        obj : Chara.Character
-
-
-        
-
-        for obj in queue:
+        obj: Chara.Character
+        for obj in self.queue:
             for c in range(self.hits):
-                obj.defend(self.name,self.dmgList, owner, obj, crit)
-
+                obj.defend(self.name, self.dmgList, self.owner, obj)
         return True

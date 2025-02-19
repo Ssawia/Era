@@ -11,7 +11,6 @@
             "desc": "Dano cortando que pode causar [Bleed].",
             "type": "damage",
             "defType":"Slash",
-            "Rscale": "Fortitude",
             "Ascale": "Strength",
             "dmgMult": 1,
             "resMult": 1
@@ -27,7 +26,6 @@
             "desc": "Dano perfurante que pode causar [DefDown] e ignorar armadura.",
             "type": "damage",
             "defType":"Thrust",
-            "Rscale": "Fortitude",
             "Ascale": "Strength",
             "dmgMult": 1,
             "resMult": 0.5
@@ -44,7 +42,6 @@
             "desc": "Dano contundente que pode causar [Stun].",
             "type": "damage",
             "defType":"Strike",
-            "Rscale": "Fortitude",
             "Ascale": "Strength",
             "dmgMult": 1,
             "resMult": 1

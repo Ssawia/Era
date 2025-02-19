@@ -119,7 +119,7 @@ class Selector:
 
 #Classe usada para definir o tipo de dano dos ataques, como ataque fisico ou ataque magico
 class Attack:
-    select : Selector
+    
 
     def __init__(self, attack_data, dmg_type : list):
         self._id = attack_data['_id']
@@ -135,7 +135,12 @@ class Attack:
         self.cost = attack_data['cost']
         self.hits = attack_data['hits']
         self.types = dmg_type
+        self.select: Selector | None = None
         self.dmgList: list[dmg_type.DamageType] = []
+
+        self.queue = []
+        self.owner: Chara.Character| None = None 
+        self.ai: bool = False
 
     def set_damages(self, owner : Chara.Character):
         i : dmgType.DamageType
@@ -144,6 +149,11 @@ class Attack:
         for i in self.types:
             i.set_attack(owner)
             self.dmgList.append(i)
+    
+
+    def choice_player(self):
+        self.init_select(self.queue)
+        self.queue = self.check_target(self.owner)
 
     def check_target(self, owner : Chara.Character):
         queue = []
@@ -189,8 +199,9 @@ class Attack:
                 
 
     
-    def doDamage(self, owner : Chara.Character, queue: list, ai = False):
-        pass
+    def doDamage(self):
+        return None
+
 
     def imwho(self):
        return self.name

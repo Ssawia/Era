@@ -12,11 +12,28 @@
             "target": "multi",
             "target-limit": 0,
             "intent": "harm",
-            "damage": [{"atk":150},{"atm":50}],
+            "damage": [{"atk":[10,20]},{"atm":[5,10]}],
             "cost": {"mp":30},
             "cooldown": 1,
             "hits": 1,
             "type": [2, 4]
+        },
+        {
+            "_id": 5,
+            "classType": "attacks",
+            "file": "MagicalAttack",
+            "className": "ReturnToAshAttack",
+            "name": "Return to Ash",
+            "defName": "return_to_ash_attack",
+            "desc": "The caster channels destructive fire magic into a devastating burst that consumes the target with flames, reducing all that it touches to smoldering cinders. Upon contact, the target is engulfed in a blazing inferno, invoking the dreaded Ashen Curse. As the flames burn, they corrode not just the flesh, but also the target's essence, gradually turning them to ash. The curse intensifies with each passing turn, dealing escalating burn damage, until the target is either purified or reduced to nothing.",
+            "target": "single",
+            "target-limit": 1,
+            "intent": "harm",
+            "damage": [{"atm":[1,20]}],
+            "cost": {"mp":30},
+            "cooldown": 1,
+            "hits": 1,
+            "type": [4]
         }
     ]
 }

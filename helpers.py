@@ -5,6 +5,7 @@ from tkinter.ttk import Treeview
 
 import src.classes.entity_prototype as entities
 import src.classes.temp.temp_class_handler as tp
+import src.classes.effects.effect_class_prototype as eff
 import random
 from typing import List
 from enum import Enum
@@ -44,23 +45,21 @@ def log(typ: Log, message: str, append : str = ''):
 
 def get_potencial_string(number: float) -> str:
     potencial = {
-        1.0: "G",
-        1.1: "F",
-        1.2: "E",
-        1.3: "D",
-        1.4: "C",
-        1.5: "B",
-        1.6: "A",
-        1.7: "S",
-        1.8: "SS",
-        1.9: "SSS",
-        2.0: "EX"
+        0.00: "G",
+        0.05: "F",
+        0.1: "E",
+        0.15: "D",
+        0.2: "C",
+        0.25: "B",
+        0.3: "A",
+        0.35: "S",
+        0.4: "EX"
     }
 
-    if 1.0 <= number <= 2.0:
+    if 0.0 <= number <= 0.4:
         return potencial[number]
     else:
-        return potencial[1.0]
+        return potencial[0.0]
 
 
 def show_info_chara(obj : entities.Character):
@@ -80,6 +79,8 @@ def show_info_chara(obj : entities.Character):
 [Level]: {obj.attributes.level}/{obj.attributes.max_level} XP: {obj.attributes.xp}/{obj.attributes.max_xp}
 [Abilities]
 {obj.abilities}
+[Effects]
+{get_info_effects(obj)}
 [Temp]
 {get_info_temps(obj)}
 [Attributes]
@@ -90,8 +91,40 @@ def show_info_chara(obj : entities.Character):
 {get_info_elements(obj)}
 [Resistances]
 {get_info_resistances(obj)}
+[Debug]
+{get_debug_info(obj)}
 '''
     print(data)
+
+def get_debug_info(obj: entities.Character):
+    data = ""
+    
+    #HP
+    data += f"\n[hp]\n->|hp: vitality({obj.attributes.vitality})*10*potencial_vitality({obj.attributes.potential.vitality})={obj.attributes.vitality * 10 * obj.attributes.potential.vitality}"
+
+    #ATK
+    data += f"\n[atk]\n->|atk: strength({obj.attributes.strength})*potencial_strenght({obj.attributes.potential.strength})={obj.attributes.strength*obj.attributes.potential.strength}"
+    
+    #ATKM
+    atm_bonus = ""
+    if (obj.attributes.faith * obj.attributes.potential.faith) >= (obj.attributes.arcane * obj.attributes.potential.arcane):
+        pt_atkm = (obj.attributes.potential.intelligence + obj.attributes.potential.faith) / 2
+        atm_bonus = ["faith", obj.attributes.potential.faith]
+    else:
+        pt_atkm = (obj.attributes.potential.intelligence + obj.attributes.potential.arcane) / 2
+        atm_bonus = ["arcane", obj.attributes.potential.arcane]
+    
+    data +=  f"\n[atk_m]\n->|potencial_intelligence({obj.attributes.potential.intelligence})+potencial_{atm_bonus[0]}({atm_bonus[1]})/2 = {pt_atkm}\n->|atkm: intelligence({obj.attributes.intelligence})*{pt_atkm}={obj.attributes.intelligence*pt_atkm}"
+
+    return data
+
+def get_info_effects(obj: entities.Character):
+    data = ""
+    effect : eff.Effect
+    if len(obj.effects_handler.effects) > 0:
+        for effect in obj.effects_handler.effects:
+            data += f"|Active: {effect.active} Name: {effect.name} Turn: {effect.turn} Stacks: {effect.stacks} HasTemp: {effect.has_temp}\n-> {effect.desc}\n"
+    return data
 
 def get_info_temps(obj: entities.Character):
     data = ""
@@ -112,7 +145,7 @@ def get_info_resistances(obj: entities.Character) -> str:
     cont = 1
     for chave, valor in obj.attributes.resistances.items():
         reskey = chave + "_Res"
-        data += f"|{chave}: {valor}(+{obj.attributes.temp_handler.get_add_bonus(reskey,"add")}/*{obj.attributes.temp_handler.get_mult_bonus(reskey,"mult")})({obj.attributes.resistancesBase[chave]})".ljust(30)
+        data += f"|{chave}: {valor}(+{obj.attributes.temp_handler.get_add_bonus(reskey,"add")}/*{obj.attributes.temp_handler.get_mult_bonus(reskey,"mult")})".ljust(30)
 
         cont += 1
         if cont > 4:
@@ -163,7 +196,6 @@ def get_info_status(obj: entities.Character) -> str:
     data = ""
 
     str_just = 30
-
     cont = 1
     for index,item in enumerate(info.keys()):
 
@@ -183,12 +215,12 @@ def get_info_status(obj: entities.Character) -> str:
         if item == "hp" or item == "mp" or item == "sp":
             max_s = f"max_{item}"
             regen = f"regen_{item}"
-            data += f"|{st}: {info[item]}/{info[max_s]}/{info[regen]}(+{obj.attributes.temp_handler.get_add_bonus(info[item],"add")}/*{obj.attributes.temp_handler.get_mult_bonus(info[item],"mult")})".ljust(str_just)
+            data += f"|{st}: {info[item]}/{info[max_s]}/{info[regen]}(+{obj.attributes.temp_handler.get_add_bonus(item,"add")}/*{obj.attributes.temp_handler.get_mult_bonus(item,"mult")})".ljust(str_just)
         elif item == "sanity":
             max_s = f"max_{item}"
-            data += f"|SY: {info[item]}/{info[max_s]}(+{obj.attributes.temp_handler.get_add_bonus(info[item],"add")}/*{obj.attributes.temp_handler.get_mult_bonus(info[item],"mult")}) ".ljust(str_just)
+            data += f"|SY: {info[item]}/{info[max_s]}(+{obj.attributes.temp_handler.get_add_bonus(item,"add")}/*{obj.attributes.temp_handler.get_mult_bonus(item,"mult")}) ".ljust(str_just)
         else:
-            data += f"|{st}: {info[item]}(+{obj.attributes.temp_handler.get_add_bonus(info[item],"add")}/*{obj.attributes.temp_handler.get_mult_bonus(info[item],"mult")}) ".ljust(str_just)
+            data += f"|{st}: {info[item]}(+{obj.attributes.temp_handler.get_add_bonus(item,"add")}/*{obj.attributes.temp_handler.get_mult_bonus(item,"mult")}) ".ljust(str_just)
 
 
         cont += 1
@@ -199,6 +231,44 @@ def get_info_status(obj: entities.Character) -> str:
 
 
     return data
+
+
+
+def check_cost(chara: entities.Character, attack_id: int, quantity: int = 1) -> bool:
+
+    costs = chara.attacks[attack_id].cost
+    can_attack = False
+
+    info_attack = ''
+    attack_name = chara.attacks[attack_id].name
+
+    for cost in costs:
+        if cost == "mp" and chara.attributes.status.mp >= costs[cost]:
+            chara.attributes.status.mp -= costs[cost]
+            info_attack += f"MP: {costs[cost]} "
+            can_attack = True
+
+        elif cost == "sp" and chara.attributes.status.sp >= costs[cost]:
+            chara.attributes.status.sp -= costs[cost]
+            info_attack += f"SP: {costs[cost]} "
+            can_attack = True
+
+        elif cost == "hp" and chara.attributes.status.hp >= costs[cost]:
+            chara.attributes.status.hp -= costs[cost]
+            info_attack += f"HP: {costs[cost]} "
+            can_attack = True
+        else:
+            log(Log.WARNING,f"Sem {cost} para o ataque")
+            can_attack = False
+
+    log(Log.INFO, info_attack,f"[{chara.name}][Attack][{attack_name}]")
+
+    return can_attack
+
+
+
+
+
 
 
 

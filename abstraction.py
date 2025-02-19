@@ -33,19 +33,14 @@ attacks_data = get_all_json_from_path(path_attacks,'attacks')
 
 
 
-def get_elements(elementType : str):
+def get_elements():
     elements_final = []
     elements = get_all_json_from_path(damages_path,"DamagesType")
     
-
-    if elementType == "Res":
-        for element in elements:
-            if element['name'] not in elements_final and element['type'] != "healing":
-                elements_final.append({element['name']:element['Rscale']})
-    elif elementType == "Atk":
-        for element in elements:
-            if element['name'] not in elements_final and element['type'] != "healing":
-                elements_final.append({element['name']:element['Ascale']})        
+    
+    for element in elements:
+        if element['name'] not in elements_final and element['type'] != "healing":
+            elements_final.append({element['name']:element['Ascale']})        
     
     return elements_final
 
@@ -68,20 +63,25 @@ def getDamageTypeClass(data : list, damages : list):
 
     damage_data = get_all_json_from_path(damages_path,"DamagesType")
 
-    base_atk = 0
+    min_atk = 0
+    max_atk = 0
+    min_heal = 0
+    max_heal = 0
     heal = 0
     #Melhorar essa merda, pro futuro quando tiver mais tipo de dano não virar um yandere simulator
 
     for c in data:
         if 'atk' in damages[i].keys():
-            base_atk = damages[i]['atk']
+            min_atk = damages[i]['atk'][0]
+            max_atk = damages[i]['atk'][1]
         if 'heal' in damages[i].keys():
-            heal = damages[i]['heal']
+            min_heal = damages[i]['heal']
+            max_heal = damages[i]['heal']
 
         type_dmg = get_data_from_id(c,damage_data,"[damage]")
 
 
-        dtype = str_to_class(type_dmg['classType'],type_dmg['file'],type_dmg['className'])(file=type_dmg['file'],name=type_dmg['name'],desc=type_dmg['desc'],base_atk=base_atk,heal=heal,defType=type_dmg['defType'])
+        dtype = str_to_class(type_dmg['classType'],type_dmg['file'],type_dmg['className'])(file=type_dmg['file'],name=type_dmg['name'],desc=type_dmg['desc'],min_atk=min_atk,max_atk=max_atk,min_heal=min_heal,max_heal=max_heal,defType=type_dmg['defType'])
         dtypeList.append(dtype)
         i += 1
     

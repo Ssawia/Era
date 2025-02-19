@@ -1,6 +1,4 @@
 from __future__ import annotations
-from msilib import type_localizable
-from threading import activeCount
 
 import src.classes.entity_prototype as character
 import uuid
@@ -59,13 +57,6 @@ class TempHandler:
 
 
         self.update_temp()
-        if isinstance(self._parent,character.Attributes):
-            parent: character.Character = self._parent.return_parent()
-
-            log(Log.DEBUG, f"Parent is a instance of Attributes, updating the the attributes", f"[{parent.name}][Attributes][TempHandler]")
-            self._parent.update_attributes()
-        else:
-            log(Log.ERROR, f"Is not a Instance: {type(self._parent)}", f"[Attributes][TempHandler]")
 
 
     def remove_temp(self, all_temp: bool = False, list_temp: list[Temp] | None = None, flags: list[str]  = None) -> None:
@@ -84,12 +75,6 @@ class TempHandler:
                         log(Log.DEBUG, f"[{flag}] Temp Status: {temp.status} flagged", f"[{parent.name}][Attributes][TempHandler][Flag]")
                         list_temp.append(temp)
 
-
-
-
-
-
-
         if all_temp:
             self.list_temps = []
             print(f"[LOG][TempHandler] All temps removed")
@@ -97,16 +82,14 @@ class TempHandler:
 
         if list_temp is not None:
             for temp in list_temp:
-                self.list_temps.remove(temp)
+                if temp in self.list_temps:
+                    self.list_temps.remove(temp)
 
-                if isinstance(self._parent.return_parent(), character.Character):
+                    if isinstance(self._parent.return_parent(), character.Character):
+                        log(Log.DEBUG, f"Temp Status: {temp.status} removed", f"[{parent.name}][Attributes][TempHandler]")
 
-                    log(Log.DEBUG, f"Temp Status: {temp.status} removed", f"[{parent.name}][Attributes][TempHandler]")
-
-                if isinstance(self._parent, character.Attributes):
-                    parent: character.Character = self._parent.return_parent()
-                    log(Log.DEBUG, f"Parent is a instance of Attributes, updating the the attributes", f"[{parent.name}][Attributes][TempHandler]")
-                    self._parent.update_attributes()
+                else:
+                    log(Log.WARNING,"Temp not in list to remove",  f"[{parent.name}][Attributes][TempHandler]")
 
         else:
             print("[ERROR][TempHandler] Temp não existe")
@@ -179,10 +162,13 @@ class TempHandler:
         """
         value: float = 0.0
         if status in self.temps_info.keys():
+            print(self.temps_info[status])
             for bonus in self.temps_info[status]:
                 if typo in list(bonus.keys()):
                     if typo == "add":
                         value += bonus[typo]
+
+            
 
         return value
 

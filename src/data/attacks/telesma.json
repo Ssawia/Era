@@ -12,7 +12,7 @@
             "target": "self",
             "target-limit": 1,
             "intent": "help",
-            "damage": [{"heal":150}],
+            "damage": [{"heal":[100,150]}],
             "cost": {"mp": 40},
             "cooldown": 1,
             "hits": 1,

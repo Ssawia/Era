@@ -64,6 +64,8 @@ class Ai:
           idd = 0
 
           dmg_list: list[ent.Character] = []
+
+          attacks_damage_list = []
                
           for host_attack in host.attacks:
                if host_attack.uuid == uuid:
@@ -85,11 +87,17 @@ class Ai:
                          log(Log.INFO, f'{host.name} chose {attack.name} used on himself')
                          dmg_list.append(host)
                     
+                    
+                    host.attacks[idd].owner = host
+                    host.attacks[idd].queue = dmg_list
+                    host.attacks[idd].ai = True
 
                     helpers.say_line(host,'attack')
-                    host.attacks[idd].doDamage(host,dmg_list,True)
+                    attacks_damage_list.append(host.attacks[idd])
 
                idd += 1
+          
+          return attacks_damage_list
      
 
 
@@ -99,12 +107,13 @@ class Ai:
 def select_ai(target_limit, targets_list: list[ent.Character],host: ent.Character, attack_name):
      dmg_list: list[ent.Character] = []
      for c in range(target_limit):
-          target_choice = choice(targets_list)
+          if len(targets_list) > 0:
+               target_choice = choice(targets_list)
 
 
-          log(Log.INFO,f'{host.name} chose {attack_name} and attack {target_choice.name}')
-          dmg_list.append(target_choice)
-          targets_list.remove(target_choice)
+               log(Log.INFO,f'{host.name} chose {attack_name} and attack {target_choice.name}')
+               dmg_list.append(target_choice)
+               targets_list.remove(target_choice)
 
      
      return dmg_list

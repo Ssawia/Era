@@ -31,7 +31,7 @@ artoria = Character(artoria_data,"Player")
 
 remilia.abilities.append('Phoenix Blessing')
 
-queue : list[Character] = [flande,remilia,sakuya,artoria]
+queue : list[Character] = [flande,remilia, artoria, sakuya]
 
 
 battle =  Battle(queue)

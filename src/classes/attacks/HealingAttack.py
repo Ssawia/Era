@@ -11,22 +11,17 @@ class HealingAttack(Attack):
         super().__init__(attack_data=attack_data, dmg_type=dmg_type)
     
 
-    def doDamage(self, owner : Chara.Character, queue: list, ai = False,  args: list = None):
+    def doDamage(self, args: list = None):
+
 
         if args is not None:
-            owner = args[0]
-            queue = args[1]
-            ai = args[2]
+            self.owner = args[0]
+            self.queue = args[1]
+            self.ai = args[2]
 
 
-        if not ai:
-            self.init_select(queue)
-            queue = self.check_target(owner)
-
-        obj : Chara.Character 
-
-        for obj in queue:
+        obj: Chara.Character
+        for obj in self.queue:
             for c in range(self.hits):
                 obj.healing(self.dmgList)
-
-        return True  
+        return True

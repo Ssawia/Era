@@ -42,25 +42,29 @@ class EffectHandler:
                 self.update_effects_uuid()
                 self.update_effect_typos()
                 log(Log.DEBUG, f"Effect {effect.name} added to Effect Handler", f"[{self._parent.name}][EffectHandler]")
-            elif effect.typo in self.typo_list and effect.is_stackable:
+            elif effect.typo in self.typo_list and effect.is_stackable and effect.stacks <= effect.max_stacks:
                 self.update_stack(effect.typo, effect)
 
 
     def update_stack(self, typo: str, eft: Effect):
         for effect in self.effects:
             if effect.typo == typo:
-                print(f"[=] Stack adicionado em {effect.name}")
+            
                 effect.stacks += eft.stacks
                 effect.turn += eft.turn
+                log(Log.INFO, f"Stack add to {effect.name} at {effect.stacks}/{effect.max_stacks}")
 
 
 
     def process_effects(self):
-        for effect in self.effects:
-            if effect.process_effect():
-                print(f"[+] Effect {effect.name} processado")
-            else:
-                self.remove_effects(effect)
+        if len(self.effects) > 0:
+            for effect in self.effects:
+                if effect.process_effect():
+                    log(Log.DEBUG, f"Effect {effect.name} processado", f"[{self._parent.name}][EffectHandler]")
+                else:
+                    self.remove_effects(effect)
+        else:
+            log(Log.DEBUG, f"Has no effect to process", f"[{self._parent.name}][EffectHandler]")
 
     def remove_effects(self,effect: Effect):
         self.effects.remove(effect)
