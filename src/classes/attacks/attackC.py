@@ -139,6 +139,7 @@ class Attack:
         self.dmgList: list[dmg_type.DamageType] = []
 
         self.queue = []
+        self.battle_queue: list[list[Chara.Character]] = []
         self.owner: Chara.Character| None = None 
         self.ai: bool = False
 
@@ -153,7 +154,7 @@ class Attack:
 
     def choice_player(self):
         self.init_select(self.queue)
-        self.queue = self.check_target(self.owner)
+        self.battle_queue.append(self.check_target(self.owner))
 
     def check_target(self, owner : Chara.Character):
         queue = []

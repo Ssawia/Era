@@ -50,7 +50,7 @@ class Battle:
         print("[Escolha o ataque]")
 
         onMenu = True
-        attacks_damage_list = []
+
         while onMenu:
 
             msg = int(input("ID: "))
@@ -62,16 +62,21 @@ class Battle:
                     chara.attacks[msg].owner = chara
                     chara.attacks[msg].queue = self.queue
                     chara.attacks[msg].ai = False
-                    
+
                     chara.attacks[msg].choice_player()
-                    attacks_damage_list.append(chara.attacks[msg])
+
+                    if chara.attacks[msg] not in chara.attack_slot:
+                        log(Log.DEBUG, f"{chara.attacks[msg].name} does not exist in {chara.name} attack slot, adding...", f"[{chara.name}]")
+                        chara.attack_slot.append(chara.attacks[msg])
+
+
 
                     onMenu = False
 
             else:
                 print("Ataque inválido")
         
-        chara.attack_slot = attacks_damage_list
+    
 
     def menu_skills(self, chara: Character):
         pass
@@ -98,41 +103,47 @@ class Battle:
 
     def turn_player(self, chara: Character):
         chara.attributes.actions = chara.attributes.max_actions
+        
         while self.pturn and self.check_battle_conditions():
             self.update_queue_stats()
-            if chara.attributes.actions > 0:
-                print("======================================================================")
-                log(Log.INFO, f"{chara.name}", f"[Turn: {self.turn}]")
-                log(Log.INFO,
-                    f"HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} MP: {chara.attributes.status.mp}/{chara.attributes.status.maxMp} SP: {chara.attributes.status.sp}/{chara.attributes.status.maxSp} SPD: {chara.attributes.battle_spd}",
-                    f"[Player][{chara.nick}]")
-                log(Log.INFO, f"Action: {chara.attributes.actions}/{chara.attributes.max_actions}")
-                print("======================================================================")
 
-                print("[1] Atacar")
-                print("[2] Status")
-                print("[3] Passar")
-                print("[4] Debug")
-                msg = input(f"> ")
+            
+            attacks_slot_str = ""
+            for atacck in chara.attack_slot:
+                attacks_slot_str += f"-> {atacck.name}:{atacck.battle_queue} "
+            
+            print("======================================================================")
+            log(Log.INFO, f"{chara.name}", f"[Turn: {self.turn}]")
+            log(Log.INFO,
+                f"HP: {chara.attributes.status.hp}/{chara.attributes.status.maxHp} MP: {chara.attributes.status.mp}/{chara.attributes.status.maxMp} SP: {chara.attributes.status.sp}/{chara.attributes.status.maxSp} SPD: {chara.attributes.battle_spd}",
+                f"[Player][{chara.nick}]")
+            log(Log.INFO, f"Action: {chara.attributes.actions}/{chara.attributes.max_actions} Attack Slot- {attacks_slot_str}")
+            print("======================================================================")
 
-                if msg == "1":
-                    self.phase = "Attack"
+            print("[1] Atacar")
+            print("[2] Status")
+            print("[3] Passar")
+            print("[4] Debug")
+            msg = input(f"> ")
+
+            if msg == "1":
+                self.phase = "Attack"
+                if chara.attributes.actions > 0:
                     self.menu_attack(chara)
                     chara.attributes.actions -= 1
-                elif msg == "2":
-                    self.phase = "Status"
-                    self.menu_status()
-                elif msg == "3":
-                    print(self.queue[1].name)
-                    self.phase = "Pass"
-                    self.menu_pass(chara)
-                elif msg == "4":
-                    self.phase = "Debug"
-                    self.debug.character = chara
-                    self.debug.battle_queue = self.queue
-                    self.debug.menu_debug()
-            else:
+            elif msg == "2":
+                self.phase = "Status"
+                self.menu_status()
+            elif msg == "3":
+                self.phase = "Pass"
                 self.menu_pass(chara)
+            elif msg == "4":
+                self.phase = "Debug"
+                self.debug.character = chara
+                self.debug.battle_queue = self.queue
+                self.debug.menu_debug()
+        else:
+            self.menu_pass(chara)
 
 
 
@@ -151,165 +162,131 @@ class Battle:
         chara: Character
         for chara in self.queue:
             if chara.ai.typeAi == "Enemy":
-                print(f"{chara.name} está escolhendo o ataque..")
-                attacks = chara.ai.decide_attack(chara, self.queue, on_enemy=True)
-                chara.attack_slot = attacks
+                chara.ai.decide_attack(chara, self.queue, on_enemy=True)
+                
         
 
     
 
     def process_attacks(self):
         self.queue.sort(key=lambda x: x.attributes.battle_spd, reverse=True)
+        
+
 
         for obj in self.queue:
+            log(Log.DEBUG, f"{obj.name} attacks slot: {obj.attack_slot}", f"[{obj.name}]")
 
-            if obj.attack_slot is not None and len(obj.attack_slot) == 0:
-                obj_target.attack_slot = None
 
             atks_to_remove_obj = []
             atks_to_remove_obj_target = []
-            if obj.attack_slot is not None:
-                for index,atk in enumerate(obj.attack_slot):
-                    for obj_target in atk.queue:
-                        if obj_target.attack_slot is not None and len(obj_target.attack_slot) >= 1:
+            
+            
+            for atk_slot in obj.attack_slot:
+                log(Log.DEBUG, f"{obj.name} attacks queue: {atk_slot.battle_queue}", f"[{obj.name}]")
+                
+                for instance in atk_slot.battle_queue:
+                    log(Log.DEBUG, f"Attacks {atk_slot.name} instance: {instance}", f"[{obj.name}]")
 
-                            atk_clash = obj_target.attack_slot[0]
-                            print(f"[{obj.name}]{atk.name} | {atk_clash.name}[{obj_target.name}]")
-                            self.clash_attack(atk,atk_clash)
+                    for obj_enemy in instance:
+                        log(Log.DEBUG, f"{atk_slot.name} hit {obj_enemy.name}", f"[{obj.name}]")
 
-                            atks_to_remove_obj.append(atk)
-                            
-                            if obj in atk_clash.queue:       
-                                 atk_clash.queue.remove(obj)
-                            else:
-                                obj_to_remove = {"obj": obj_target, "atk": atk_clash}
-                                atks_to_remove_obj_target.append(obj_to_remove)
+                        # Onde os ataques se clasham // fazer que os ataques se deletem quando terminarem
+                        if obj_enemy.attack_slot is not None and len(obj_enemy.attack_slot) >= 1:
+                            # Fazer oque o ataque tenha um clash especifico no futuro
+                            atk_slot_enemy = obj_enemy.attack_slot[0]
+                            log(Log.DEBUG, f"{obj.name} is clashing with {obj_enemy.name} on {atk_slot.name}<->{atk_slot_enemy.name}", f"[{obj.name}]")
+
+                            self.clash_attack(atk_slot,atk_slot_enemy)
+
+                        else:
+                            log(Log.DEBUG,f"{atk_slot.name} no clash on {obj_enemy.name} attacks", f"[{obj.name}]")
 
 
-                        elif obj_target.attack_slot is None or len(obj_target.attack_slot) == 0:
-                            atk.doDamage()
+            
+            input()
 
-                            if obj in atk_clash.queue:       
-                                 atk_clash.queue.remove(obj)
-                            else:
-                                obj_to_remove = {"obj": obj_target, "atk": atk_clash}
-                                atks_to_remove_obj_target.append(obj_to_remove)
-                            
-            else:
-                print(f"{obj.name} não tem mais ataque")
+            
+
             
 
             for atk_remove in atks_to_remove_obj:
                 if atk_remove in obj.attack_slot:
+                    log(Log.DEBUG, f"{obj.name}:{obj.attack_slot}", f"[{obj.name}]")
                     obj.attack_slot.remove(atk_remove)
+                    log(Log.DEBUG, f"Removing {atk_remove} from {obj.name}:{obj.attack_slot}", f"[Clash][Remove Slot][{obj.name}]")
+                    
             
             for data in atks_to_remove_obj_target:
                 obj = data['obj']
                 atk_remove = data['atk']
                 
                 if atk_remove in obj.attack_slot:
+                    log(Log.DEBUG, f"{obj.name}:{obj.attack_slot}", f"[{obj.name}]")
                     obj.attack_slot.remove(atk_remove)
-                
+                    log(Log.DEBUG, f"Removing {atk_remove} from {obj.name}:{obj.attack_slot}", f"[Clash][Remove Slot][{obj.name}]")
+
+
+            if obj.attack_slot is not None and len(obj.attack_slot) == 0:
+                obj.attack_slot = None
                         
 
         
                 
     def clash_attack(self,hit: Attacks.Attack, hit_clash: Attacks.Attack):
-        dmg: dt.DamageType
-        dmg_c: dt.DamageType
-        total_dmg = 0
-        types = '|'
+        dmg_obj: dt.DamageType
+        dmg_enemy: dt.DamageType
 
-        dmg_list_1 = hit.dmgList
-        dmg_list_2 = hit_clash.dmgList
-        if len(dmg_list_1) >= len(dmg_list_2):           
-            for index,dmg_1 in enumerate(dmg_list_1):
-                if index > len(dmg_list_2) - 1:
-                    
-                    min_atk = dmg_1.min_atk
-                    max_atk = dmg_1.max_atk
-                    crit = hit.owner.attributes.status.crit
-                    max_crit = hit.owner.attributes.status.maxCrit
-                    dmg_bonus = hit.owner.attributes.elements[dmg_1.main_element]
+        if len(hit.dmgList) < len(hit_clash.dmgList):
+            log(Log.DEBUG, f"Hit Clash({hit_clash.name}) is greater than Hit({hit.name}), swithing position..", )
+            hit_temp = hit
+            hit = hit_clash
+            hit_clash = hit_temp
 
-                    roll = randint(min_atk + crit,max_atk + max_crit)
-                    log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_1.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}")
+        for index,dmg_obj in enumerate(hit.dmgList):
+            min_atk = dmg_obj.min_atk
+            max_atk = dmg_obj.max_atk
+            crit = hit.owner.attributes.status.crit
+            max_crit = hit.owner.attributes.status.maxCrit
+            dmg_bonus = hit.owner.attributes.elements[dmg_obj.main_element]
+            log(Log.DEBUG, f"Damage Name: {dmg_obj.name} Rolls: {min_atk}(+{crit})-{max_atk}(+{max_crit}) Bonus: {dmg_bonus}", f"[{index}][{hit.owner.name}][{hit.name}]")
 
-                else:
-                    min_atk = dmg_1.min_atk
-                    max_atk = dmg_1.max_atk
-                    crit = hit.owner.attributes.status.crit
-                    max_crit = hit.owner.attributes.status.maxCrit
-                    dmg_bonus = hit.owner.attributes.elements[dmg_1.main_element]
-
-                    dmg_c = hit_clash.dmgList[index]
-                    min_atk_c = dmg_c.min_atk
-                    max_atk_c = dmg_c.max_atk
-                    crit_c = hit_clash.owner.attributes.status.crit
-                    max_crit_c = hit_clash.owner.attributes.status.maxCrit
-                    dmg_bonus_c = hit_clash.owner.attributes.elements[dmg_c.main_element]
-
-                    roll = randint(min_atk + crit,max_atk + max_crit)
-                    roll_c = randint(min_atk_c + crit_c,max_atk_c + max_crit_c)
-                    if roll > roll_c:
-                        log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_1.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll} > {roll_c} =(+{max_crit_c}){max_atk_c}-(+{crit_c}){min_atk_c}[{dmg_c.main_element}][{hit_clash.owner.name}][{index}]")
-                    elif roll_c > roll:
-                        log(Log.INFO, f"[{index}][{hit_clash.name} > | < {hit.name}][{hit.owner.name}][{dmg_1.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll} < {roll_c} =(+{max_crit_c}){max_atk_c}-(+{crit_c}){min_atk_c}[{dmg_c.main_element}][{hit_clash.owner.name}][{index}]")
-
+            if index > len(hit_clash.dmgList) - 1:
+                log(Log.DEBUG, f" has no attack left", f"[{index}][{hit_clash.owner.name}][{hit_clash.name}]")
+                roll = randint(min_atk + crit,max_atk + max_crit)
+                log(Log.INFO, f"[{index}][{hit.name} > | {hit_clash.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}")
+                result = hit_clash.owner.deal_damage(dmg_obj,roll,dmg_bonus,hit.owner)
+                log(Log.INFO,result)
+                input()
+            else:
             
-        elif len(dmg_list_2) >= len(dmg_list_1):
-            for index,dmg_1 in enumerate(dmg_list_2):
-                if index > len(dmg_list_1) - 1:
-                    min_atk = dmg_1.min_atk
-                    max_atk = dmg_1.max_atk
-                    crit = hit.owner.attributes.status.crit
-                    max_crit = hit.owner.attributes.status.maxCrit
-                    dmg_bonus = hit.owner.attributes.elements[dmg_1.main_element]
+                dmg_enemy = hit_clash.dmgList[index]
+                min_atk_enemy = dmg_enemy.min_atk
+                max_atk_enemy = dmg_enemy.max_atk
+                crit_enemy = hit_clash.owner.attributes.status.crit
+                max_crit_enemy = hit_clash.owner.attributes.status.maxCrit
+                dmg_bonus_enemy = hit_clash.owner.attributes.elements[dmg_enemy.main_element]
 
-                    roll = randint(min_atk + crit,max_atk + max_crit)
-                    log(Log.INFO, f"[{index}][{hit_clash.name} > | < {hit.name}][{hit_clash.owner.name}][{dmg_1.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}")
+                log(Log.DEBUG, f"Damage Name: {dmg_enemy.name} Rolls: {min_atk_enemy}(+{crit_enemy})-{max_atk_enemy}(+{max_crit_enemy}) Bonus: {dmg_bonus_enemy}", f"[{index}][{hit_clash.owner.name}][{hit_clash.name}]")
 
-                else:
-                    min_atk = dmg_1.min_atk
-                    max_atk = dmg_1.max_atk
-                    crit = hit.owner.attributes.status.crit
-                    max_crit = hit.owner.attributes.status.maxCrit
-                    dmg_bonus = hit.owner.attributes.elements[dmg_1.main_element]
+                roll = randint(min_atk + crit,max_atk + max_crit)
+                roll_enemy = randint(min_atk_enemy + crit_enemy,max_atk_enemy + max_crit_enemy)
 
-                    dmg_c = hit.dmgList[index]
-                    min_atk_c = dmg_c.min_atk
-                    max_atk_c = dmg_c.max_atk
-                    crit_c = hit_clash.owner.attributes.status.crit
-                    max_crit_c = hit_clash.owner.attributes.status.maxCrit
-                    dmg_bonus_c = hit_clash.owner.attributes.elements[dmg_c.main_element]
-
-                    roll = randint(min_atk + crit,max_atk + max_crit)
-                    roll_c = randint(min_atk_c + crit_c,max_atk_c + max_crit_c)
-                    if roll > roll_c:
-                        log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_1.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll} > {roll_c} =(+{max_crit_c}){max_atk_c}-(+{crit_c}){min_atk_c}[{dmg_c.main_element}][{hit_clash.owner.name}][{index}]")
-                    elif roll_c > roll:
-                        log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_1.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll} < {roll_c} =(+{max_crit_c}){max_atk_c}-(+{crit_c}){min_atk_c}[{dmg_c.main_element}][{hit_clash.owner.name}][{index}]")
+                if roll > roll_enemy:
+                    log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll} > {roll_enemy} =(+{max_crit_enemy}){max_atk_enemy}-(+{crit_enemy}){min_atk_enemy}[{dmg_enemy.main_element}][{hit_clash.owner.name}][{index}]")
+                    result = hit_clash.owner.deal_damage(dmg_obj,roll,dmg_bonus,hit.owner)
+                    log(Log.INFO,result)
+                elif roll_enemy > roll:
+                    log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll} < {roll_enemy} =(+{max_crit_enemy}){max_atk_enemy}-(+{crit_enemy}){min_atk_enemy}[{dmg_enemy.main_element}][{hit_clash.owner.name}][{index}]")
+                    result = hit.owner.deal_damage(dmg_enemy,roll_enemy,dmg_bonus_enemy,hit_clash.owner)
+                    log(Log.INFO,result)
+                input()
         
-        print("======================================================================")
-
-
-            
+        #adiciona os ataques a exclusão
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-                    
-            
+ 
 
 
     def update_queue(self):
@@ -361,7 +338,6 @@ class Battle:
             chara.attributes.update_resistances()
             chara.update_damage_attacks()
     
-
 
     def roll_characters_speed(self):
         chara: Character

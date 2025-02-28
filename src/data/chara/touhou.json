@@ -54,7 +54,7 @@
                 "Control": 1
             },         
             
-            "attacks": [2],
+            "attacks": [0],
 
 
             "lines":{
@@ -73,7 +73,7 @@
             "gender": "Female",
             "age": 500,
             "desc": "Remilia Scarlet is the owner and head of the Scarlet Devil Mansion, the mistress of Sakuya Izayoi and Hong Meiling, and the older sister (and guardian) of Flandre Scarlet. Though her appearance (and often behavior) is childlike, and seems nonthreatening, She has fearsome magical powers and a reputation to match, being known throughout Gensokyo as the dangerous 'Scarlet Devil.' Like all vampires she is photosensitive and weak when exposed to sunlight, so she typically remains inside her mansion, which has few windows to prevent light getting in, during the day and emerges during the night. While she is naturally known to drink human blood, her light appetite means her victims almost never die from their wounds.",
-            "actions":  1,
+            "actions":  2,
             "attributes":{
                 "vitality": 10,
                 "constitution": 10,

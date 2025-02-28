@@ -81,23 +81,32 @@ class Ai:
                     elif target == "single":
                          dmg_list = select_ai(target_limit,targets_list,host,attack.name)
                     elif target == "multi":
-                         log(Log.INFO,f'{host.name} chose attack everyone with {attack.name}!')
                          dmg_list = targets_list
                     elif target == "self":
-                         log(Log.INFO, f'{host.name} chose {attack.name} used on himself')
                          dmg_list.append(host)
                     
                     
                     host.attacks[idd].owner = host
-                    host.attacks[idd].queue = dmg_list
                     host.attacks[idd].ai = True
 
-                    helpers.say_line(host,'attack')
-                    attacks_damage_list.append(host.attacks[idd])
+                    if host.attacks[idd] not in host.attack_slot:
+                         log(Log.DEBUG, f"{host.attacks[idd].name} does not exist in {host.name} attack slot, adding...", f"[{host.name}]")
+                         host.attacks[idd].battle_queue.append(dmg_list) 
+                         host.attack_slot.append(host.attacks[idd])
+                         log(Log.DEBUG, f"{host.attacks[idd].name} add in attack slot, {host.attack_slot}", f"[{host.name}]")
+
+                    else:
+                         log(Log.DEBUG, f"{host.attacks[idd].name} exist in {host.name} attack slot, adding in queue...", f"[{host.name}]")
+                         host.attacks[idd].battle_queue.append(dmg_list)
+
+
+
+                    #helpers.say_line(host,'attack')
+                    
 
                idd += 1
           
-          return attacks_damage_list
+          
      
 
 
@@ -110,8 +119,6 @@ def select_ai(target_limit, targets_list: list[ent.Character],host: ent.Characte
           if len(targets_list) > 0:
                target_choice = choice(targets_list)
 
-
-               log(Log.INFO,f'{host.name} chose {attack_name} and attack {target_choice.name}')
                dmg_list.append(target_choice)
                targets_list.remove(target_choice)
 

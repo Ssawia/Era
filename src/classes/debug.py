@@ -31,13 +31,16 @@ class Debug:
     
     def debug_attributes(self):
         print("[1] Update Status")
-        print("[2] Deal 1000 damage")
+        print("[2] Deal 10 damage")
+        print("[3] Check Attack Slot")
 
         msg = input("debug/attributes> ")
         if msg == "1":
             self.character.attributes.update_status(self.character, True)
         elif msg == "2":
-            self.character.attributes.status.hp -= 1000
+            self.character.attributes.status.hp -= 10
+        elif msg == "3":
+            print(f"{self.character.attack_slot}")
         
     def debug_effect(self):
         print("[1] Add Effect")

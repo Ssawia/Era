@@ -506,6 +506,25 @@ class Character:
             return False
         else:
             return True
+     
+    def deal_damage(self,dmg_obj,damage_roll, damage_bonus, owner):
+        self.is_alive()
+
+        if self.alive:
+            dmg_obj.effect(owner, self)
+            res = self.attributes.resistances[dmg_obj.defType]
+                    
+            dmg_deal = (damage_roll + damage_bonus) * res 
+            dmg_deal = trunc(dmg_deal)
+            if dmg_deal <= 0:
+                dmg_deal = 0
+
+            old_hp = self.attributes.status.hp
+            self.attributes.status.hp -= dmg_deal
+            types = f'|{self.name} taken {dmg_obj.name}({damage_roll}+{damage_bonus})*({res})| = {dmg_deal} damage | {self.name} HP:{old_hp}>{self.attributes.status.hp}.'
+            return types
+        else:
+            self.attributes.status.hp = 0
 
 
     def defend(self, attack_name, damages_type : list, owner : Character, target : Character):
