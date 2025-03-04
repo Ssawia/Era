@@ -8,10 +8,12 @@ from math import trunc
 
 #Provavelmente isso não é a melhor maneira de implementar várias classes, mas por enquanto vai dar certo, confia
 import src.classes.attacks.attackC as Attacks
+from src.classes.attacks.attackC import Instance,Attack
 import src.classes.damages.damageTypeC as dt
 from src.classes.temp.temp_class_handler import Temp
 import src.classes.effects.effect_class_prototype as Effect
 from src.classes.debug import Debug
+
 
 
 
@@ -26,6 +28,7 @@ class Battle:
         self.attacks_queue = []
         self.lenEnemy = 0
         self.lenPlayer = 0
+        self.instances_to_process = []
 
         self.debug = Debug(battle_queue=self.queue,character=None)
 
@@ -63,11 +66,12 @@ class Battle:
                     chara.attacks[msg].queue = self.queue
                     chara.attacks[msg].ai = False
 
-                    chara.attacks[msg].choice_player()
+                    battle_queue = chara.attacks[msg].choice_player()
 
                     if chara.attacks[msg] not in chara.attack_slot:
                         log(Log.DEBUG, f"{chara.attacks[msg].name} does not exist in {chara.name} attack slot, adding...", f"[{chara.name}]")
-                        chara.attack_slot.append(chara.attacks[msg])
+                        instance = Instance(attack=chara.attacks[msg], queue=battle_queue,active=True,owner=chara)
+                        chara.attack_slot.append(instance)
 
 
 
@@ -109,8 +113,12 @@ class Battle:
 
             
             attacks_slot_str = ""
-            for atacck in chara.attack_slot:
-                attacks_slot_str += f"-> {atacck.name}:{atacck.battle_queue} "
+            instance: Instance
+            for instance in chara.attack_slot:
+                names = "->"
+                for obj in instance.queue:
+                    names += f" {obj.name} |"
+                attacks_slot_str += f"->[{instance.active}]{instance.attack.name}:{names}"
             
             print("======================================================================")
             log(Log.INFO, f"{chara.name}", f"[Turn: {self.turn}]")
@@ -170,71 +178,154 @@ class Battle:
 
     def process_attacks(self):
         self.queue.sort(key=lambda x: x.attributes.battle_spd, reverse=True)
-        
+        index_enemy = 0
 
 
+        helpers.line()
         for obj in self.queue:
+
+            log(Log.INFO, f"{obj.name} Turn.", "[Battle]")
             log(Log.DEBUG, f"{obj.name} attacks slot: {obj.attack_slot}", f"[{obj.name}]")
-
-
-            atks_to_remove_obj = []
-            atks_to_remove_obj_target = []
-            
-            
-            for atk_slot in obj.attack_slot:
-                log(Log.DEBUG, f"{obj.name} attacks queue: {atk_slot.battle_queue}", f"[{obj.name}]")
-                
-                for instance in atk_slot.battle_queue:
-                    log(Log.DEBUG, f"Attacks {atk_slot.name} instance: {instance}", f"[{obj.name}]")
-
-                    for obj_enemy in instance:
-                        log(Log.DEBUG, f"{atk_slot.name} hit {obj_enemy.name}", f"[{obj.name}]")
-
+            self.instances_to_process = []
+            for instance in obj.attack_slot:
+                if instance.active:
+                    helpers.say_line(obj, "attack")
+                    for obj_enemy in instance.queue:
+                        log(Log.INFO, f"{obj.name} is using {instance.attack.name}, and it's hit {obj_enemy.name}.", f"[Battle]")
+                        
                         # Onde os ataques se clasham // fazer que os ataques se deletem quando terminarem
-                        if obj_enemy.attack_slot is not None and len(obj_enemy.attack_slot) >= 1:
+                        if obj_enemy.alive and obj_enemy.attack_slot[index_enemy].active and obj_enemy.attack_slot is not None and len(obj_enemy.attack_slot) >= 1 and obj_enemy not in instance.exclusion_queue:
                             # Fazer oque o ataque tenha um clash especifico no futuro
-                            atk_slot_enemy = obj_enemy.attack_slot[0]
-                            log(Log.DEBUG, f"{obj.name} is clashing with {obj_enemy.name} on {atk_slot.name}<->{atk_slot_enemy.name}", f"[{obj.name}]")
+                            instance_enemy = obj_enemy.attack_slot[index_enemy].attack
+                            log(Log.DEBUG, f"{obj.name} is clashing with {obj_enemy.name} on {instance.attack.name}<->{instance_enemy.name}", f"[{obj.name}]")
 
-                            self.clash_attack(atk_slot,atk_slot_enemy)
+                            result = self.clash_attack(instance.attack,instance_enemy)
+
+                            points = result[0]
+                            points_enemy = result[1]
+
+                   
+                            obj_mult_attack = False
+                            enemy_mult_attack = False
+
+                            if len(instance.queue) > 1:
+                                obj_mult_attack = True
+                                
+                            if len(obj_enemy.attack_slot[index_enemy].queue) > 1:
+                                enemy_mult_attack = True
+                                
+                                
+                            log(Log.DEBUG, f"points: {points}  multitarget: {obj_mult_attack}", F"[{obj.name}]")
+                            log(Log.DEBUG, f"points: {points_enemy} multitarget: {enemy_mult_attack}", F"[{obj_enemy.name}]")
+                            if points > points_enemy:
+                                log(Log.INFO, f"{obj.name} wins the Attack Clash against {obj_enemy.name} using {instance.attack.name}", f"[Battle]")
+                                if not obj_mult_attack:
+                                    data1 = {"destroy": True, "instance": instance, "obj": obj, "multarget": obj_mult_attack}
+                                    self.instances_to_process.append(data1)
+                                elif obj_mult_attack:
+                                    data1 = {"destroy": False, "instance": instance, "obj": obj, "multarget": obj_mult_attack, "target-exclusion": obj_enemy}
+                                    self.instances_to_process.append(data1)
+
+                                data2 = {"destroy": True, "instance": obj_enemy.attack_slot[index_enemy], "obj": obj_enemy, "multarget": enemy_mult_attack}
+                                self.instances_to_process.append(data2)
+
+                                    
+
+                            if points_enemy > points:
+                                log(Log.INFO, f"{obj_enemy.name} wins the Attack Clash against {obj.name} using {instance_enemy.name}", f"[Battle]")
+                                if not enemy_mult_attack:
+                                    data1 = {"destroy": True, "instance": obj_enemy.attack_slot[index_enemy], "obj": obj_enemy, "multarget": enemy_mult_attack}
+                                    self.instances_to_process.append(data1)
+                                elif obj_mult_attack:
+                                    data1 = {"destroy": False, "instance": obj_enemy.attack_slot[index_enemy], "obj": obj_enemy, "multarget": enemy_mult_attack, "target-exclusion": obj}
+                                data2 = data1 = {"destroy": True, "instance": instance, "obj": obj, "multarget": obj_mult_attack}
+                                self.instances_to_process.append(data2)
+
+
+                            if points_enemy == points:
+                                log(Log.INFO, f"The Attack Clash between {obj.name} and {obj_enemy.name} ended in a draw.", f"[Battle]")
+
 
                         else:
-                            log(Log.DEBUG,f"{atk_slot.name} no clash on {obj_enemy.name} attacks", f"[{obj.name}]")
+                            log(Log.DEBUG,f"{instance.attack.name} no clash on {obj_enemy.name} attacks", f"[{obj.name}]")
+                            result = self.direct_attack(instance.attack, obj_enemy)
+                            points = result[0]
+                            points_enemy = result[1]
 
+                            if points > points_enemy:
+                                if not obj_mult_attack:
+                                    data1 = {"destroy": True, "instance": instance, "obj": obj, "multarget": obj_mult_attack}
+                                    self.instances_to_process.append(data1)
+                                elif obj_mult_attack:
+                                    data1 = {"destroy": False, "instance": instance, "obj": obj, "multarget": obj_mult_attack, "target-exclusion": obj_enemy}
+                                    self.instances_to_process.append(data1)
 
+                        self.process_instances()
+
+                input()
+                helpers.line()
             
-            input()
 
+    def process_instances(self):
+        for object_remove in self.instances_to_process:
+            obj_character: Character
+            instance_object: Instance
             
+            multarget = object_remove["multarget"]
+            obj_character = object_remove["obj"]
+            destroy = object_remove['destroy']
+            instance_object = object_remove['instance']
 
+
+            if destroy and not multarget and instance_object in obj_character.attack_slot:
+                instance_object.active = False
+                log(Log.DEBUG,f"{instance_object.attack.name} has no multarget, disabling..", f"[{obj_character.name}]")
+
+                #log(Log.INFO, f"{obj_character.name}'s {instance_object.attack.name} attack was destroyed in this clash.","[Battle]")
+                                    
+
+            if not destroy and multarget:
+                obj_to_exclusion = object_remove['target-exclusion']
+                instance_object.exclusion_queue.append(obj_to_exclusion)
+                instance_object.check()
+                log(Log.DEBUG,f"Instance has Multarget, add {obj_to_exclusion.name} to exclusion list.", f"[{obj_character.name}][{instance_object.attack.name}]")
+                #log(Log.INFO,f"{obj_character.name} will ignore {obj_to_exclusion.name} for the next target.", f"[{obj_character.name}][{instance_object.attack.name}]")
             
-
-            for atk_remove in atks_to_remove_obj:
-                if atk_remove in obj.attack_slot:
-                    log(Log.DEBUG, f"{obj.name}:{obj.attack_slot}", f"[{obj.name}]")
-                    obj.attack_slot.remove(atk_remove)
-                    log(Log.DEBUG, f"Removing {atk_remove} from {obj.name}:{obj.attack_slot}", f"[Clash][Remove Slot][{obj.name}]")
-                    
-            
-            for data in atks_to_remove_obj_target:
-                obj = data['obj']
-                atk_remove = data['atk']
-                
-                if atk_remove in obj.attack_slot:
-                    log(Log.DEBUG, f"{obj.name}:{obj.attack_slot}", f"[{obj.name}]")
-                    obj.attack_slot.remove(atk_remove)
-                    log(Log.DEBUG, f"Removing {atk_remove} from {obj.name}:{obj.attack_slot}", f"[Clash][Remove Slot][{obj.name}]")
-
-
-            if obj.attack_slot is not None and len(obj.attack_slot) == 0:
-                obj.attack_slot = None
-                        
-
+            instance_object.check()
         
+        self.instances_to_process = []
+
+    
+    def direct_attack(self,hit: Attacks.Attack, obj: Character):
+        dmg_obj: dt.DamageType
+
+        hit_points = 0
+        hit_clash_points = 0
+
+        for index,dmg_obj in enumerate(hit.dmgList):
+            min_atk = dmg_obj.min_atk
+            max_atk = dmg_obj.max_atk
+            crit = hit.owner.attributes.status.crit
+            max_crit = hit.owner.attributes.status.maxCrit
+            dmg_bonus = hit.owner.attributes.elements[dmg_obj.main_element]
+            log(Log.DEBUG, f"Damage Name: {dmg_obj.name} Rolls: {min_atk}(+{crit})-{max_atk}(+{max_crit}) Bonus: {dmg_bonus}", f"[{index}][{hit.owner.name}][{hit.name}]")
+
+            roll = randint(min_atk + crit,max_atk + max_crit)
+            log(Log.INFO, f"[{index}][{hit.name} > | {obj.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}")
+            result = obj.deal_damage(dmg_obj,roll,dmg_bonus,hit.owner)
+            hit_points += 1
+            log(Log.INFO,result)
+
+            hit_points += 1
+        
+        return [hit_points,hit_clash_points]
                 
     def clash_attack(self,hit: Attacks.Attack, hit_clash: Attacks.Attack):
         dmg_obj: dt.DamageType
         dmg_enemy: dt.DamageType
+
+        hit_points = 0
+        hit_clash_points = 0
 
         if len(hit.dmgList) < len(hit_clash.dmgList):
             log(Log.DEBUG, f"Hit Clash({hit_clash.name}) is greater than Hit({hit.name}), swithing position..", )
@@ -255,8 +346,8 @@ class Battle:
                 roll = randint(min_atk + crit,max_atk + max_crit)
                 log(Log.INFO, f"[{index}][{hit.name} > | {hit_clash.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}")
                 result = hit_clash.owner.deal_damage(dmg_obj,roll,dmg_bonus,hit.owner)
+                hit_points += 1
                 log(Log.INFO,result)
-                input()
             else:
             
                 dmg_enemy = hit_clash.dmgList[index]
@@ -275,12 +366,17 @@ class Battle:
                     log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll} > {roll_enemy} =(+{max_crit_enemy}){max_atk_enemy}-(+{crit_enemy}){min_atk_enemy}[{dmg_enemy.main_element}][{hit_clash.owner.name}][{index}]")
                     result = hit_clash.owner.deal_damage(dmg_obj,roll,dmg_bonus,hit.owner)
                     log(Log.INFO,result)
+                    hit_points += 1
                 elif roll_enemy > roll:
                     log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll} < {roll_enemy} =(+{max_crit_enemy}){max_atk_enemy}-(+{crit_enemy}){min_atk_enemy}[{dmg_enemy.main_element}][{hit_clash.owner.name}][{index}]")
                     result = hit.owner.deal_damage(dmg_enemy,roll_enemy,dmg_bonus_enemy,hit_clash.owner)
                     log(Log.INFO,result)
-                input()
+                    hit_clash_points += 1
+                else:
+                    log(Log.DEBUG, f" The clash deal draw", f"[{index}][{hit_clash.owner.name}][{hit_clash.name}]")
+
         
+        return [hit_points,hit_clash_points]
         #adiciona os ataques a exclusão
 
 
@@ -336,6 +432,7 @@ class Battle:
             chara.attributes.update_status(True)
             chara.attributes.update_elements()
             chara.attributes.update_resistances()
+            chara.update_instances()
             chara.update_damage_attacks()
     
 

@@ -8,6 +8,20 @@ import uuid
 # Depois de alguns minutos de filosofia, eu cheguei a conclusão que single e select é literalmente a mesma coisa, só muda o limite do ataque 🤡
 # Vou deixar por enquanto, motivo ? preguiça
 
+class Instance:
+
+    def __init__(self, attack: Attack, queue: list[Chara.Character], active: bool, owner: bool):
+        self.attack: Attack = attack 
+        self.queue: list[Chara.Character] = queue
+        self.exclusion_queue: list[Chara.Character] = []
+        self.active: bool = active
+        self.instance_target:Instance = None
+        self.owner: Chara.Character = owner
+    
+    def check(self):
+        if len(self.queue) == len(self.exclusion_queue):
+            self.active = False
+
 class Selector:
     def __init__(self,name : str , queue : list, target : str, target_limit : int, intent: str):
         self.attack_name = name
@@ -154,7 +168,7 @@ class Attack:
 
     def choice_player(self):
         self.init_select(self.queue)
-        self.battle_queue.append(self.check_target(self.owner))
+        return self.check_target(self.owner)
 
     def check_target(self, owner : Chara.Character):
         queue = []

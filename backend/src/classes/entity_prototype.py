@@ -10,6 +10,8 @@ from helpers import log,Log
 import abstraction
 import src.classes.damages.damageTypeC as damageTypes
 import src.classes.attacks.attackC as Attacks
+from src.classes.attacks.attackC import Instance
+
 from src.classes.temp.temp_class_handler import TempHandler, Temp
 
 
@@ -383,11 +385,6 @@ class Attributes:
         
 
 
-
-
-        
-
-
 class Character:
     attacks: list[Attacks.Attack]
 
@@ -412,7 +409,7 @@ class Character:
         self.ids_attacks: list[int] = data_chara['attacks']
 
         self.attacks = abstraction.get_attack_class(self.ids_attacks)
-        self.attack_slot: list[Attacks.Attack] = []
+        self.attack_slot: list[Instance] = []
 
         self.attributes: Attributes | None  = Attributes(data_chara,self)
 
@@ -439,6 +436,15 @@ class Character:
 
     def on_death_abylity(self):
         self.attributes.temp_handler.remove_temp(flags=self.abilities)
+
+    
+    def update_instances(self):
+        active_list = []
+        log(Log.DEBUG, "Updating Instances in attack slot", f"[{self.name}]")
+        for instance in self.attack_slot:
+            if instance.active:
+                active_list.append(instance)
+            self.attack_slot = active_list
 
 
 

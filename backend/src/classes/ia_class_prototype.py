@@ -1,6 +1,7 @@
 from __future__ import annotations
 import src.classes.entity_prototype as ent
 import src.classes.attacks.attackC as atk
+from src.classes.attacks.attackC import Instance
 from random import choice
 import helpers
 from helpers import Log,log
@@ -91,13 +92,11 @@ class Ai:
 
                     if host.attacks[idd] not in host.attack_slot:
                          log(Log.DEBUG, f"{host.attacks[idd].name} does not exist in {host.name} attack slot, adding...", f"[{host.name}]")
-                         host.attacks[idd].battle_queue.append(dmg_list) 
-                         host.attack_slot.append(host.attacks[idd])
+                         host.attacks[idd].battle_queue.append(dmg_list)
+                         instance = Instance(host.attacks[idd], dmg_list, True, host)
+                         host.attack_slot.append(instance)
                          log(Log.DEBUG, f"{host.attacks[idd].name} add in attack slot, {host.attack_slot}", f"[{host.name}]")
 
-                    else:
-                         log(Log.DEBUG, f"{host.attacks[idd].name} exist in {host.name} attack slot, adding in queue...", f"[{host.name}]")
-                         host.attacks[idd].battle_queue.append(dmg_list)
 
 
 

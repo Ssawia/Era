@@ -39,6 +39,9 @@ def log(typ: Log, message: str, append : str = ''):
         print(msg)
 
 
+def line(word: str = "=",number: int = 120):
+    print(f"{word}"*number)
+
 
 
 
