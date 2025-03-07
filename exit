@@ -1,0 +1,266 @@
+[33mcommit 3b4fccaa25e089018275bdc62c0576693eff2113[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: matheus.costa <99998949+MatheusCoss@users.noreply.github.com>
+Date:   Thu Mar 6 00:25:35 2025 -0300
+
+    Effect e Temps implementados nos ataques
+
+[33mcommit 52f37efffe5975cea12b62bd143be56e7ab975f6[m
+Author: Aiwass <88169920+Ssawia@users.noreply.github.com>
+Date:   Mon Mar 3 21:00:34 2025 -0300
+
+    Sistema de combate refeito, denovo. Não aguento mais
+
+[33mcommit defd42367da97fb1632fa84dcd984b5a89f4582c[m
+Author: Aiwass <88169920+Ssawia@users.noreply.github.com>
+Date:   Sat Mar 1 21:08:43 2025 -0300
+
+    frontend basico com react
+
+[33mcommit 5603326faee39fa910c6df46db1f798ffc5e527b[m
+Author: Aiwass <88169920+Ssawia@users.noreply.github.com>
+Date:   Fri Feb 28 12:49:14 2025 -0300
+
+    battle v2
+
+[33mcommit 2513774892f4348f3f2e5de488992a5eef18719e[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Wed Feb 19 11:28:46 2025 -0300
+
+    sistema de combate refeito
+
+[33mcommit a8897bf9d09e347256b1dbc65e5ea9bb700e67fd[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Mon Oct 21 17:14:53 2024 -0300
+
+    Adicionando debug básico
+
+[33mcommit c37b20db38505aef133a15511a82416018a6f90b[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Mon Oct 21 10:04:18 2024 -0300
+
+    Temp handler feito
+
+[33mcommit ea7e192e080af7039287a59d1e8078333ab8f9a0[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sat Oct 12 00:04:12 2024 -0300
+
+    Sistema básico de log feito
+
+[33mcommit 52f261e8b938365af9eda2d52582a03d5bcaba42[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Thu Oct 10 00:29:48 2024 -0300
+
+    Temp linked to Effects
+
+[33mcommit e6b490d00fdd891d8b51ccec0d5ad3ae571d9ac9[m
+Merge: b9fd94e 491f6d9
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Mon Oct 7 23:22:25 2024 -0300
+
+    Merge branch 'main' of github.awaiss:Ssawia/Era
+
+[33mcommit b9fd94e1175d2a51c3555928d7b7dab36979b4e5[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Mon Oct 7 23:21:39 2024 -0300
+
+    Adicionando efeitos temporários
+
+[33mcommit 491f6d943587c2641e5d10901e9d01bf78c0f779[m
+Author: Aiwass <88169920+Ssawia@users.noreply.github.com>
+Date:   Sun Oct 6 17:35:12 2024 -0300
+
+    Delete diagram01.py
+
+[33mcommit 51f84040c880945a2e86afb49cdaf557e7bb42bc[m
+Author: Aiwass <88169920+Ssawia@users.noreply.github.com>
+Date:   Sun Oct 6 17:34:56 2024 -0300
+
+    Delete diagram.py
+
+[33mcommit 69e5a8f3c45ef5b8b8e6d5dc336815b376918a90[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sun Oct 6 16:52:04 2024 -0300
+
+    Prototipagem do Events/EventsHandler/ListenEvent/EffectsHandler/Effects/
+
+[33mcommit 9b345c9e90c969960f2a39495a1d1ed750adffa9[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Tue Sep 17 00:41:22 2024 -0300
+
+    refatorando tudo 2
+
+[33mcommit 2070052f307ffa502834e4522e682fd18de9ddba[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Mon Sep 9 00:42:35 2024 -0300
+
+    refactorando tudo 1
+
+[33mcommit b82352d138340340e0cbcbf18a4a0baff7845cc2[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sat Aug 24 20:27:38 2024 -0300
+
+    criando a config, além de melhorar a separação dos dados do ataques
+
+[33mcommit 6e058f93be2885788552eb8a0d20c6bfd21098c9[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Fri Aug 23 13:53:07 2024 -0300
+
+    Esqueci do meu mano helper
+
+[33mcommit 5b227cec33e488fa88a217d632a1de3c6dae97b1[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Fri Aug 23 13:52:28 2024 -0300
+
+    Sistema basico de combate feito.
+
+[33mcommit 7c5ba661217e1cd644c64b4417a01b89dbc82a85[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Mon Aug 19 20:47:24 2024 -0300
+
+    Ai basica feita. Macaco ve inimigo, macaco ataca.
+
+[33mcommit 5ad9602bf9198541ec49b7ffdd0ab32dd88bbac1[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Thu Aug 15 00:31:49 2024 -0300
+
+    Termindo os elementos e resistencias
+
+[33mcommit c12b6b2f22a774d3492c3bc66d80403ea76b6471[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Wed Aug 14 22:25:28 2024 -0300
+
+    Sistema de elementos refeitos, provavelmente vai dar merda no futuro
+
+[33mcommit 3c4c5cb6bc468159357cfd1abb944b2504ec06cf[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Wed Aug 14 22:14:44 2024 -0300
+
+    Sistema de elementos refeitos, provavelmente vai dar merda no futuro
+
+[33mcommit 6be5a2371338ea0bdffe9b08d1662a218999c672[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Mon Aug 12 17:16:54 2024 -0300
+
+    Sistema de atributos refeito. Isso não é literalmente dark souls 3 from software ?
+
+[33mcommit 847a882efd2c9229d6a0007b2ad494a491322c16[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sat Aug 10 15:13:22 2024 -0300
+
+    Melhorar a abstração das classes
+
+[33mcommit 837b99ddff21f0c6cee7c4980b42a98a490b929d[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sat Aug 10 04:48:40 2024 -0300
+
+    Refactorar relações entre classes.
+
+[33mcommit 5db0c2eeeeb7eef4f1b4a29bff9e38e240986296[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Wed Aug 7 20:44:59 2024 -0300
+
+    Intenções de ataques implementado
+
+[33mcommit 581aabdcf28490b7ee24a3d4ad9a749b8bad2f29[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Tue Aug 6 21:44:40 2024 -0300
+
+    Implementado tipos e ataques em alvos multiplos
+
+[33mcommit c64cd2e9ef3bef0ae1ac0166bba950cc4907d65a[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Tue Aug 6 21:27:04 2024 -0300
+
+    Adicionando a ataque de curar
+
+[33mcommit e29fcbb80929f87e15d7415ffb19dd2b9de443b6[m
+Merge: 6a33afb cef1fa7
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Tue Aug 6 21:01:09 2024 -0300
+
+    Merge branch 'master' of https://github.com/Ssawia/Era
+
+[33mcommit 6a33afbf5995d4b0ff51f236365d6289db66e643[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Tue Aug 6 21:00:43 2024 -0300
+
+    Adicionando a fundação das intenções de ataque
+
+[33mcommit cef1fa77e753efd9a1093cb3a27b21fbc314a71c[m
+Author: Aiwass <88169920+Ssawia@users.noreply.github.com>
+Date:   Mon Aug 5 23:02:04 2024 -0300
+
+    Create LICENSE
+
+[33mcommit 81098d23fbe10f45cece4dabc92aa11aa773d24e[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Mon Aug 5 19:12:38 2024 -0300
+
+    Adicionando custo ao ataques
+
+[33mcommit 15f47855e48c7d2a8bf40e634786eab7271b5f1e[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Mon Aug 5 01:36:13 2024 -0300
+
+    Sistema basico de dano terminado
+
+[33mcommit eed8071820a8a73382b636d018f924a389247ce3[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sun Aug 4 20:58:12 2024 -0300
+
+    Refactorando os sistema de atributos
+
+[33mcommit 14512f31f923304d6adb7ff7aeed8940a78a12c9[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sun Aug 4 18:51:53 2024 -0300
+
+    Adicionando danos multiplos em ataques
+
+[33mcommit 2725f31fe696906b6dfa6ec06ff158c6ca313468[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sun Aug 4 03:47:37 2024 -0300
+
+    Colocando os objetivos futuros por enquanto
+
+[33mcommit 04eaab5e0e30794edc427d532cbf7b278a33cab0[m
+Merge: 757d04a 68eba44
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sun Aug 4 03:19:47 2024 -0300
+
+    Merge branch 'master' of https://github.com/Ssawia/Era
+
+[33mcommit 757d04a7c561be95bee84af57ea054bd1e3f7f55[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sun Aug 4 03:18:58 2024 -0300
+
+    nada de mais, só tirando algumas coisas de teste
+
+[33mcommit 68eba44123ec0e9eef935bdf0e64577ff676435a[m
+Author: Aiwass <88169920+Ssawia@users.noreply.github.com>
+Date:   Sat Aug 3 23:05:09 2024 -0300
+
+    Create README.md
+
+[33mcommit b0d3d954b5a5cdd76ecd9273c3e92b6d27155dec[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sat Aug 3 21:54:22 2024 -0300
+
+    Preparando o sistema de combate por turno
+
+[33mcommit fd63a050b2fed5976c3fbe124f107ce29029cdaa[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sat Aug 3 17:02:15 2024 -0300
+
+    Preparando a base para o combate
+
+[33mcommit 7f426c7167fc4e40cb94891633058c6602b0a532[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sat Aug 3 05:24:17 2024 -0300
+
+    Mudando a ordem da lista baseado na velocidade do personagem
+
+[33mcommit 2f00ad9bcf5cf7f7094afed392f4875d79f969b3[m
+Author: Aiwass <awaissaltdc@gmail.com>
+Date:   Sat Aug 3 04:59:42 2024 -0300
+
+    base

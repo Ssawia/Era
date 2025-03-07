@@ -12,9 +12,10 @@ class Temp:
     """
 
 
-    def __init__(self, status: str, typo: str, turn: int,time: int,value:int,active:bool,is_turn:bool,is_time:bool, active_flag: str | None) -> None:
+    def __init__(self, name: str, status: str, typo: str, turn: int,time: int,value:int,active:bool,is_turn:bool,is_time:bool, active_flag: str | None) -> None:
         self.uid = uuid.uuid4()
 
+        self.name = name
         self.status = status
         self.typo = typo
         self.turn = turn
@@ -51,10 +52,7 @@ class TempHandler:
             self.list_temps.append(tmp)
             if isinstance(self._parent.return_parent(), character.Character):
                 parent: character.Character = self._parent.return_parent()
-
                 log(Log.DEBUG, f"Temp Status: {tmp.status} added.", f"[{parent.name}][Attributes][TempHandler]")
-
-
 
         self.update_temp()
 
@@ -104,23 +102,17 @@ class TempHandler:
         flags = []
 
         for tmp in self.list_temps:
-            log(Log.DEBUG,f"Temp: {tmp.uid}", log_append)
-            if tmp.isTurn and tmp.active_flag is None:
-                if tmp.turn > 0:
+            log(Log.DEBUG,f"Updating: {tmp.name}", log_append)
+            if tmp.isTurn and tmp.active_flag == "":
+                if tmp.turn >= 0:
                     tmp.turn -= turn
 
-                if tmp.turn <= 0:
-                    log(Log.DEBUG,f"Temp {tmp.status} has 0 turn", log_append)
+                if tmp.turn < 0:
+                    log(Log.INFO,f" {tmp.name} has ended", log_append)
                     temps_to_remove.append(tmp)
 
-            if tmp.active_flag is None:
-                if tmp.isTime and (tmp.time - time) > 0:
-                    tmp.turn -= time
-                elif tmp.time < 0:
-                    self.remove_temp(list_temp=[tmp])
-
-            if tmp.active_flag is not None:
-                log(Log.DEBUG, f"Temp {tmp.status} has a flag {tmp.active_flag}", log_append)
+            if tmp.active_flag != "":
+                log(Log.DEBUG, f" Temp {tmp.status} has a flag {tmp.active_flag}", log_append)
                 flags.append(tmp.active_flag)
 
 
@@ -162,7 +154,6 @@ class TempHandler:
         """
         value: float = 0.0
         if status in self.temps_info.keys():
-            print(self.temps_info[status])
             for bonus in self.temps_info[status]:
                 if typo in list(bonus.keys()):
                     if typo == "add":
