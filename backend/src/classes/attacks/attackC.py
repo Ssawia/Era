@@ -1,6 +1,6 @@
 from __future__ import annotations
 import src.classes.entity_prototype as Chara
-import src.classes.damages.damageTypeC as dmgType
+from src.classes.damages.damageTypeC import DamageType
 from helpers import say_line, log, Log
 
 import uuid
@@ -138,9 +138,11 @@ class Attack:
     def __init__(self, attack_data, dmg_type : list):
         self._id = attack_data['_id']
         self.uuid = uuid.uuid4()
-        self._class = attack_data['className']
+        self.class_name = attack_data['className']
+        self.file = attack_data['file']
         self.name = attack_data['name']
         self.def_name = attack_data['defName']
+        self.main_element = attack_data['main_element']
         self.desc = attack_data['desc']
         self.line = attack_data['line']
         self.target = attack_data['target']
@@ -151,7 +153,7 @@ class Attack:
         self.hits = attack_data['hits']
         self.types = dmg_type
         self.select: Selector | None = None
-        self.dmgList: list[dmg_type.DamageType] = []
+        self.dmgList: list[DamageType] = []
 
         self.queue = []
         self.battle_queue: list[list[Chara.Character]] = []
@@ -159,11 +161,18 @@ class Attack:
         self.ai: bool = False
 
     def set_damages(self, owner : Chara.Character):
-        i : dmgType.DamageType
+        i : DamageType
         self.dmgList = []
 
         for i in self.types:
             self.dmgList.append(i)
+    
+    def backlash_damage(self):
+        backlash_dmg = 0
+        for dmg in self.dmgList:
+            backlash_dmg += dmg.max_atk
+
+        return backlash_dmg
     
 
     def choice_player(self):

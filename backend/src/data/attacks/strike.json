@@ -9,6 +9,7 @@
             "className": "PhysicalAttack",
             "name": "Punch",
             "defName": "punch",
+            "main_element": "Strike",
             "desc": "A punch",
             "line": "Soco bosta",
             "target": "single",

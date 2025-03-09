@@ -63,6 +63,7 @@ def getDamageTypeClass(data : list, damages : list):
     dtypeList: list[dmgType.DamageType] = []
 
     dtype : dmgType.DamageType
+    
     i = 0
 
 
@@ -88,12 +89,17 @@ def getDamageTypeClass(data : list, damages : list):
                     id_effect = effect['id']
                     value_effect = effect['value']
                     turn_effect = effect['turn']
+                    event = effect['event']
+    
 
                     effects_data = get_all_json_from_path(effects_path,"effects")
                     json_effect = get_data_from_id(id_effect,effects_data,"[Effect]")
 
+                
                     effect = str_to_class(json_effect['classType'], json_effect['file'],json_effect['className'])
-                    effects_objs.append(effect(json_effect['typo'],json_effect['name'],json_effect['desc'],turn_effect,False,json_effect['is_stackable'],value_effect,json_effect['max_stacks'], None, False, json_effect['temp_objs'], None, None))
+                    effect_obj = effect(json_effect['typo'],json_effect['name'],json_effect['desc'],turn_effect,False,json_effect['is_stackable'],value_effect,json_effect['max_stacks'], None, None, json_effect["has_temp"], json_effect['temp_objs'], json_effect['obj_values'],event)
+
+                    effects_objs.append(effect_obj)
 
 
 

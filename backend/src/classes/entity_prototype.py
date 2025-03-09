@@ -263,6 +263,7 @@ class Attributes:
                 resBase = self.resistancesBase[key]
 
             res_key = key + "_Res"
+        
 
             res = (resBase + res_base + self.temp_handler.get_add_bonus(res_key,"add")) * self.temp_handler.get_mult_bonus(res_key,"mult")
             resD[key] = res
@@ -521,16 +522,25 @@ class Character:
             return False
         else:
             return True
+    
+
+    def do_damage(self,dmg):
+        if self.attributes.status.hp - dmg >= 0:
+            self.attributes.status.hp -= dmg
+        else:
+            self.attributes.status.hp = 0
+            self.is_alive()
      
-    def defend_damage(self,dmg_obj,damage_roll, damage_bonus, owner):
+    def defend_damage(self,dmg_obj,damage_roll, owner):
         self.is_alive()
 
         if self.alive:
-            if dmg_obj.file == "Magical":
-                dmg_obj.effect(owner, self, self.attributes.status.resM)
-            else:
-                dmg_obj.effect(owner, self, self.attributes.status.res)
 
+            
+            dmg_obj.on_clash_win(owner, self)
+
+            
+            damage_bonus = owner.attributes.elements[dmg_obj.main_element]
             res = self.attributes.resistances[dmg_obj.defType]
                     
             dmg_deal = (damage_roll + damage_bonus) * res 
@@ -539,11 +549,7 @@ class Character:
                 dmg_deal = 0
 
             old_hp = self.attributes.status.hp
-            if self.attributes.status.hp - dmg_deal >= 0:
-                self.attributes.status.hp -= dmg_deal
-            else:
-                self.attributes.status.hp = 0
-                self.alive = False
+            self.do_damage(dmg_deal)
             types = f'|{self.name} taken {dmg_obj.name}({damage_roll}+{damage_bonus})*({res})| = {dmg_deal} damage | {self.name} HP:{old_hp}>{self.attributes.status.hp}.'
             return types
         else:

@@ -23,22 +23,45 @@ class DamageType:
         self.actived = True
         self.formula = ""
         self.atk = 0
+
+    def effect_process(self,owner,target,event,res_base):
+        
+        for effect in self.effects:
+            if effect.event == event:
+                num = random.randint(1,100)
+                log(Log.INFO, f"{target.name} has {res_base}% to resist {effect.name}, roll = {num}", "[Battle][Effect]")
+                if num > res_base:
+                    effect.active = True
+                    effect.has_temp = True
+                    effect.owner = target
+                    effect.giver = owner 
+                    log(Log.INFO, f"{effect.name} proc on {target.name}","[Battle][Effect]")
+                    effect.init_effect()
+                    target.effects_handler.add_effects([effect])
+                else:
+                    log(Log.INFO, f"{target.name} resist to {effect.name}", "[Battle][Effect]")
+    
+
+
+    def get_res(self,target: Chara.Character):
+        if self.file == "Magical":
+            return target.attributes.status.resM
+        else:
+            return target.attributes.status.res
     
     # No futuro implentar efeitos para certos tipos de dano
-    def effect(self, owner : Chara.Character, target : Chara.Character, res_base: int):
-        for effect in self.effects:
-            num = random.randint(1,100)
-            log(Log.INFO, f"{target.name} has {res_base}% to resist {effect.name}, roll = {num}", "[Battle][Effect]")
-            if num > res_base:
-                effect.active = True
-                effect.has_temp = True
-                effect.owner = target
-                effect.giver = owner 
-                log(Log.INFO, f"{effect.name} proc on {target.name}","[Battle][Effect]")
-                effect.init_effect()
-                target.effects_handler.add_effects([effect])
-            else:
-                log(Log.INFO, f"{target.name} resist to {effect.name}", "[Battle][Effect]")
+    def on_clash_win(self, owner : Chara.Character, target : Chara.Character):
+        res = self.get_res(target)
+        self.effect_process(owner,target,"on_clash_win", res)
+    
+    def on_clash_lost(self, owner : Chara.Character, target : Chara.Character):
+        res = self.get_res(target)
+        self.effect_process(owner,target,"on_clash_lost", res)
+
+    def on_clash_draw(self, owner : Chara.Character, target : Chara.Character):
+        res = self.get_res(target)
+        self.effect_process(owner,target,"on_clash_draw", res)
+        
 
 
     def setHeal(self, owner : Chara.Character):

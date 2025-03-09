@@ -322,7 +322,7 @@ class Battle:
 
             roll = randint(min_atk + crit,max_atk + max_crit)
             log(Log.INFO, f"[{index}][{hit.name} > | {obj.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}")
-            result = obj.defend_damage(dmg_obj,roll,dmg_bonus,hit.owner)
+            result = obj.defend_damage(dmg_obj,roll,hit.owner)
             hit_points += 1
             log(Log.INFO,result, "[Battle]")
 
@@ -337,11 +337,11 @@ class Battle:
         hit_points = 0
         hit_clash_points = 0
 
-        args1 = {"battle": self, "hit_clash": hit_clash}
-        args2 = {"battle": self, "hit_clash": hit}
-
         hit.onStart(owner=hit.owner)
         hit_clash.onStart(owner=hit_clash.owner)
+
+
+
 
         if len(hit.dmgList) < len(hit_clash.dmgList):
             log(Log.DEBUG, f"Hit Clash({hit_clash.name}) is greater than Hit({hit.name}), swithing position..", )
@@ -349,46 +349,44 @@ class Battle:
             hit = hit_clash
             hit_clash = hit_temp
 
+
+        
+        #Checar se tem recuo
+        resistence = hit.owner.attributes.resistances[hit.main_element]
+        resistence_enemy = hit_clash.owner.attributes.resistances[hit_clash.main_element]
+        if resistence >= 1.5 and hit.file == "MagicalAttack":
+            dmg_perc = resistence - 1
+            backlash = trunc(hit.backlash_damage() * dmg_perc)
+            log(Log.INFO, f"{hit.owner.name} take {backlash} backlash damage from using {hit.main_element}-type attack", "[Battle]")
+            hit.owner.do_damage(backlash)
+
+
+        if resistence_enemy >= 1.5 and hit.file == "MagicalAttack":
+            dmg_perc = resistence_enemy - 1
+            backlash = trunc(hit_clash.backlash_damage() * dmg_perc)
+            log(Log.INFO, f"{hit_clash.owner.name} take {backlash} backlash damage from using {hit_clash.main_element}-type attack", "[Battle]")
+            hit_clash.owner.do_damage(backlash)
+
+
         
         for index,dmg_obj in enumerate(hit.dmgList):
             min_atk = dmg_obj.min_atk
             max_atk = dmg_obj.max_atk
             crit = hit.owner.attributes.status.crit
             max_crit = hit.owner.attributes.status.maxCrit
-            dmg_bonus = hit.owner.attributes.elements[dmg_obj.main_element]
-            resistence = hit.owner.attributes.resistances[dmg_obj.main_element]
             dmg_type = dmg_obj.file
             
-
-
-
-            log(Log.DEBUG, f"Damage Name: {dmg_obj.name} Rolls: {min_atk}(+{crit})-{max_atk}(+{max_crit}) Bonus: {dmg_bonus}", f"[{index}][{hit.owner.name}][{hit.name}]")
-
-            if index > len(hit_clash.dmgList) - 1:
-                log(Log.DEBUG, f" has no attack left", f"[{index}][{hit_clash.owner.name}][{hit_clash.name}]")
-                roll = randint(min_atk + crit,max_atk + max_crit)
-
-                if resistence >= 1.5 and dmg_type == "Magical":
-                    log(Log.INFO, f"{hit.owner.name} will take a backlash for using {dmg_obj.main_element}-type attack", "[Battle]")
-
-
-                log(Log.INFO, f"[{index}][{hit.name} > | {hit_clash.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}")
-                result = hit_clash.owner.defend_damage(dmg_obj,roll,dmg_bonus,hit.owner)
-                hit_points += 1
-                log(Log.INFO,result, "[Battle]")
-            else:
             
+
+            #log(Log.DEBUG, f"Damage Name: {dmg_obj.name} Rolls: {min_atk}(+{crit})-{max_atk}(+{max_crit}) Bonus: {dmg_bonus}", f"[{index}][{hit.owner.name}][{hit.name}]")
+            
+            if not index > len(hit_clash.dmgList) - 1:
                 dmg_enemy = hit_clash.dmgList[index]
                 min_atk_enemy = dmg_enemy.min_atk
                 max_atk_enemy = dmg_enemy.max_atk
                 crit_enemy = hit_clash.owner.attributes.status.crit
                 max_crit_enemy = hit_clash.owner.attributes.status.maxCrit
-                dmg_bonus_enemy = hit_clash.owner.attributes.elements[dmg_enemy.main_element]
-                resistence_enemy = hit_clash.owner.attributes.resistances[dmg_enemy.main_element]
                 dmg_type_enemy = dmg_enemy.file
-
-
-
 
                 df_enemy = 0
                 df = 0
@@ -414,28 +412,38 @@ class Battle:
                     final_roll_enemy = roll_enemy - df
 
 
-                #Checar se tem recuo
-                if resistence >= 1.5 and dmg_type == "Magical":
-                    log(Log.INFO, f"{hit.owner.name} will take a backlash for using {dmg_obj.main_element}-type attack", "[Battle]")
-
-                if resistence_enemy >= 1.5 and dmg_type_enemy == "Magical":
-                    log(Log.INFO, f"{hit_clash.owner.name} will take a backlash for using this {dmg_enemy.main_element}-type attack", "[Battle]")
-
-
-
 
                 if final_roll > final_roll_enemy:
                     log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}(-{df_enemy}) > {roll_enemy}(-{df}) =(+{max_crit_enemy}){max_atk_enemy}-(+{crit_enemy}){min_atk_enemy}[{dmg_enemy.main_element}][{hit_clash.owner.name}][{index}]")
-                    result = hit_clash.owner.defend_damage(dmg_obj,roll,dmg_bonus,hit.owner)
+                    result = hit_clash.owner.defend_damage(dmg_obj,roll,hit.owner)
+                    dmg_enemy.on_clash_lost(hit_clash.owner,hit.owner)
                     log(Log.INFO,result, "[Battle]")
                     hit_points += 1
                 elif final_roll_enemy > final_roll:
                     log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}(-{df_enemy}) < {roll_enemy}(-{df}) =(+{max_crit_enemy}){max_atk_enemy}-(+{crit_enemy}){min_atk_enemy}[{dmg_enemy.main_element}][{hit_clash.owner.name}][{index}]")
-                    result = hit.owner.defend_damage(dmg_enemy,roll_enemy,dmg_bonus_enemy,hit_clash.owner)
+                    result = hit.owner.defend_damage(dmg_enemy,roll_enemy,hit_clash.owner)
+                    dmg_obj.on_clash_lost(hit.owner,hit_clash.owner)
                     log(Log.INFO,result, "[Battle]")
                     hit_clash_points += 1
                 else:
                     log(Log.DEBUG, f" The clash deal draw", f"[{index}][{hit_clash.owner.name}][{hit_clash.name}]")
+                    dmg_obj.on_clash_draw(hit.owner,hit_clash.owner)
+
+            else:
+                # Caso o hit_clash não tiver mais damage para defender
+                log(Log.DEBUG, f" has no attack left", f"[{index}][{hit_clash.owner.name}][{hit_clash.name}]")
+                
+                if resistence >= 1.5 and dmg_type == "Magical":
+                    log(Log.INFO, f"{hit.owner.name} will take a backlash for using {dmg_obj.main_element}-type attack", "[Battle]")
+
+                roll = randint(min_atk + crit, max_atk + max_crit)
+
+                log(Log.INFO, f"[{index}][{hit.name} > | {hit_clash.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}")
+                result = hit_clash.owner.defend_damage(dmg_obj,roll,hit.owner)
+                hit_points += 1
+                log(Log.INFO,result, "[Battle]")
+
+        
             
 
         if hit_points > hit_clash_points:

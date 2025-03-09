@@ -13,7 +13,8 @@
             "is_stackable": true,
             "max_stacks": 999,
             "has_temp": true,
-            "temp_objs": [{"id": 1,"event": "init", "flag": "", "target": "self"}, {"id": 2, "event": "init" ,"flag": "Ashen Curse", "target": "target"}]
+            "temp_objs": [{"id": 1,"event": "init", "flag": "", "target": "self"}, {"id": 2, "event": "init" ,"flag": "Ashen Curse", "target": "target"}],
+            "obj_values": {"ashen_curse_perc": 50}
 
         }
     ]

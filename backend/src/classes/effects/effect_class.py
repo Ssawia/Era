@@ -9,7 +9,7 @@ import abstraction
 
 
 class Effect:
-    def __init__(self, typo, name, desc, turns, active, is_stackable,stacks, max_stacks, character,has_temp, temp_objs,temp_owner, giver = None):
+    def __init__(self, typo, name, desc, turns, active, is_stackable,stacks, max_stacks, giver, character, has_temp, temp_objs, obj_values, event):
         self.uuid = uuid.uuid4()
         self.typo = typo
         self.name = name
@@ -23,34 +23,62 @@ class Effect:
 
         self.max_stacks = max_stacks
         self.has_temp = has_temp
-        self.temp_objs: list[tp.Temp] = temp_objs
-        self.temp_owner: ch.Character | ch.Attributes = temp_owner
+
+        self.temp_objs =  temp_objs
+        self.objs_temp_data = []
+        self.obj_values= obj_values
+        self.event = event
+
+
         self.owner : ch.Character = character
         self.giver: ch.Character | None = giver
+        self.start()
+    
+
+    def start(self):
+        #print(self.obj_values)
+        pass
+        
     
 
     def init_effect(self):
-        if self.active:
-            if self.name not in self.owner.attributes.temp_handler.flags:
-                for temp_obj in self.temp_objs:
-                    if temp_obj["event"] == "init":
-                        temp_id = temp_obj['id']
-                        temp_target = temp_obj['target']
-                        temp_flag = temp_obj["flag"]
-                        temp_data = abstraction.get_data_from_id(temp_id,abstraction.temps_data, "[Temps]")
+        if self.active and self.name not in self.owner.attributes.temp_handler.flags:
+            for temp_obj in self.temp_objs:
+                if temp_obj["event"] == "init":
+                    temp_id = temp_obj['id']
+                    temp_target = temp_obj['target']
+                    temp_flag = temp_obj["flag"]
+                    temp_data = abstraction.get_data_from_id(temp_id,abstraction.temps_data, "[Temps]")
 
-                        if temp_target == "self":
-                            temp = tp.Temp(temp_data['name'], temp_data['status'], temp_data['typo'], temp_data["turn"], temp_data["time"],temp_data["value"],True,temp_data["is_turn"], temp_data["is_time"],temp_flag)
-                            self.giver.attributes.temp_handler.add_temp([temp])
-                            self.giver.attributes.update_attributes()
-                            self.giver.attributes.update_attributes_bonus()
-                            self.giver.attributes.update_elements()
-                            self.giver.attributes.update_resistances()
-                            log(Log.INFO, f"{temp.name} on {self.giver.name} for {temp.turn} turn.", "[Temp]")
-                        elif temp_target == "target":
-                            temp = tp.Temp(temp_data['name'], temp_data['status'], temp_data['typo'], temp_data["turn"], temp_data["time"],temp_data["value"],True,temp_data["is_turn"], temp_data["is_time"],temp_flag)
-                            self.owner.attributes.temp_handler.add_temp([temp])
-                            log(Log.INFO, f"{temp.name} on {self.owner.name} for {temp.turn} turn.", "[Temp]") 
+                    if temp_target == "self":
+                        temp = tp.Temp(temp_data['name'], temp_data['status'], temp_data['typo'], temp_data["turn"], temp_data["time"],temp_data["value"],True,temp_data["is_turn"], temp_data["is_time"],temp_flag)
+                        self.giver.attributes.temp_handler.add_temp([temp])
+
+                        temp_data = {"obj": self.giver, "temp": temp, "flag": temp_flag}
+                        self.objs_temp_data.append(temp_data)
+
+
+
+                        self.giver.attributes.update_attributes()
+                        self.giver.attributes.update_attributes_bonus()
+                        self.giver.attributes.update_elements()
+                        self.giver.attributes.update_resistances()
+                        log(Log.INFO, f"{temp.name} on {self.giver.name} for {temp.turn} turn.", "[Temp]")
+
+
+                    elif temp_target == "target":
+                        temp = tp.Temp(temp_data['name'], temp_data['status'], temp_data['typo'], temp_data["turn"], temp_data["time"],temp_data["value"],True,temp_data["is_turn"], temp_data["is_time"],temp_flag)
+                        self.owner.attributes.temp_handler.add_temp([temp])
+
+                        temp_data = {"obj": self.owner, "temp": temp, "flag": temp_flag}
+                        self.objs_temp_data.append(temp_data)
+
+                        self.owner.attributes.update_attributes()
+                        self.owner.attributes.update_attributes_bonus()
+                        self.owner.attributes.update_elements()
+                        self.owner.attributes.update_resistances()
+
+                        log(Log.INFO, f"{temp.name} on {self.owner.name} for {temp.turn} turn.", "[Temp]") 
 
     def process_effect(self):
         pass
@@ -60,12 +88,14 @@ class Effect:
         log(Log.INFO,f"Effect {self.name} has ended", f"[{self.owner.name}][EffectHandler][Effect]")
 
         if self.has_temp:
-            if isinstance(self.temp_owner,ch.Character) and self.temp_owner.attributes is not None and self.temp_owner.attributes.temp_handler is not None:
-                self.temp_owner.attributes.temp_handler.remove_temp(list_temp=self.temp_objs)
-                self.temp_owner.attributes.temp_handler.update_temp()
-            elif isinstance(self.temp_owner,ch.Attributes) and self.temp_owner.attributes.temp_handler is not None:
-                self.temp_owner.temp_handler.remove_temp(list_temp=self.temp_objs)
-                self.temp_owner.attributes.temp_handler.update_temp()
+            for data in self.objs_temp_data:
+                obj: ch.Character
+                flag = data['flag']
+                obj = data['obj']
+                if flag == self.name:
+                    log(Log.INFO, f"{obj.name} tem a flag {self.name} temp, removendo", f"[{obj.name}][EffectHandler][Effect]")
+                    obj.attributes.temp_handler.remove_temp(flags=[self.name])
+                
 
 
 

@@ -9,6 +9,7 @@
             "name": "Deep Healing",
             "defName": "deep_healing",
             "desc": "Unleash the profound power of restoration with Deep Healing. This spell channels potent, rejuvenating energy directly into the body of the target, mending wounds and revitalizing their very essence. Deep Healing reaches beyond superficial injuries, addressing deep-seated damage and revitalizing the spirit, leaving the recipient in a state of profound well-being and vigor.",
+            "main_element": "Telesma",
             "line": "Cura bosta",
             "target": "self",
             "target-limit": 1,

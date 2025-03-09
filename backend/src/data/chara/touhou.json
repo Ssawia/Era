@@ -55,7 +55,7 @@
                 "Control": 1
             },         
             
-            "attacks": [0],
+            "attacks": [0,6],
 
 
             "lines":{
@@ -109,7 +109,7 @@
                 "Thrust": 1.0,
                 "Strike": 1.0,
                 "Telesma": 2,
-                "Fire": 2,
+                "Fire": 1.5,
                 "Water": 0.5,
                 "Earth": 1,
                 "Wind": 1,
