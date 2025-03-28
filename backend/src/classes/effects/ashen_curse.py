@@ -25,7 +25,6 @@ class AshenCurse(Effect):
             self.owner.attributes.status.hp -= dmg
             if self.owner.attributes.status.hp <= 0:
                 self.owner.attributes.status.hp = 0
-
             self.turn -= 1
 
             roll = random.randint(1,100)

@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from src.classes.entity_prototype import Character
+
 import helpers
 from helpers import log,Log
 from random import choice, randint
@@ -8,18 +8,22 @@ from math import trunc
 
 #Provavelmente isso não é a melhor maneira de implementar várias classes, mas por enquanto vai dar certo, confia
 import src.classes.attacks.attackC as Attacks
-from src.classes.attacks.attackC import Instance,Attack
+import src.classes.entity_prototype as ep
+import src.classes.attacks.attackC as atc
 import src.classes.damages.damageTypeC as dt
+import src.classes.debug as dbg
+import src.classes.events.event_class_prototype as evt
+
 from src.classes.temps.temp_class_handler import Temp
 import src.classes.effects.effect_class as Effect
-from src.classes.debug import Debug
 
 
 
 
 class Battle:
+    
 
-    def __init__(self, queue: list[Character]):
+    def __init__(self, queue: list[ep.Character]):
         self.turn = 0
         self.queue = queue
         self.isInCombat = False
@@ -31,12 +35,13 @@ class Battle:
         self.instances_to_process = []
         self.order_queue = ""
 
-        self.debug = Debug(battle_queue=self.queue,character=None)
+        self.debug = dbg.Debug(battle_queue=self.queue,character=None)
+        self.event_handler: evt.Handler = evt.Handler()
 
-    def menu_main(self, chara: Character):
+    def menu_main(self, chara: ep.Character):
         pass
 
-    def menu_attack(self, chara: Character):
+    def menu_attack(self, chara: ep.Character):
         attack: Attacks.Attack
         atk_i = 0
         damages = ""
@@ -74,7 +79,7 @@ class Battle:
 
                     if chara.attacks[msg] not in chara.attack_slot:
                         log(Log.DEBUG, f"{chara.attacks[msg].name} does not exist in {chara.name} attack slot, adding...", f"[{chara.name}]")
-                        instance = Instance(attack=chara.attacks[msg], queue=battle_queue,active=True,owner=chara)
+                        instance = atc.Instance(attack=chara.attacks[msg], queue=battle_queue,active=True,owner=chara)
                         chara.attack_slot.append(instance)
 
 
@@ -86,29 +91,29 @@ class Battle:
         
     
 
-    def menu_skills(self, chara: Character):
+    def menu_skills(self, chara: ep.Character):
         pass
 
-    def menu_items(self, chara: Character):
+    def menu_items(self, chara: ep.Character):
         pass
 
     def menu_status(self):
         helpers.show_info_queue(self.queue)
 
-    def menu_pass(self, chara: Character):
+    def menu_pass(self, chara: ep.Character):
         self.phase = ""
         self.pturn = False
 
 
     def turn_players(self):
-        chara: Character
+        chara: ep.Character
         for chara in self.queue:
             if chara.ai.typeAi == "Player":
                 self.phase = "Menu"
                 self.pturn = True
                 self.turn_player(chara)
 
-    def turn_player(self, chara: Character):
+    def turn_player(self, chara: ep.Character):
         chara.attributes.actions = chara.attributes.max_actions
         
         while self.pturn and self.check_battle_conditions():
@@ -116,7 +121,7 @@ class Battle:
             log(Log.INFO, self.order_queue, "[Battle][Queue]-")
             
             attacks_slot_str = ""
-            instance: Instance
+            instance: atc.Instance
             for instance in chara.attack_slot:
                 names = "->"
                 for obj in instance.queue:
@@ -156,10 +161,7 @@ class Battle:
         else:
             self.menu_pass(chara)
 
-
-
-
-    def turn_enemy(self, chara: Character):
+    def turn_enemy(self, chara: ep.Character):
 
         if self.check_battle_conditions() and chara.is_alive():
             log(Log.INFO, f"{chara.name} turn", f"[Turn: {self.turn}]")
@@ -170,7 +172,7 @@ class Battle:
             self.menu_pass(chara)
 
     def chose_ia_attacks(self):
-        chara: Character
+        chara: ep.Character
         for chara in self.queue:
             if chara.ai.typeAi == "Enemy":
                 chara.ai.decide_attack(chara, self.queue, on_enemy=True)
@@ -195,10 +197,18 @@ class Battle:
                     for obj_enemy in instance.queue:
                         # Onde os ataques se clasham // fazer que os ataques se deletem quando terminarem
                         if obj_enemy.alive and obj_enemy.attack_slot[index_enemy].active and obj_enemy.attack_slot is not None and len(obj_enemy.attack_slot) >= 1 and obj_enemy not in instance.exclusion_queue:
+
+
+
                             # Fazer oque o ataque tenha um clash especifico no futuro
                             log(Log.INFO, f"{obj.name} is using {instance.attack.name}, and it's hit {obj_enemy.name}.", f"[Battle]")
                             instance_enemy = obj_enemy.attack_slot[index_enemy].attack
                             log(Log.DEBUG, f"{obj.name} is clashing with {obj_enemy.name} on {instance.attack.name}<->{instance_enemy.name}", f"[{obj.name}]")
+
+                            #On attack Start
+                            self.event_handler.add_events(instance.attack.onStart())
+                            #instance_enemy.onStart()
+
 
                             result = self.clash_attack(instance.attack,instance_enemy)
                             obj_mult_attack = False
@@ -278,8 +288,8 @@ class Battle:
 
     def process_instances(self):
         for object_remove in self.instances_to_process:
-            obj_character: Character
-            instance_object: Instance
+            obj_character: ep.Character
+            instance_object: atc.Instance
             
             multarget = object_remove["multarget"]
             obj_character = object_remove["obj"]
@@ -306,7 +316,7 @@ class Battle:
         self.instances_to_process = []
 
     
-    def direct_attack(self,hit: Attacks.Attack, obj: Character):
+    def direct_attack(self,hit: Attacks.Attack, obj: ep.Character):
         dmg_obj: dt.DamageType
 
         hit_points = 0
@@ -361,7 +371,7 @@ class Battle:
             hit.owner.do_damage(backlash)
 
 
-        if resistence_enemy >= 1.5 and hit.file == "MagicalAttack":
+        if resistence_enemy >= 1.5 and hit_clash.file == "MagicalAttack":
             dmg_perc = resistence_enemy - 1
             backlash = trunc(hit_clash.backlash_damage() * dmg_perc)
             log(Log.INFO, f"{hit_clash.owner.name} take {backlash} backlash damage from using {hit_clash.main_element}-type attack", "[Battle]")
@@ -416,18 +426,25 @@ class Battle:
                 if final_roll > final_roll_enemy:
                     log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}(-{df_enemy}) > {roll_enemy}(-{df}) =(+{max_crit_enemy}){max_atk_enemy}-(+{crit_enemy}){min_atk_enemy}[{dmg_enemy.main_element}][{hit_clash.owner.name}][{index}]")
                     result = hit_clash.owner.defend_damage(dmg_obj,roll,hit.owner)
+
+                    dmg_obj.on_clash_win(hit.owner, hit_clash.owner)
                     dmg_enemy.on_clash_lost(hit_clash.owner,hit.owner)
+
                     log(Log.INFO,result, "[Battle]")
                     hit_points += 1
                 elif final_roll_enemy > final_roll:
                     log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}(-{df_enemy}) < {roll_enemy}(-{df}) =(+{max_crit_enemy}){max_atk_enemy}-(+{crit_enemy}){min_atk_enemy}[{dmg_enemy.main_element}][{hit_clash.owner.name}][{index}]")
                     result = hit.owner.defend_damage(dmg_enemy,roll_enemy,hit_clash.owner)
+
                     dmg_obj.on_clash_lost(hit.owner,hit_clash.owner)
+                    dmg_enemy.on_clash_win(hit_clash.owner,hit.owner)
+
                     log(Log.INFO,result, "[Battle]")
                     hit_clash_points += 1
                 else:
                     log(Log.DEBUG, f" The clash deal draw", f"[{index}][{hit_clash.owner.name}][{hit_clash.name}]")
                     dmg_obj.on_clash_draw(hit.owner,hit_clash.owner)
+                    dmg_enemy.on_clash_draw(hit_clash.owner,hit.owner)
 
             else:
                 # Caso o hit_clash não tiver mais damage para defender
@@ -456,7 +473,7 @@ class Battle:
 
 
     def update_queue(self):
-        chara: Character
+        chara: ep.Character
         for chara in self.queue:
             if not chara.alive:
                 print(f"{chara.name} can't continue")
@@ -468,7 +485,7 @@ class Battle:
 
     def lines_battle_start(self, phrase: str):
 
-        char: Character
+        char: ep.Character
 
         for char in self.queue:
             if helpers.check_line(phrase, char.lines):
@@ -477,7 +494,7 @@ class Battle:
 
 
     def get_len_types(self):
-        char: Character
+        char: ep.Character
         self.lenEnemy = 0
         self.lenPlayer = 0
         for char in self.queue:
@@ -513,7 +530,7 @@ class Battle:
     
 
     def roll_characters_speed(self):
-        chara: Character
+        chara: ep.Character
         for chara in self.queue:
             spd = chara.attributes.status.spd
             chara.attributes.battle_spd = randint(spd[0],spd[1])

@@ -1,7 +1,8 @@
+# circular import eu te odeio
 from __future__ import annotations
 import src.classes.entity_prototype as Chara
 from src.classes.damages.damageTypeC import DamageType
-from helpers import say_line, log, Log
+
 
 import uuid
 
@@ -100,11 +101,7 @@ class Selector:
                     print(f"[{idS}][{chara.name}] HP : {chara.attributes.status.hp}/{chara.attributes.status.maxHp}")
 
                     idS += 1
-
-        say_line(owner,"attack")
         
-        
-
         
         return selected
     
@@ -123,7 +120,6 @@ class Selector:
     def multi_attack(self,owner):
         print(f"[{self.attack_name}][{self.intent}][{self.target}] Selecione {self.target_limit} alvo(s)")
         self.get_intent_on_queue()
-        say_line(owner,"attack")
         return self.listt
         
 
@@ -223,8 +219,9 @@ class Attack:
                 
 
     
-    def onStart(self, owner: Chara.Character):
-        log(Log.CHAT, f"{self.line}", f"[{owner.name}]")
+    def onStart(self, owner: Chara.Character, ):
+        data = f"[{owner.name}] {self.line}"
+        return data
 
 
     def imwho(self):

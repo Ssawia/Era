@@ -537,7 +537,7 @@ class Character:
         if self.alive:
 
             
-            dmg_obj.on_clash_win(owner, self)
+            
 
             
             damage_bonus = owner.attributes.elements[dmg_obj.main_element]

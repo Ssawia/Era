@@ -49,36 +49,25 @@ class Effect:
                     temp_target = temp_obj['target']
                     temp_flag = temp_obj["flag"]
                     temp_data = abstraction.get_data_from_id(temp_id,abstraction.temps_data, "[Temps]")
+                    owner: ch.Character
 
                     if temp_target == "self":
-                        temp = tp.Temp(temp_data['name'], temp_data['status'], temp_data['typo'], temp_data["turn"], temp_data["time"],temp_data["value"],True,temp_data["is_turn"], temp_data["is_time"],temp_flag)
-                        self.giver.attributes.temp_handler.add_temp([temp])
-
-                        temp_data = {"obj": self.giver, "temp": temp, "flag": temp_flag}
-                        self.objs_temp_data.append(temp_data)
-
-
-
-                        self.giver.attributes.update_attributes()
-                        self.giver.attributes.update_attributes_bonus()
-                        self.giver.attributes.update_elements()
-                        self.giver.attributes.update_resistances()
-                        log(Log.INFO, f"{temp.name} on {self.giver.name} for {temp.turn} turn.", "[Temp]")
-
-
+                        owner = self.giver
                     elif temp_target == "target":
-                        temp = tp.Temp(temp_data['name'], temp_data['status'], temp_data['typo'], temp_data["turn"], temp_data["time"],temp_data["value"],True,temp_data["is_turn"], temp_data["is_time"],temp_flag)
-                        self.owner.attributes.temp_handler.add_temp([temp])
+                        owner = self.owner
+                    
+                    temp = tp.Temp(temp_data['name'], temp_data['status'], temp_data['typo'], temp_data["turn"], temp_data["time"],temp_data["value"],True,temp_data["is_turn"], temp_data["is_time"],temp_flag)
+                    owner.attributes.temp_handler.add_temp([temp])
 
-                        temp_data = {"obj": self.owner, "temp": temp, "flag": temp_flag}
-                        self.objs_temp_data.append(temp_data)
+                    temp_data = {"obj": self.giver, "temp": temp, "flag": temp_flag}
+                    self.objs_temp_data.append(temp_data)
 
-                        self.owner.attributes.update_attributes()
-                        self.owner.attributes.update_attributes_bonus()
-                        self.owner.attributes.update_elements()
-                        self.owner.attributes.update_resistances()
+                    owner.attributes.update_attributes()
+                    owner.attributes.update_attributes_bonus()
+                    owner.attributes.update_elements()
+                    owner.attributes.update_resistances()
+                    log(Log.INFO, f"{temp.name} on {owner.name} for {temp.turn} turn.", "[Temp]")
 
-                        log(Log.INFO, f"{temp.name} on {self.owner.name} for {temp.turn} turn.", "[Temp]") 
 
     def process_effect(self):
         pass

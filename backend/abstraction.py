@@ -10,8 +10,6 @@ Attack = atk.Attack
 
 config = json.load(open('config/config.json'))
 
-
-
 class_path = config['class_path']
 path_attacks = config['path_attacks']
 characters_path = config['characters_path']

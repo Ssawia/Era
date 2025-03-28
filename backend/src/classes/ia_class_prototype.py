@@ -3,8 +3,9 @@ import src.classes.entity_prototype as ent
 import src.classes.attacks.attackC as atk
 from src.classes.attacks.attackC import Instance
 from random import choice
-import helpers
 from helpers import Log,log
+
+
 
 
 
@@ -16,9 +17,6 @@ class Ai:
      
 
      def set_behave(self, host : ent.Character, behave : str):
-
-
-
           self.behave = behave
 
 

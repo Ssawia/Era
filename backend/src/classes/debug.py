@@ -9,6 +9,7 @@ from src.classes.temps.temp_class_handler import Temp
 from src.classes.effects.ashen_curse import AshenCurse
 
 
+
 class Debug:
     def __init__(self, character: Character | None, battle_queue):
         self.character = character
