@@ -2,6 +2,7 @@
 from __future__ import annotations
 import src.classes.entity_prototype as Chara
 from src.classes.damages.damageTypeC import DamageType
+from src.classes.events.event_class_prototype import On_Start_Attack
 
 
 import uuid
@@ -216,11 +217,9 @@ class Attack:
 
         return canAttack
                     
-                
-
     
-    def onStart(self, owner: Chara.Character, ):
-        data = f"[{owner.name}] {self.line}"
+    def onStart(self, owner: Chara.Character, target: Chara.Character):
+        data = On_Start_Attack("on_attack_start", owner,target,self)
         return data
 
 

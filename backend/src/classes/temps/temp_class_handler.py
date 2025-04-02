@@ -52,7 +52,7 @@ class TempHandler:
             self.list_temps.append(tmp)
             if isinstance(self._parent.return_parent(), character.Character):
                 parent: character.Character = self._parent.return_parent()
-                log(Log.DEBUG, f"Temp Status: {tmp.status} added.", f"[{parent.name}][Attributes][TempHandler]")
+                log(Log.INFO, f"{tmp.name} on {parent.name} for {tmp.turn} turn.", "[Temp]")
 
         self.update_temp()
 
@@ -77,7 +77,7 @@ class TempHandler:
             self.list_temps = []
             print(f"[LOG][TempHandler] All temps removed")
             log(Log.DEBUG, "All temps removed", f"[{parent.name}][Attributes][TempHandler]")
-
+        
         if list_temp is not None:
             for temp in list_temp:
                 if temp in self.list_temps:

@@ -57,9 +57,27 @@ def get_characters():
 
 @app.post("/fruits", response_model=Character)
 def add_fruit(fruit: Character):
-    print(fruit)
     memory_db["characters"].append(fruit)
     return fruit
+
+
+def open_characters_from_db(chara_type):
+    data = json.load(open(f"src/data/chara/{chara_type}.json"))
+    return data 
+
+def save_character_on_db(chara_type, chara_data):
+    data = open_characters_from_db(chara_type)
+    with open(f"src/data/chara/{chara_type}.json", 'w', encoding='utf-8') as file:
+        data["characters"].append(chara_data)
+        json.dump(data, file, ensure_ascii=False, indent=3)
+
+
+
+
+#chara = {"_id": 5, "name": "Yukari Yakumo"}
+#save_character_on_db("touhou",chara)
+
+
 
 
 if __name__ == "__main__":

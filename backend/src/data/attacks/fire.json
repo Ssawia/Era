@@ -14,11 +14,12 @@
             "target": "multi",
             "target-limit": 0,
             "intent": "harm",
-            "damage": [{"atk":[10,20]},{"atk":[5,10]}],
+            "type": [2, 4],
+            "damage": [[10,20],[5,10]],
+            "effects": [],
             "cost": {"mp":35},
             "cooldown": 1,
-            "hits": 1,
-            "type": [2, 4]
+            "hits": 1
         },
         {
             "_id": 5,
@@ -33,11 +34,15 @@
             "target": "single",
             "target-limit": 1,
             "intent": "harm",
-            "damage": [{"atk":[1,10, [{"id": 1, "value": 10 , "turn": 2, "target": "target", "event": "on_clash_win"}]]}],
+            "type": [4],
+            "damage": [[1,10]],
+            "effects": [
+                [{"id": 1, "value": 10 , "turn": 1, "target": "target", "event": "on_clash_win"}]
+
+            ],
             "cost": {"mp":15},
             "cooldown": 1,
-            "hits": 1,
-            "type": [4]
+            "hits": 1
         },
 
         {
@@ -53,11 +58,15 @@
             "target": "single",
             "target-limit": 1,
             "intent": "harm",
-            "damage": [{"atk":[10,15,[{"id": 1, "value": 1 , "turn": 2, "target": "target", "event": "on_clash_win"}]]}],
+            "type": [4],
+            "damage": [[10,15]],
+            "effects": [
+                [{"id": 1, "value": 1 , "turn": 2, "target": "target", "event": "on_clash_win"}]
+    
+            ],
             "cost": {"mp":10},
             "cooldown": 1,
-            "hits": 1,
-            "type": [4]
+            "hits": 1
         }
     ]
 }

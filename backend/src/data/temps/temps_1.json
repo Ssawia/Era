@@ -28,6 +28,19 @@
             "is_turn": true,
             "is_time": false,
             "flag": ""
+        },
+        {
+            "_id": 3,
+            "name": "Eldritch Elevation A+",
+            "status": "Arcane",
+            "typo": "add",
+            "turn": 1,
+            "time": 0,
+            "value": 10,
+            "active": false,
+            "is_turn": true,
+            "is_time": false,
+            "flag": ""
         }
     ]
 

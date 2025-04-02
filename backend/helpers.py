@@ -331,6 +331,8 @@ def check_line(line: str,lines:dict[str,list[str]]) -> bool:
         return False
 
 
+def say_string(chara: entities.Character, line):
+    log(Log.CHAT,line,f"[{chara.name}] ")
 
 
 def say_line(chara: entities.Character,line_type: str):

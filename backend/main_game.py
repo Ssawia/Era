@@ -30,8 +30,8 @@ artoria = ep.Character(artoria_data,"Player")
 #artoria.attributes.add_xp(1000000,artoria)
 #helpers.show_info_chara(remilia)
 
-remilia.abilities.append('Phoenix Blessing')
-queue : list[ep.Character] = [flande,remilia, sakuya, artoria]
+remilia.abilities.append('Fate Manipulation')
+queue : list[ep.Character] = [remilia,artoria,sakuya, flande]
 
 
 battle =  Battle(queue)

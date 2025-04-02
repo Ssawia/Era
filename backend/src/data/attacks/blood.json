@@ -1,0 +1,51 @@
+{
+    "attacks":
+    [
+        {
+            "_id": 10,
+            "classType": "attacks",
+            "file": "MagicalAttack",
+            "className": "MagicalAttack",
+            "name": "Magick: Critical 'Heart Break'",
+            "defName": "heart_break",
+            "main_element": "Blood",
+            "desc": "",
+            "line": "Ah, such a fragile heart… Shall I shatter it for you?",
+            "target": "select",
+            "target-limit": 1,
+            "intent": "harm",
+            "type": [8,9],
+            "damage": [[1,10],[1,10]],
+            "effects": [],
+            "cost": {"mp": 50},
+            "cooldown": 1,
+            "hits": 1
+        },
+        {
+            "_id": 11,
+            "classType": "attacks",
+            "file": "MagicalAttack",
+            "className": "MagicalAttack",
+            "name": "Magick: Divine Spear 'Spear the Gungir'",
+            "defName": "divine_spear_gungir",
+            "main_element": "Fire",
+            "desc": "",
+            "line": "Fate itself bends to my will Now, be skewered by destiny, Magick: Divine Spear 'Spear the Gungnir'!",
+            "target": "select",
+            "target-limit": 1,
+            "intent": "harm",
+            "type": [4,1,4],
+            "damage": [[10,20],[5,15],[20,30]],
+            "effects": [
+                [{"id": 1, "value": 1 , "turn": 1, "target": "target", "event": "on_clash_win"}],
+                [{}],
+                [{"id": 1, "value": 1 , "turn": 1, "target": "target", "event": "on_clash_win"}]
+            ],
+            "cost": {"mp": 75},
+            "cooldown": 1,
+            "hits": 1
+        }
+
+
+    ]
+}

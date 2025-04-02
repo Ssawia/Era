@@ -13,6 +13,7 @@ import src.classes.attacks.attackC as atc
 import src.classes.damages.damageTypeC as dt
 import src.classes.debug as dbg
 import src.classes.events.event_class_prototype as evt
+import src.classes.listerners.listerner_class as lit
 
 from src.classes.temps.temp_class_handler import Temp
 import src.classes.effects.effect_class as Effect
@@ -35,8 +36,9 @@ class Battle:
         self.instances_to_process = []
         self.order_queue = ""
 
-        self.debug = dbg.Debug(battle_queue=self.queue,character=None)
+        self.debug = dbg.Debug(battle_queue=self.queue,character=None, battle=self)
         self.event_handler: evt.Handler = evt.Handler()
+        
 
     def menu_main(self, chara: ep.Character):
         pass
@@ -179,6 +181,17 @@ class Battle:
                 
         
 
+    def check_listerners(self):
+        self.event_handler.listeners = []
+        for chara in self.queue:
+            for ability in chara.abilities:
+                if ability == "Fate Manipulation":
+                    #listener = lit.PhoenixBlessing("Phoenix Blessing","Phoenix Blessing foi ativado, aumentando o dano de fogo.","on_attack_start", chara)
+                    listener = lit.FateManipulation("Fate Manipulation","You can't escape fate","on_damage", chara)
+                    self.event_handler.listeners.append(listener)
+                    
+                        
+        
     
 
     def process_attacks(self):
@@ -193,7 +206,7 @@ class Battle:
             self.instances_to_process = []
             for instance in obj.attack_slot:
                 if instance.active:
-                    helpers.say_line(obj, "attack")
+                    
                     for obj_enemy in instance.queue:
                         # Onde os ataques se clasham // fazer que os ataques se deletem quando terminarem
                         if obj_enemy.alive and obj_enemy.attack_slot[index_enemy].active and obj_enemy.attack_slot is not None and len(obj_enemy.attack_slot) >= 1 and obj_enemy not in instance.exclusion_queue:
@@ -206,9 +219,13 @@ class Battle:
                             log(Log.DEBUG, f"{obj.name} is clashing with {obj_enemy.name} on {instance.attack.name}<->{instance_enemy.name}", f"[{obj.name}]")
 
                             #On attack Start
-                            self.event_handler.add_events(instance.attack.onStart())
-                            #instance_enemy.onStart()
+                            self.event_handler.add_events([instance.attack.onStart(instance.owner, instance_enemy.owner)])
+                            self.event_handler.add_events([instance_enemy.onStart(instance_enemy.owner, instance.owner)])
+                            
+                            self.event_handler.process_events("on_attack_start")
 
+                            helpers.say_string(instance.owner, instance.attack.line)
+                            helpers.say_string(instance_enemy.owner, instance_enemy.line)
 
                             result = self.clash_attack(instance.attack,instance_enemy)
                             obj_mult_attack = False
@@ -267,6 +284,10 @@ class Battle:
                             if obj_enemy not in instance.exclusion_queue:
                                 log(Log.INFO, f"{obj.name} is using {instance.attack.name}, and it's hit {obj_enemy.name}.", f"[Battle]")
                                 log(Log.DEBUG,f"{instance.attack.name} no clash on {obj_enemy.name} attacks", f"[{obj.name}]")
+                                
+                                self.event_handler.add_events([instance.attack.onStart(instance.owner, instance_enemy.owner)])
+                                self.event_handler.process_events("on_attack_start")
+                                
                                 result = self.direct_attack(instance.attack, obj_enemy)
                                 points = result[0]
                                 points_enemy = result[1]
@@ -332,9 +353,15 @@ class Battle:
 
             roll = randint(min_atk + crit,max_atk + max_crit)
             log(Log.INFO, f"[{index}][{hit.name} > | {obj.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}")
-            result = obj.defend_damage(dmg_obj,roll,hit.owner)
+            result = obj.on_damage(dmg_obj,roll,hit.owner)
+
+            event = result[1]
+            self.event_handler.add_events([event])
+
+
             hit_points += 1
-            log(Log.INFO,result, "[Battle]")
+            log(Log.INFO,result[0], "[Battle]")
+            self.event_handler.process_events("on_damage")
 
             hit_points += 1
         
@@ -346,11 +373,6 @@ class Battle:
 
         hit_points = 0
         hit_clash_points = 0
-
-        hit.onStart(owner=hit.owner)
-        hit_clash.onStart(owner=hit_clash.owner)
-
-
 
 
         if len(hit.dmgList) < len(hit_clash.dmgList):
@@ -368,14 +390,14 @@ class Battle:
             dmg_perc = resistence - 1
             backlash = trunc(hit.backlash_damage() * dmg_perc)
             log(Log.INFO, f"{hit.owner.name} take {backlash} backlash damage from using {hit.main_element}-type attack", "[Battle]")
-            hit.owner.do_damage(backlash)
+            result = hit.owner.do_damage(backlash)
 
 
         if resistence_enemy >= 1.5 and hit_clash.file == "MagicalAttack":
             dmg_perc = resistence_enemy - 1
             backlash = trunc(hit_clash.backlash_damage() * dmg_perc)
             log(Log.INFO, f"{hit_clash.owner.name} take {backlash} backlash damage from using {hit_clash.main_element}-type attack", "[Battle]")
-            hit_clash.owner.do_damage(backlash)
+            result = hit_clash.owner.do_damage(backlash)
 
 
         
@@ -425,40 +447,59 @@ class Battle:
 
                 if final_roll > final_roll_enemy:
                     log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}(-{df_enemy}) > {roll_enemy}(-{df}) =(+{max_crit_enemy}){max_atk_enemy}-(+{crit_enemy}){min_atk_enemy}[{dmg_enemy.main_element}][{hit_clash.owner.name}][{index}]")
-                    result = hit_clash.owner.defend_damage(dmg_obj,roll,hit.owner)
+                    result = hit_clash.owner.on_damage(dmg_obj,roll,hit.owner)
 
+                    event = result[1]
+                    self.event_handler.add_events([event])
+
+
+
+
+                    log(Log.INFO,result[0], "[Battle]")
                     dmg_obj.on_clash_win(hit.owner, hit_clash.owner)
-                    dmg_enemy.on_clash_lost(hit_clash.owner,hit.owner)
 
-                    log(Log.INFO,result, "[Battle]")
+
                     hit_points += 1
                 elif final_roll_enemy > final_roll:
                     log(Log.INFO, f"[{index}][{hit.name} > | < {hit_clash.name}][{hit.owner.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}(-{df_enemy}) < {roll_enemy}(-{df}) =(+{max_crit_enemy}){max_atk_enemy}-(+{crit_enemy}){min_atk_enemy}[{dmg_enemy.main_element}][{hit_clash.owner.name}][{index}]")
-                    result = hit.owner.defend_damage(dmg_enemy,roll_enemy,hit_clash.owner)
+                    result = hit.owner.on_damage(dmg_enemy,roll_enemy,hit_clash.owner)
 
-                    dmg_obj.on_clash_lost(hit.owner,hit_clash.owner)
+                    event = result[1]
+                    self.event_handler.add_events([event])
+
+
+
+                    log(Log.INFO,result[0], "[Battle]")
                     dmg_enemy.on_clash_win(hit_clash.owner,hit.owner)
 
-                    log(Log.INFO,result, "[Battle]")
+
                     hit_clash_points += 1
                 else:
                     log(Log.DEBUG, f" The clash deal draw", f"[{index}][{hit_clash.owner.name}][{hit_clash.name}]")
-                    dmg_obj.on_clash_draw(hit.owner,hit_clash.owner)
-                    dmg_enemy.on_clash_draw(hit_clash.owner,hit.owner)
+                    #dmg_obj.on_clash_draw(hit.owner,hit_clash.owner)
+                    #dmg_enemy.on_clash_draw(hit_clash.owner,hit.owner)
 
             else:
                 # Caso o hit_clash não tiver mais damage para defender
                 log(Log.DEBUG, f" has no attack left", f"[{index}][{hit_clash.owner.name}][{hit_clash.name}]")
                 
-                if resistence >= 1.5 and dmg_type == "Magical":
-                    log(Log.INFO, f"{hit.owner.name} will take a backlash for using {dmg_obj.main_element}-type attack", "[Battle]")
 
                 roll = randint(min_atk + crit, max_atk + max_crit)
 
                 log(Log.INFO, f"[{index}][{hit.name} > | {hit_clash.name}][{dmg_obj.main_element}]{min_atk}(+{crit})-{max_atk}(+{max_crit})= {roll}")
-                result = hit_clash.owner.defend_damage(dmg_obj,roll,hit.owner)
+                result = hit_clash.owner.on_damage(dmg_obj,roll,hit.owner)
+
+                event = result[1]
+                self.event_handler.add_events([event])
+
+                dmg_obj.on_clash_win(hit.owner, hit_clash.owner)
+
+
                 hit_points += 1
-                log(Log.INFO,result, "[Battle]")
+                log(Log.INFO,result[0], "[Battle]")
+
+
+            self.event_handler.process_events("on_damage")
 
         
             
@@ -519,6 +560,10 @@ class Battle:
             chara.attributes.update_resistances()
             chara.update_instances()
             chara.update_damage_attacks()
+        
+        
+
+        self.check_listerners()
     
 
     def update_queue_turn(self):

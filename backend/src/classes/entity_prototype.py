@@ -10,6 +10,7 @@ from helpers import log,Log
 import abstraction
 import src.classes.damages.damageTypeC as damageTypes
 import src.classes.attacks.attackC as Attacks
+import src.classes.events.event_class_prototype as evt
 from src.classes.attacks.attackC import Instance
 
 from src.classes.temps.temp_class_handler import TempHandler, Temp
@@ -287,6 +288,8 @@ class Attributes:
                 attr_multply = self.attributes_bonus['intelligence']
             if element[key] == "Will":
                 attr_multply = self.attributes_bonus['will']
+            
+            
 
             res = (attr_multply + self.temp_handler.get_add_bonus(key,"add")) * self.temp_handler.get_mult_bonus(key,"mult")
             res_d[key] = trunc(res)
@@ -531,14 +534,10 @@ class Character:
             self.attributes.status.hp = 0
             self.is_alive()
      
-    def defend_damage(self,dmg_obj,damage_roll, owner):
+    def on_damage(self,dmg_obj,damage_roll, owner):
         self.is_alive()
 
         if self.alive:
-
-            
-            
-
             
             damage_bonus = owner.attributes.elements[dmg_obj.main_element]
             res = self.attributes.resistances[dmg_obj.defType]
@@ -550,10 +549,13 @@ class Character:
 
             old_hp = self.attributes.status.hp
             self.do_damage(dmg_deal)
+
+            event = evt.On_Damage("on_damage",owner,self, dmg_obj=dmg_obj, damage=dmg_deal)
+
             types = f'|{self.name} taken {dmg_obj.name}({damage_roll}+{damage_bonus})*({res})| = {dmg_deal} damage | {self.name} HP:{old_hp}>{self.attributes.status.hp}.'
-            return types
+            return [types, event]
         else:
-            return f"{self.name} is dead."
+            return [f"{self.name} is dead.", None]
     
 
     def healing(self,damage_types : list):

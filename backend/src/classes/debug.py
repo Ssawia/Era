@@ -5,22 +5,31 @@ from helpers import log,Log
 from random import choice
 
 import src.classes.attacks.attackC as Attacks
+import src.classes.battle as bt
+import src.classes.damages.damageTypeC as dmg
 from src.classes.temps.temp_class_handler import Temp
 from src.classes.effects.ashen_curse import AshenCurse
 
 
 
 class Debug:
-    def __init__(self, character: Character | None, battle_queue):
+    def __init__(self, character: Character | None, battle_queue, battle = None):
         self.character = character
+        self.battle: bt.Battle = battle
         self.battle_queue = battle_queue
+        
 
     def menu_debug(self) -> None:
+        print("[1] Attacks")
         print("[2] Attributes")
         print("[3] Effects")
         print("[4] Temps")
         print("[5] Abilities")
+        print("[6] Events")
+        print("[7] Listerners")
         msg = input("debug> ")
+        if msg == "1":
+            self.debug_attacks()
         if msg == "2":
             self.debug_attributes()
         if msg == "3":
@@ -29,6 +38,27 @@ class Debug:
             self.debug_temps()
         if msg == "5":
             self.debug_abilities()
+        if msg == "6":
+            self.debug_events()
+        if msg == "7":
+            self.debug_listerners()
+    
+    def debug_attacks(self):
+        for index,attack in enumerate(self.character.attacks):
+            print(f"[{index}]{attack.name}")
+            damage: dmg.DamageType
+            for damage in attack.dmgList:
+                print(f" -> {damage.name:7} | min: {damage.min_atk:4} | max: {damage.max_atk}")
+                print(f" {damage.effects}")
+    
+    def debug_events(self):
+        print(self.battle.event_handler.events)
+    
+    def debug_listerners(self):
+        for index,listerner in enumerate(self.battle.event_handler.listeners):
+            print(f"[{index}][{listerner.owner.name}][{listerner.name}][{listerner.listen_type}]")
+        
+        
     
     def debug_attributes(self):
         print("[1] Update Status")
@@ -151,11 +181,12 @@ class Debug:
             is_time = bool(input("isTime: "))
             flag = input("Flag: ")
             if len(flag) <= 0:
-                flag = None
+                flag = ""
             tmp = Temp(status,typo,turn,time,value,active,is_turn,is_time,flag)
             return tmp
         elif msg == "2":
-            tmp = Temp("Atk Up A","atk","add",1,0,1000,True,True,False,"")
+            #tmp = Temp("Atk Up A","atk","add",1,0,1000,True,True,False,"")
+            tmp = Temp("Absolute Fate","Fate Manipulation","add",100,0,100,True,True,False,"")
             return tmp
         elif msg == "3":
             status_choice = choice(['hp','Fire',])

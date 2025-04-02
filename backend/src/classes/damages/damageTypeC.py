@@ -25,7 +25,6 @@ class DamageType:
         self.atk = 0
 
     def effect_process(self,owner,target,event,res_base):
-        
         for effect in self.effects:
             if effect.event == event:
                 num = random.randint(1,100)

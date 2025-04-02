@@ -48,7 +48,7 @@ class Effect:
                     temp_id = temp_obj['id']
                     temp_target = temp_obj['target']
                     temp_flag = temp_obj["flag"]
-                    temp_data = abstraction.get_data_from_id(temp_id,abstraction.temps_data, "[Temps]")
+                    
                     owner: ch.Character
 
                     if temp_target == "self":
@@ -56,7 +56,7 @@ class Effect:
                     elif temp_target == "target":
                         owner = self.owner
                     
-                    temp = tp.Temp(temp_data['name'], temp_data['status'], temp_data['typo'], temp_data["turn"], temp_data["time"],temp_data["value"],True,temp_data["is_turn"], temp_data["is_time"],temp_flag)
+                    temp = abstraction.get_temp_from_id(temp_id,temp_flag)
                     owner.attributes.temp_handler.add_temp([temp])
 
                     temp_data = {"obj": self.giver, "temp": temp, "flag": temp_flag}
@@ -66,7 +66,6 @@ class Effect:
                     owner.attributes.update_attributes_bonus()
                     owner.attributes.update_elements()
                     owner.attributes.update_resistances()
-                    log(Log.INFO, f"{temp.name} on {owner.name} for {temp.turn} turn.", "[Temp]")
 
 
     def process_effect(self):
@@ -81,6 +80,7 @@ class Effect:
                 obj: ch.Character
                 flag = data['flag']
                 obj = data['obj']
+                
                 if flag == self.name:
                     log(Log.INFO, f"{obj.name} tem a flag {self.name} temp, removendo", f"[{obj.name}][EffectHandler][Effect]")
                     obj.attributes.temp_handler.remove_temp(flags=[self.name])
