@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import src.classes.entity_prototype as character
 import uuid
-from helpers import log,Log
+import helpers
 
 
 
@@ -52,7 +52,7 @@ class TempHandler:
             self.list_temps.append(tmp)
             if isinstance(self._parent.return_parent(), character.Character):
                 parent: character.Character = self._parent.return_parent()
-                log(Log.INFO, f"{tmp.name} on {parent.name} for {tmp.turn} turn.", "[Temp]")
+                helpers.log(helpers.Log.INFO, f"{tmp.name} on {parent.name} for {tmp.turn} turn.", "[Temp]")
 
         self.update_temp()
 
@@ -70,13 +70,13 @@ class TempHandler:
             for flag in flags:
                 for temp in self.list_temps:
                     if flag == temp.active_flag:
-                        log(Log.DEBUG, f"[{flag}] Temp Status: {temp.status} flagged", f"[{parent.name}][Attributes][TempHandler][Flag]")
+                        helpers.log(helpers.Log.DEBUG, f"[{flag}] Temp Status: {temp.status} flagged", f"[{parent.name}][Attributes][TempHandler][Flag]")
                         list_temp.append(temp)
 
         if all_temp:
             self.list_temps = []
             print(f"[LOG][TempHandler] All temps removed")
-            log(Log.DEBUG, "All temps removed", f"[{parent.name}][Attributes][TempHandler]")
+            helpers.log(helpers.Log.DEBUG, "All temps removed", f"[{parent.name}][Attributes][TempHandler]")
         
         if list_temp is not None:
             for temp in list_temp:
@@ -84,10 +84,10 @@ class TempHandler:
                     self.list_temps.remove(temp)
 
                     if isinstance(self._parent.return_parent(), character.Character):
-                        log(Log.DEBUG, f"Temp Status: {temp.status} removed", f"[{parent.name}][Attributes][TempHandler]")
+                        helpers.log(helpers.Log.DEBUG, f"Temp Status: {temp.status} removed", f"[{parent.name}][Attributes][TempHandler]")
 
                 else:
-                    log(Log.WARNING,"Temp not in list to remove",  f"[{parent.name}][Attributes][TempHandler]")
+                    helpers.log(helpers.Log.WARNING,"Temp not in list to remove",  f"[{parent.name}][Attributes][TempHandler]")
 
         else:
             print("[ERROR][TempHandler] Temp não existe")
@@ -96,23 +96,23 @@ class TempHandler:
     def update_time_turn(self, turn: int = 1 ,time: float = 1.0) -> None:
         parent: character.Character = self._parent.return_parent()
         log_append = f"[{parent.name}][Attributes][TempHandler]"
-        log(Log.DEBUG,f"Updating Temps: {len(self.list_temps)}", log_append)
+        helpers.log(helpers.Log.DEBUG,f"Updating Temps: {len(self.list_temps)}", log_append)
 
         temps_to_remove = []
         flags = []
 
         for tmp in self.list_temps:
-            log(Log.DEBUG,f"Updating: {tmp.name}", log_append)
+            helpers.log(helpers.Log.DEBUG,f"Updating: {tmp.name}", log_append)
             if tmp.isTurn and tmp.active_flag == "":
                 if tmp.turn >= 0:
                     tmp.turn -= turn
 
                 if tmp.turn < 0:
-                    log(Log.INFO,f" {tmp.name} has ended", log_append)
+                    helpers.log(helpers.Log.INFO,f" {tmp.name} has ended", log_append)
                     temps_to_remove.append(tmp)
 
             if tmp.active_flag != "":
-                log(Log.DEBUG, f" Temp {tmp.status} has a flag {tmp.active_flag}", log_append)
+                helpers.log(helpers.Log.DEBUG, f" Temp {tmp.status} has a flag {tmp.active_flag}", log_append)
                 flags.append(tmp.active_flag)
 
 
@@ -131,17 +131,17 @@ class TempHandler:
 
         parent: character.Character = self._parent.return_parent()
         log_append = f"[{parent.name}][Attributes][TempHandler]"
-        log(Log.DEBUG, f"Updating Temps Dict: {len(self.list_temps)}", log_append)
+        helpers.log(helpers.Log.DEBUG, f"Updating Temps Dict: {len(self.list_temps)}", log_append)
 
 
         for temp in self.list_temps:
             if temp.status not in tmp.keys():
                 tmp[temp.status] = []
-                log(Log.DEBUG, f"Updating Temp info: {temp.uid}", log_append)
+                helpers.log(helpers.Log.DEBUG, f"Updating Temp info: {temp.uid}", log_append)
                 data =  {temp.typo: temp.value, "turns": temp.turn, "time": temp.time}
                 tmp[temp.status].append(data)
             else:
-                log(Log.DEBUG, f"Updating Temp info: {temp.uid}", log_append)
+                helpers.log(helpers.Log.DEBUG, f"Updating Temp info: {temp.uid}", log_append)
                 data =  {temp.typo: temp.value, "turns": temp.turn, "time": temp.time}
                 tmp[temp.status].append(data)
 

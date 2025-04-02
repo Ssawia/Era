@@ -1,47 +1,66 @@
 from __future__ import annotations
-import src.classes.entity_prototype as ch
-import src.classes.temps.temp_class_handler as tp
-
 import uuid
-from helpers import log, Log
-from math import trunc
 import abstraction
-
+import src.classes.entity_prototype as ch
+import helpers
+from math import trunc
+#import src.classes.temps.temp_class_handler as tp
 
 class Effect:
-    def __init__(self, typo, name, desc, turns, active, is_stackable,stacks, max_stacks, giver, character, has_temp, temp_objs, obj_values, event):
-        self.uuid = uuid.uuid4()
-        self.typo = typo
-        self.name = name
-        self.desc = desc
-        self.main_turn = turns
-        self.turn = self.main_turn
-        self.active = active
-        self.is_stackable = is_stackable
-        self.main_stacks = stacks
-        self.stacks = self.main_stacks
+    """_summary_ Classe responsável por definir os efeitos de vários tipos, como efeito de status, efeito de batalha, efeito de habilidade
+    """
+    def __init__(self, typo: str, name: str, desc: str, turns: int, active: bool, is_stackable: bool,stacks: int, max_stacks: int, giver: ch.Character, character: ch.Character, has_temp: bool, temp_objs: list[dict], obj_values: dict, event: str):
+        """
+        Parameters
+        ----------
+        typo : str | O tipo de efeito
+        name : str | O nome do efeito
+        desc : str | A descrição do efeito
+        turns : int | Os turnos do efeito
+        active : bool | Se o efeito está ativo ou não
+        is_stackable: bool | Se o efeito é estácavel
+        stacks : int | Quantos stacks o efeito tem
+        max_stacks: int | O número máximo de stacks
+        giver : Character, optional | O objeto que criou o efeito
+        character : Character, optional | O objeto que o efeito está dentro
+        has_temp : bool | Se o efeito tem temps
+        temps_data : list[dict], optional | As informações de temps
+        obj_values: dict, optional | Parámetros especias do efeito
+        event: str | o tipo de evento que vai acionar esse efeito
+        """
+        
+        self.uuid: uuid.UUID = uuid.uuid4()
+        self.typo: str = typo
+        self.name: str = name
+        self.desc: str = desc
+        self.main_turn: int = turns
+        self.turn: int = self.main_turn
+        self.active: bool = active
+        self.is_stackable: bool = is_stackable
+        self.main_stacks: int = stacks
+        self.stacks:int = self.main_stacks
 
-        self.max_stacks = max_stacks
-        self.has_temp = has_temp
+        self.max_stacks: int = max_stacks
+        self.has_temp: bool = has_temp
 
-        self.temp_objs =  temp_objs
-        self.objs_temp_data = []
-        self.obj_values= obj_values
-        self.event = event
+        self.temp_objs: list[dict] =  temp_objs
+        self.objs_temp_data: list[dict] = []
+        self.obj_values: dict = obj_values
+        self.event: str = event
 
 
-        self.owner : ch.Character = character
+        self.owner : ch.Character| None = character
         self.giver: ch.Character | None = giver
         self.start()
     
 
-    def start(self):
+    def start(self) -> None:
         #print(self.obj_values)
         pass
         
     
 
-    def init_effect(self):
+    def init_effect(self) -> None:
         if self.active and self.name not in self.owner.attributes.temp_handler.flags:
             for temp_obj in self.temp_objs:
                 if temp_obj["event"] == "init":
@@ -68,12 +87,12 @@ class Effect:
                     owner.attributes.update_resistances()
 
 
-    def process_effect(self):
+    def process_effect(self) -> bool | None:
         pass
 
-    def end_effect(self):
+    def end_effect(self) -> None:
         self.active = False
-        log(Log.INFO,f"Effect {self.name} has ended", f"[{self.owner.name}][EffectHandler][Effect]")
+        helpers.log(helpers.Log.INFO,f"Effect {self.name} has ended", f"[{self.owner.name}][EffectHandler][Effect]")
 
         if self.has_temp:
             for data in self.objs_temp_data:
@@ -82,7 +101,7 @@ class Effect:
                 obj = data['obj']
                 
                 if flag == self.name:
-                    log(Log.INFO, f"{obj.name} tem a flag {self.name} temp, removendo", f"[{obj.name}][EffectHandler][Effect]")
+                    helpers.log(helpers.Log.INFO, f"{obj.name} tem a flag {self.name} temp, removendo", f"[{obj.name}][EffectHandler][Effect]")
                     obj.attributes.temp_handler.remove_temp(flags=[self.name])
                 
 
