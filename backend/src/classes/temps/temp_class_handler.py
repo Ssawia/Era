@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-import src.classes.entity_prototype as character
+import src.classes.entity.character as character
 import uuid
 import helpers
 

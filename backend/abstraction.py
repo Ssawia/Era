@@ -1,7 +1,7 @@
 from __future__ import annotations
 import importlib
 import json
-import src.classes.entity_prototype as Chara
+import src.classes.entity.character as Chara
 import src.classes.damages.damageTypeC as dmgType
 import src.classes.attacks.attackC as atk
 import src.classes.temps.temp_class_handler as tmp

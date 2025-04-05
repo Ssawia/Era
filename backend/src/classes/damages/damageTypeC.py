@@ -1,15 +1,15 @@
 from __future__ import annotations
 
-import src.classes.entity_prototype as Chara
+import src.classes.entity.character as Chara
 from helpers import check_if_attributes_exist
-import src.classes.effects.effect_class as Effect
+import src.classes.effects.effect_class as eft
 from helpers import Log, log
 import random
 
 
 
 class DamageType:
-    def __init__(self, file : str, name : str, desc : str, defType : str, min_atk: float, max_atk: float, min_heal: float, max_heal: float, effects: list[Effect]):
+    def __init__(self, file : str, name : str, desc : str, defType : str, min_atk: float, max_atk: float, min_heal: float, max_heal: float, effects: list[eft.Effect]):
         self.file = file
         self.name = name
         self.main_element = self.name
@@ -19,7 +19,7 @@ class DamageType:
         self.max_atk = max_atk
         self.min_heal = min_heal
         self.max_heal = max_heal
-        self.effects: list[Effect.Effect] = effects
+        self.effects: list[eft.Effect] = effects
         self.actived = True
         self.formula = ""
         self.atk = 0

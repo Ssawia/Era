@@ -8,7 +8,7 @@ from math import trunc
 
 #Provavelmente isso não é a melhor maneira de implementar várias classes, mas por enquanto vai dar certo, confia
 import src.classes.attacks.attackC as Attacks
-import src.classes.entity_prototype as ep
+import src.classes.entity.character as ch
 import src.classes.attacks.attackC as atc
 import src.classes.damages.damageTypeC as dt
 import src.classes.debug as dbg
@@ -24,7 +24,7 @@ import src.classes.effects.effect_class as Effect
 class Battle:
     
 
-    def __init__(self, queue: list[ep.Character]):
+    def __init__(self, queue: list[ch.Character]):
         self.turn = 0
         self.queue = queue
         self.isInCombat = False
@@ -40,10 +40,10 @@ class Battle:
         self.event_handler: evt.Handler = evt.Handler()
         
 
-    def menu_main(self, chara: ep.Character):
+    def menu_main(self, chara: ch.Character):
         pass
 
-    def menu_attack(self, chara: ep.Character):
+    def menu_attack(self, chara: ch.Character):
         attack: Attacks.Attack
         atk_i = 0
         damages = ""
@@ -93,29 +93,29 @@ class Battle:
         
     
 
-    def menu_skills(self, chara: ep.Character):
+    def menu_skills(self, chara: ch.Character):
         pass
 
-    def menu_items(self, chara: ep.Character):
+    def menu_items(self, chara: ch.Character):
         pass
 
     def menu_status(self):
         helpers.show_info_queue(self.queue)
 
-    def menu_pass(self, chara: ep.Character):
+    def menu_pass(self, chara: ch.Character):
         self.phase = ""
         self.pturn = False
 
 
     def turn_players(self):
-        chara: ep.Character
+        chara: ch.Character
         for chara in self.queue:
             if chara.ai.typeAi == "Player":
                 self.phase = "Menu"
                 self.pturn = True
                 self.turn_player(chara)
 
-    def turn_player(self, chara: ep.Character):
+    def turn_player(self, chara: ch.Character):
         chara.attributes.actions = chara.attributes.max_actions
         
         while self.pturn and self.check_battle_conditions():
@@ -163,7 +163,7 @@ class Battle:
         else:
             self.menu_pass(chara)
 
-    def turn_enemy(self, chara: ep.Character):
+    def turn_enemy(self, chara: ch.Character):
 
         if self.check_battle_conditions() and chara.is_alive():
             log(Log.INFO, f"{chara.name} turn", f"[Turn: {self.turn}]")
@@ -174,7 +174,7 @@ class Battle:
             self.menu_pass(chara)
 
     def chose_ia_attacks(self):
-        chara: ep.Character
+        chara: ch.Character
         for chara in self.queue:
             if chara.ai.typeAi == "Enemy":
                 chara.ai.decide_attack(chara, self.queue, on_enemy=True)
@@ -309,7 +309,7 @@ class Battle:
 
     def process_instances(self):
         for object_remove in self.instances_to_process:
-            obj_character: ep.Character
+            obj_character: ch.Character
             instance_object: atc.Instance
             
             multarget = object_remove["multarget"]
@@ -337,7 +337,7 @@ class Battle:
         self.instances_to_process = []
 
     
-    def direct_attack(self,hit: Attacks.Attack, obj: ep.Character):
+    def direct_attack(self,hit: Attacks.Attack, obj: ch.Character):
         dmg_obj: dt.DamageType
 
         hit_points = 0
@@ -514,7 +514,7 @@ class Battle:
 
 
     def update_queue(self):
-        chara: ep.Character
+        chara: ch.Character
         for chara in self.queue:
             if not chara.alive:
                 print(f"{chara.name} can't continue")
@@ -526,7 +526,7 @@ class Battle:
 
     def lines_battle_start(self, phrase: str):
 
-        char: ep.Character
+        char: ch.Character
 
         for char in self.queue:
             if helpers.check_line(phrase, char.lines):
@@ -535,7 +535,7 @@ class Battle:
 
 
     def get_len_types(self):
-        char: ep.Character
+        char: ch.Character
         self.lenEnemy = 0
         self.lenPlayer = 0
         for char in self.queue:
@@ -575,7 +575,7 @@ class Battle:
     
 
     def roll_characters_speed(self):
-        chara: ep.Character
+        chara: ch.Character
         for chara in self.queue:
             spd = chara.attributes.status.spd
             chara.attributes.battle_spd = randint(spd[0],spd[1])

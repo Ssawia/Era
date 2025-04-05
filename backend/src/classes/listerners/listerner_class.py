@@ -1,6 +1,6 @@
 from __future__ import annotations
 import uuid
-import src.classes.entity_prototype as etc
+import src.classes.entity.character as etc
 import src.classes.events.event_class_prototype as evt
 import src.classes.temps.temp_class_handler as tmp
 import helpers

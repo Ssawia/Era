@@ -1,6 +1,6 @@
 from tkinter.ttk import Treeview
 
-import src.classes.entity_prototype as Chara
+import src.classes.entity as Chara
 import src.classes.damages.damageTypeC as dmgType
 import src.classes.attacks.attackC as Attack
 from helpers import isCrit

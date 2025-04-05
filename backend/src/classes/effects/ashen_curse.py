@@ -1,6 +1,6 @@
 from __future__ import annotations
 from src.classes.effects.effect_class import Effect
-import src.classes.entity_prototype as ch
+import src.classes.entity.character as ch
 import src.classes.temps.temp_class_handler as tp
 from src.classes.temps.temp_class_handler import Temp
 from helpers import log, Log

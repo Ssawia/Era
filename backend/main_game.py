@@ -2,7 +2,7 @@ from __future__ import annotations
 import json
 
 
-import src.classes.entity_prototype as ep
+import src.classes.entity.character as ep
 from abstraction import get_data_from_id,get_all_json_from_path
 from src.classes.battle import Battle
 from src.classes.temps.temp_class_handler import Temp

@@ -1,5 +1,5 @@
 from __future__ import annotations
-import src.classes.entity_prototype as ent
+import src.classes.entity.character as ent
 import src.classes.attacks.attackC as atk
 from src.classes.attacks.attackC import Instance
 from random import choice

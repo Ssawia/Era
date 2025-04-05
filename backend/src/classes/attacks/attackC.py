@@ -1,7 +1,7 @@
 # circular import eu te odeio
 from __future__ import annotations
-import src.classes.entity_prototype as Chara
-from src.classes.damages.damageTypeC import DamageType
+import src.classes.entity.character as Chara
+import src.classes.damages.damageTypeC as dmg
 from src.classes.events.event_class_prototype import On_Start_Attack
 
 
@@ -150,7 +150,7 @@ class Attack:
         self.hits = attack_data['hits']
         self.types = dmg_type
         self.select: Selector | None = None
-        self.dmgList: list[DamageType] = []
+        self.dmgList: list[dmg.DamageType] = []
 
         self.queue = []
         self.battle_queue: list[list[Chara.Character]] = []
@@ -158,7 +158,7 @@ class Attack:
         self.ai: bool = False
 
     def set_damages(self, owner : Chara.Character):
-        i : DamageType
+        i : dmg.DamageType
         self.dmgList = []
 
         for i in self.types:
@@ -192,7 +192,7 @@ class Attack:
 
 
     def get_total_dmg(self):
-        dmg: dmgType.DamageType
+        dmg: dmg.DamageType
         total_dmg = 0
 
         for dmg in self.dmgList:

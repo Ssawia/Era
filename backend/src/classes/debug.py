@@ -1,5 +1,5 @@
 from __future__ import annotations
-from src.classes.entity_prototype import Character
+from src.classes.entity.character import Character
 import helpers
 from helpers import log,Log
 from random import choice
@@ -93,7 +93,7 @@ class Debug:
             self.character.effects_handler.process_effects()
         
 
-    def debug_create_effect(self) -> Effect.Effect:
+    def debug_create_effect(self):
             
         print("[2] Default - AshenCurse")
 

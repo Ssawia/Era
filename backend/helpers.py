@@ -3,7 +3,7 @@ from __future__ import annotations
 from math import trunc
 from tkinter.ttk import Treeview
 
-import src.classes.entity_prototype as entities
+import src.classes.entity.character as entities
 import src.classes.temps.temp_class_handler as tp
 import src.classes.effects.effect_class as eff
 import random

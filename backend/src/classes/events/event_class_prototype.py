@@ -1,7 +1,7 @@
 from __future__ import annotations
 import uuid
 import src.classes.listerners.listerner_class as ltn
-import src.classes.entity_prototype as ch
+import src.classes.entity.character as ch
 
 class Event:
     

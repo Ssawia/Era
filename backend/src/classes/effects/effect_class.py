@@ -1,7 +1,7 @@
 from __future__ import annotations
 import uuid
 import abstraction
-import src.classes.entity_prototype as ch
+import src.classes.entity.character as ch
 import helpers
 from math import trunc
 #import src.classes.temps.temp_class_handler as tp
@@ -28,6 +28,7 @@ class Effect:
         obj_values: dict, optional | Parámetros especias do efeito
         event: str | o tipo de evento que vai acionar esse efeito
         """
+        
         
         self.uuid: uuid.UUID = uuid.uuid4()
         self.typo: str = typo

@@ -1,4 +1,4 @@
-import src.classes.entity_prototype as Chara
+import src.classes.entity.character as Chara
 import src.classes.damages.damageTypeC as dmgType
 
 class Healing(dmgType.DamageType):
@@ -9,7 +9,7 @@ class Healing(dmgType.DamageType):
     def set_attack(self, owner: Chara.Character):
         add_to_heal = 0
 
-        if check_if_attributes_exist(owner):
+        '''if check_if_attributes_exist(owner):
             add_to_heal = owner.attributes.status.atkM
-        self.heal += add_to_heal
+        self.heal += add_to_heal'''
     

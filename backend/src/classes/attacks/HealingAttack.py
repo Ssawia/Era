@@ -1,4 +1,4 @@
-import src.classes.entity_prototype as Chara
+import src.classes.entity.character as Chara
 import src.classes.damages.damageTypeC as dmgType
 import src.classes.attacks.attackC as Attack
 from src.classes.ia_class_prototype import select_ai
